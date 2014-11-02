@@ -1,0 +1,27 @@
+# configs I don't care about
+Trolltech.conf
+autostart/
+chromium/
+compiz-1/
+dconf/
+enchant/
+eog/
+gedit/
+gtk-2.0/
+gtk-3.0/
+gwibber/
+htop/
+ibus/
+ipython/
+libaccounts-glib/
+libreoffice/
+menus/
+monitors.xml
+nautilus/
+nemo/
+pulse/
+software-center/
+typecatcher/
+ubuntu-tweak/
+user-dirs.dirs
+user-dirs.locale
