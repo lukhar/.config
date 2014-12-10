@@ -6,6 +6,10 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+# source git prompt and git completion
+source ~/.config/git-prompt.sh
+source ~/.config/git-completion.bash
+
 # don't put duplicate lines in the history. See bash(1) for more options
 # don't overwrite GNU Midnight Commander's setting of `ignorespace'.
 HISTCONTROL=$HISTCONTROL${HISTCONTROL+:}ignoredups
@@ -117,10 +121,12 @@ PATH="$GRADLE_HOME/bin:$PATH"
 PATH="$MVN_HOME/bin:$PATH"
 PATH="$SCALA_HOME/bin:$PATH"
 
-# dynamic colors 
-PATH="$HOME/.dynamic-colors/bin:$PATH"
-source $HOME/.dynamic-colors/completions/dynamic-colors.zsh
+if [ -f ~/.dynamic-colors  ]; then
+    PATH="$HOME/.dynamic-colors/bin:$PATH"
+    source $HOME/.dynamic-colors/completions/dynamic-colors.zsh
+fi
 
-# virtualenvwrapper
-export WORKON_HOME=/home/lukasz/.virtualenvs
-source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
+if [ -f /usr/share/virtualenvwrapper/virtualenvwrapper.sh ]; then
+    export WORKON_HOME=/home/lukasz/.virtualenvs
+    source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
+fi
