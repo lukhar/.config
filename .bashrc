@@ -88,6 +88,10 @@ fi
 alias ll='ls -lh'
 alias la='ls -lAh'
 alias l='ls -CFh'
+alias mc='mc -S $HOME/.config/mc/solarized.ini'
+
+# ugly hack to work around python binding for mvim
+alias mvim='DYLD_FORCE_FLAT_NAMESPACE=1 mvim -v'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -103,6 +107,10 @@ fi
 # sources /etc/bash.bashrc).
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
+fi
+
+if [ -f /usr/local/etc/profile.d/bash_completion.sh ]; then
+    . /usr/local/etc/profile.d/bash_completion.sh
 fi
 
 # disable annoying crtl+s and crtl+q
@@ -134,4 +142,9 @@ fi
 if [ -f /usr/bin/virtualenvwrapper.sh ]; then
     export WORKON_HOME=/home/lukhar/workspace/.environments
     source /usr/bin/virtualenvwrapper.sh
+fi
+
+if [ -f /usr/local/bin/virtualenvwrapper.sh  ]; then
+    export WORKON_HOME=~/workspace/envs
+    source /usr/local/bin/virtualenvwrapper.sh
 fi
