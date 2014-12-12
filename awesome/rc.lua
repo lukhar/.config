@@ -11,8 +11,20 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 
--- Load Debian menu entries
-require("debian.menu")
+-- {{{ Custom functions
+-- Get the node (machine) name
+function getname()
+    -- Unix, Linux varients
+    fh,err = io.popen("uname -n 2>/dev/null","r")
+    if fh then
+        nodename = fh:read()
+    end
+    if nodename then return nodename end
+
+    -- Add code for other operating systems here
+    return "unknown"
+end
+-- }}}
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -53,7 +65,12 @@ editor_cmd = terminal .. " -e " .. editor
 -- If you do not like this or do not have such a key,
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
-modkey = "Mod4"
+
+if getname() == "piecyk" then
+    modkey = "Mod1"
+else 
+    modkey = "Mod4"
+end
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
@@ -98,7 +115,6 @@ myawesomemenu = {
 }
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "Debian", debian.menu.Debian_menu.Debian },
                                     { "open terminal", terminal }
                                   }
                         })
