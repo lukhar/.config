@@ -130,3 +130,8 @@ if [ -f /usr/share/virtualenvwrapper/virtualenvwrapper.sh ]; then
     export WORKON_HOME=/home/lukasz/.virtualenvs
     source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 fi
+
+if [ -f /usr/bin/virtualenvwrapper.sh ]; then
+    export WORKON_HOME=/home/lukhar/workspace/.environments
+    source /usr/bin/virtualenvwrapper.sh
+fi
