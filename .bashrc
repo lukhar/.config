@@ -141,6 +141,7 @@ fi
 
 if [ "$HOSTNAME" = jabcok ]; then
     if [ -f /usr/local/bin/virtualenvwrapper.sh  ]; then
+        export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
         export WORKON_HOME=~/workspace/envs
         source /usr/local/bin/virtualenvwrapper.sh
     fi
