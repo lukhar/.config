@@ -20,8 +20,6 @@ HISTFILESIZE=25000
 # append to the history file, don't overwrite it
 shopt -s histappend
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -76,8 +74,6 @@ esac
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
 
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
@@ -90,8 +86,6 @@ alias la='ls -lAh'
 alias l='ls -CFh'
 alias mc='mc -S $HOME/.config/mc/solarized.ini'
 
-# ugly hack to work around python binding for mvim
-alias mvim='DYLD_FORCE_FLAT_NAMESPACE=1 mvim -v'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -109,9 +103,6 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-if [ -f /usr/local/etc/profile.d/bash_completion.sh ]; then
-    . /usr/local/etc/profile.d/bash_completion.sh
-fi
 
 # disable annoying crtl+s and crtl+q
 stty stop undef
@@ -130,8 +121,8 @@ PATH="$MVN_HOME/bin:$PATH"
 PATH="$SCALA_HOME/bin:$PATH"
 
 if [ -f ~/.dynamic-colors  ]; then
-    PATH="$HOME/.dynamic-colors/bin:$PATH"
-    source $HOME/.dynamic-colors/completions/dynamic-colors.zsh
+    export PATH="$HOME/.dynamic-colors/bin:$PATH"
+    source $HOME/.dynamic-colors/completions/dynamic-colors.bash
 fi
 
 if [ -f /usr/share/virtualenvwrapper/virtualenvwrapper.sh ]; then
@@ -139,12 +130,25 @@ if [ -f /usr/share/virtualenvwrapper/virtualenvwrapper.sh ]; then
     source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 fi
 
-if [ -f /usr/bin/virtualenvwrapper.sh ]; then
-    export WORKON_HOME=/home/lukhar/workspace/.environments
-    source /usr/bin/virtualenvwrapper.sh
+
+# platform specific stuff
+if [ "$HOSTNAME" = piecyk ]; then
+    if [ -f /usr/bin/virtualenvwrapper.sh ]; then
+        export WORKON_HOME=/home/lukhar/workspace/.environments
+        source /usr/bin/virtualenvwrapper.sh
+    fi
 fi
 
-if [ -f /usr/local/bin/virtualenvwrapper.sh  ]; then
-    export WORKON_HOME=~/workspace/envs
-    source /usr/local/bin/virtualenvwrapper.sh
+if [ "$HOSTNAME" = jabcok ]; then
+    if [ -f /usr/local/bin/virtualenvwrapper.sh  ]; then
+        export WORKON_HOME=~/workspace/envs
+        source /usr/local/bin/virtualenvwrapper.sh
+    fi
+
+    if [ -f /usr/local/etc/profile.d/bash_completion.sh ]; then
+        . /usr/local/etc/profile.d/bash_completion.sh
+    fi
+
+    # ugly hack to work around python binding for mvim
+    alias vim='DYLD_FORCE_FLAT_NAMESPACE=1 mvim -v'
 fi
