@@ -55,6 +55,10 @@ URxvt.urlLauncher: firefox
 ! Cursor
 URxvt.cursorBlink: true
 
+! Function keys fix for urxvt
+URxvt.keysym.F1:   \033OP
+URxvt.keysym.F2:   \033OQ
+
 ! Solarized dark color scheme
 *background:              #002b36
 *foreground:              #839496
