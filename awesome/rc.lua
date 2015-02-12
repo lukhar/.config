@@ -1,3 +1,4 @@
+-- vim: foldmethod=marker
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
@@ -68,7 +69,7 @@ editor_cmd = terminal .. " -e " .. editor
 
 if getname() == "piecyk" then
     modkey = "Mod1"
-else 
+else
     modkey = "Mod4"
 end
 
