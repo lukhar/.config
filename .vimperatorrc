@@ -1,8 +1,9 @@
-set hintchars=asdfg;lkjh
-
-highlight CmdLine background: white; color: black; transition: all 0.25s; font-size:13px
+highlight CmdLine background: white; color: black; transition: all 0.25s; font-size:15px; font-size:14px; font-size:13px
 highlight CmdOutput white-space: pre; font-size:13px
 highlight CompDesc width: 500px; max-width: 500px; color: gray; font-size:13px
-highlight CompResult width: 500px; max-width: 500px; overflow: hidden; font-size:13px
+highlight CompResult width: 500px; max-width: 500px; overflow: hidden; font-size:13px; font-size:18px; font-size:13px
+highlight ModeMsg color: white; background: green; border-radius: 1px; padding: 0px 5px; font-size:13px
 
-" vim: set ft=vimperator flodmethod=marker
+set hintchars=asdfg;lkjh
+
+" vim: set ft=vimperator:
