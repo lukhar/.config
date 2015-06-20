@@ -135,13 +135,6 @@ if [ "$HOSTNAME" = piecyk ]; then
     fi
 fi
 
-if [ "$HOSTNAME" = agave ]; then
-    if [ -f /usr/share/virtualenvwrapper/virtualenvwrapper.sh ]; then
-        export WORKON_HOME=/home/lukasz/.virtualenvs
-        source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
-    fi
-fi
-
 if [ "$HOSTNAME" = jabcok ]; then
     if [ -f /usr/local/bin/virtualenvwrapper.sh  ]; then
         export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
@@ -156,3 +149,12 @@ if [ "$HOSTNAME" = jabcok ]; then
     # ugly hack to work around python binding for mvim
     alias vim='DYLD_FORCE_FLAT_NAMESPACE=1 mvim -v'
 fi
+
+# Less Colors for Man Pages
+export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
+export LESS_TERMCAP_md=$'\E[01;38;5;74m'  # begin bold
+export LESS_TERMCAP_me=$'\E[0m'           # end mode
+export LESS_TERMCAP_se=$'\E[0m'           # end standout-mode
+export LESS_TERMCAP_so=$'\E[38;5;016m\E[48;5;220m'    # begin standout-mode - info box
+export LESS_TERMCAP_ue=$'\E[0m'           # end underline
+export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
