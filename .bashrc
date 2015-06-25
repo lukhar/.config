@@ -108,9 +108,6 @@ fi
 stty stop undef
 stty start undef
 
-
-export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
-
 export GRADLE_HOME="/opt/gradle"
 export GRADLE_OPTS="-Dorg.gradle.daemon=true"
 export MVN_HOME="/opt/maven"
@@ -126,13 +123,13 @@ if [ -f ~/.dynamic-colors  ]; then
 fi
 
 
-
 # platform specific stuff
 if [ "$HOSTNAME" = piecyk ]; then
     if [ -f /usr/bin/virtualenvwrapper.sh ]; then
         export WORKON_HOME=/home/lukhar/workspace/.environments
         source /usr/bin/virtualenvwrapper.sh
     fi
+    export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
 fi
 
 if [ "$HOSTNAME" = jabcok ]; then
