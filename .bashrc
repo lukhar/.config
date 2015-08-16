@@ -136,6 +136,7 @@ if [ "$HOSTNAME" = jabcok ]; then
     if [ -f /usr/local/bin/virtualenvwrapper.sh  ]; then
         export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
         export WORKON_HOME=~/workspace/envs
+        export DYLD_LIBRARY_PATH=/usr/local/Cellar/gcc/5.2.0/lib/gcc/5
         source /usr/local/bin/virtualenvwrapper.sh
     fi
 
