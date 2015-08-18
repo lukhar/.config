@@ -144,8 +144,9 @@ if [ "$HOSTNAME" = jabcok ]; then
         . /usr/local/etc/profile.d/bash_completion.sh
     fi
 
-    # ugly hack to work around python binding for mvim
-    alias vim='DYLD_FORCE_FLAT_NAMESPACE=1 mvim -v'
+    # ugly hack to have servermode in vim (GVIM is server name by default)
+    alias gvim='vim'
+    alias vim='vim --servername GVIM'
 fi
 
 # Less Colors for Man Pages
