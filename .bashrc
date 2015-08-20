@@ -108,6 +108,10 @@ fi
 stty stop undef
 stty start undef
 
+# vim like mode
+set -o vi
+export EDITOR="/usr/local/bin/vim"
+
 export GRADLE_HOME="/opt/gradle"
 export GRADLE_OPTS="-Dorg.gradle.daemon=true"
 export MVN_HOME="/opt/maven"
