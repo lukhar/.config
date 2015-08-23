@@ -25,3 +25,6 @@ typecatcher/
 ubuntu-tweak/
 user-dirs.dirs
 user-dirs.locale
+
+# plugin bundle dir of tpm
+tmux/plugins/bundle/
