@@ -138,10 +138,12 @@ fi
 
 if [ "$HOSTNAME" = jabcok ]; then
     if [ -f /usr/local/bin/virtualenvwrapper.sh  ]; then
+        unset DYLD_LIBRARY_PATH
         export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
         export WORKON_HOME=~/workspace/envs
-        export DYLD_LIBRARY_PATH=/usr/local/Cellar/gcc/5.2.0/lib/gcc/5
+        # export DYLD_LIBRARY_PATH=/usr/local/Cellar/gcc/5.2.0/lib/gcc/5
         source /usr/local/bin/virtualenvwrapper.sh
+        export PATH="/usr/local/sbin:$PATH"
     fi
 
     if [ -f /usr/local/etc/profile.d/bash_completion.sh ]; then
