@@ -138,12 +138,10 @@ fi
 
 if [ "$HOSTNAME" = jabcok ]; then
     if [ -f /usr/local/bin/virtualenvwrapper.sh  ]; then
-        unset DYLD_LIBRARY_PATH
         export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
-        export WORKON_HOME=~/workspace/envs
-        # export DYLD_LIBRARY_PATH=/usr/local/Cellar/gcc/5.2.0/lib/gcc/5
-        source /usr/local/bin/virtualenvwrapper.sh
+        export WORKON_HOME=$HOME/workspace/.envs
         export PATH="/usr/local/sbin:$PATH"
+        source /usr/local/bin/virtualenvwrapper_lazy.sh
     fi
 
     if [ -f /usr/local/etc/profile.d/bash_completion.sh ]; then
@@ -152,7 +150,9 @@ if [ "$HOSTNAME" = jabcok ]; then
 
     # ugly hack to have servermode in vim (GVIM is server name by default)
     alias gvim='DYLD_FORCE_FLAT_NAMESPACE=1 vim'
+    alias nvim='DYLD_FORCE_FLAT_NAMESPACE=1 nvim'
     alias vim='DYLD_FORCE_FLAT_NAMESPACE=1 vim --servername GVIM'
+
     alias ls='ls -G'
 fi
 
