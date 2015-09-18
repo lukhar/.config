@@ -132,6 +132,7 @@ if [ "$HOSTNAME" = piecyk ]; then
     if [ -f /usr/bin/virtualenvwrapper.sh ]; then
         export WORKON_HOME=/home/lukhar/workspace/.environments
         source /usr/bin/virtualenvwrapper.sh
+        export NOTES=$HOME/documents/shared/notes
     fi
     export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
 fi
@@ -141,6 +142,7 @@ if [ "$HOSTNAME" = jabcok ]; then
         export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
         export WORKON_HOME=$HOME/workspace/.envs
         export PATH="/usr/local/sbin:$PATH"
+        export NOTES=$HOME/Documents/shared/notes
         source /usr/local/bin/virtualenvwrapper_lazy.sh
     fi
 
