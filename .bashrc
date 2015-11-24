@@ -114,8 +114,6 @@ export EDITOR="/usr/local/bin/vim"
 
 export GRADLE_HOME="/opt/gradle"
 export GRADLE_OPTS="-Dorg.gradle.daemon=true"
-export MVN_HOME="/opt/maven"
-export SCALA_HOME="/opt/scala"
 
 PATH="$GRADLE_HOME/bin:$PATH"
 PATH="$MVN_HOME/bin:$PATH"
@@ -140,7 +138,7 @@ fi
 if [ "$HOSTNAME" = jabcok ]; then
     if [ -f /usr/local/bin/virtualenvwrapper.sh  ]; then
         export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
-        export WORKON_HOME=$HOME/workspace/.envs
+        export WORKON_HOME=$HOME/workspace/.environments
         export PATH="/usr/local/sbin:$PATH"
         export NOTES=$HOME/Documents/shared/notes
         source /usr/local/bin/virtualenvwrapper_lazy.sh
