@@ -156,6 +156,12 @@ if [ "$HOSTNAME" = jabcok ]; then
 fi
 
 if [ "$HOSTNAME" = fruitbox ]; then
+    export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
+    export WORKON_HOME=$HOME/workspace/.environments
+    export PATH="/usr/local/sbin:$PATH"
+    export NOTES=$HOME/Documents/shared/notes
+    source /usr/local/bin/virtualenvwrapper_lazy.sh
+
     alias ls='ls -G'
     alias nvim='DYLD_FORCE_FLAT_NAMESPACE=1 nvim'
 fi
