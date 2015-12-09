@@ -56,9 +56,7 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("/usr/share/awesome/themes/zenburn/theme.lua")
 
-if getname() == "agave" then
-    theme.wallpaper = "/home/lukasz/Pictures/vim-shortcuts-dark_2560x1600_blank.png"
-end
+theme.wallpaper = os.getenv("HOME") .. "/.config/awesome/wallpapers/vim-shortcuts.png"
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
