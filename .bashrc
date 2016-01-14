@@ -150,7 +150,7 @@ if [ "$HOSTNAME" = jabcok ]; then
 
     # ugly hack to have servermode in vim (GVIM is server name by default)
     alias gvim='DYLD_FORCE_FLAT_NAMESPACE=1 vim'
-    alias vim='DYLD_FORCE_FLAT_NAMESPACE=1 vim --servername GVIM'
+    alias vim='DYLD_FORCE_FLAT_NAMESPACE=1 vim'
 
     alias ls='ls -G'
 fi
