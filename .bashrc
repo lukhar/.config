@@ -178,3 +178,5 @@ export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 if [ -d /opt/torch ]; then
     . /opt/torch/install/bin/torch-activate
 fi
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
