@@ -4,6 +4,3 @@
 [submodule "nvim"]
 	path = nvim
 	url = git@github.com:lukhar/.nvim.git
-[submodule "fzf"]
-	path = fzf
-	url = git@github.com:junegunn/fzf.git
