@@ -28,3 +28,6 @@ user-dirs.locale
 
 # plugin bundle dir of tpm
 tmux/plugins/bundle/
+
+# tags
+tags
