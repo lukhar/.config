@@ -148,10 +148,6 @@ if [ "$HOSTNAME" = jabcok ]; then
         . /usr/local/etc/profile.d/bash_completion.sh
     fi
 
-    # ugly hack to have servermode in vim (GVIM is server name by default)
-    alias gvim='DYLD_FORCE_FLAT_NAMESPACE=1 vim'
-    alias vim='DYLD_FORCE_FLAT_NAMESPACE=1 vim'
-
     alias ls='ls -G'
 fi
 
