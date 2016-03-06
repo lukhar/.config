@@ -112,12 +112,7 @@ stty start undef
 set -o vi
 export EDITOR="/usr/local/bin/vim"
 
-export GRADLE_HOME="/opt/gradle"
 export GRADLE_OPTS="-Dorg.gradle.daemon=true"
-
-PATH="$GRADLE_HOME/bin:$PATH"
-PATH="$MVN_HOME/bin:$PATH"
-PATH="$SCALA_HOME/bin:$PATH"
 
 if [ -f ~/.dynamic-colors  ]; then
     export PATH="$HOME/.dynamic-colors/bin:$PATH"
