@@ -5,6 +5,7 @@
 "highlight -append -link FontFixed Hint
 "highlight -append -link FontFixed CompItem
 "highlight -append -link FontFixed CompTitle
+set runtimepath=~/.config/pentadctyl
 
 colorscheme zenburn
 
