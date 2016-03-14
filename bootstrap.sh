@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ln -sf ~/.config/.bashrc ~/.bashrc
+ln -sf ~/.config/.profile ~/.profile
 ln -sf ~/.config/pentadactyl/pentadactylrc ~/.pentadactylrc
 ln -sf ~/.config/.ptpython ~/.ptpython
 ln -sf ~/.config/.pypirc ~/.pypirc
