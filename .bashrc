@@ -68,7 +68,7 @@ stty start undef
 
 # vim like mode
 set -o vi
-export EDITOR="/usr/local/bin/vim"
+export EDITOR=`which vim`
 
 
 if [ -f ~/.dynamic-colors  ]; then
