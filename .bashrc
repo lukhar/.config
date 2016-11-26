@@ -8,8 +8,8 @@ source ~/.config/git-prompt.sh
 source ~/.config/git-completion.bash
 
 export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
-export HISTSIZE=100000                   # big big history
-export HISTFILESIZE=100000               # big big history
+export HISTSIZE=8192 
+export HISTFILESIZE=500000000
 shopt -s histappend                      # append to history, don't overwrite it
 
 
@@ -104,6 +104,8 @@ if [ "$HOSTNAME" = jabcok ]; then
     fi
 
     alias ls='ls -G'
+    alias vim='/usr/local/bin/vim'
+    alias nvim='DYLD_FORCE_FLAT_NAMESPACE=1 nvim'
 fi
 
 if [ "$HOSTNAME" = fruitbox ]; then
@@ -114,6 +116,7 @@ if [ "$HOSTNAME" = fruitbox ]; then
     source /usr/local/bin/virtualenvwrapper_lazy.sh
 
     alias ls='ls -G'
+    alias vim='/usr/local/bin/vim'
     alias nvim='DYLD_FORCE_FLAT_NAMESPACE=1 nvim'
 fi
 
