@@ -115,11 +115,13 @@ if [ "$HOSTNAME" = fruitbox ]; then
     export PATH="/usr/local/sbin:$PATH"
     export NOTES=$HOME/Documents/shared/notes
     export EDITOR='/usr/local/bin/vim'
+    export GITHUB_HOST=github.corp.qc
     source /usr/local/bin/virtualenvwrapper_lazy.sh
 
     alias ls='ls -G'
     alias vim='/usr/local/bin/vim'
     alias nvim='DYLD_FORCE_FLAT_NAMESPACE=1 nvim'
+    alias git=hub
 fi
 
 # Less Colors for Man Pages
