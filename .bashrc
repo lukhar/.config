@@ -1,3 +1,4 @@
+source ~/.qcshext/qcrc
 #!/bin/bash
 
 # If not running interactively, don't do anything
@@ -113,6 +114,7 @@ if [ "$HOSTNAME" = fruitbox ]; then
     export WORKON_HOME=$HOME/workspace/.environments
     export PATH="/usr/local/sbin:$PATH"
     export NOTES=$HOME/Documents/shared/notes
+    export EDITOR='/usr/local/bin/vim'
     source /usr/local/bin/virtualenvwrapper_lazy.sh
 
     alias ls='ls -G'
