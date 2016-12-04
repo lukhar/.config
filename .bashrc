@@ -9,7 +9,7 @@ source ~/.config/git-prompt.sh
 source ~/.config/git-completion.bash
 
 export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
-export HISTSIZE=8192 
+export HISTSIZE=8192
 export HISTFILESIZE=500000000
 shopt -s histappend                      # append to history, don't overwrite it
 
@@ -122,6 +122,7 @@ if [ "$HOSTNAME" = fruitbox ]; then
     alias vim='/usr/local/bin/vim'
     alias nvim='DYLD_FORCE_FLAT_NAMESPACE=1 nvim'
     alias git=hub
+    source /usr/local/etc/bash_completion.d/hub.bash_completion.sh
 fi
 
 # Less Colors for Man Pages
