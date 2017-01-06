@@ -71,6 +71,12 @@ stty start undef
 set -o vi
 export EDITOR=`which vim`
 
+# command line copy paste for tmux
+if [ ! $(uname -s) = "Darwin"  ]; then
+    alias pbcopy='xclip -selection clipboard'
+    alias pbpaste='xclip -selection clipboard -o'
+fi
+
 
 if [ -f ~/.dynamic-colors  ]; then
     export PATH="$HOME/.dynamic-colors/bin:$PATH"
