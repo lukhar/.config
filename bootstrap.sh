@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p ~/bin
+
 ln -sf ~/.config/.agignore ~/.agignore
 ln -sf ~/.config/.bashrc ~/.bashrc
 ln -sf ~/.config/.gitignore ~/.gitignore
@@ -15,3 +17,4 @@ ln -sf ~/.config/.Xresources ~/.Xresources
 ln -sf ~/.config/.yaourtrc ~/.yaourtrc
 ln -sf ~/.vim/gvimrc ~/.gvimrc
 ln -sf ~/.vim/vimrc ~/.vimrc
+ln -sf ~/.config/tmux/tools/safe-reattach-to-user-namespace ~/bin/safe-reattach-to-user-namespace
