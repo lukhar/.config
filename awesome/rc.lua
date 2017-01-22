@@ -40,6 +40,7 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(awful.util.get_themes_dir() .. "zenburn/theme.lua")
+beautiful.wallpaper = os.getenv("HOME") .. "/.config/awesome/wallpapers/vim-shortcuts.png"
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
