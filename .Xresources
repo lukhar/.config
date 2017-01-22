@@ -14,17 +14,12 @@ URxvt.internalBorder: 1
 
 ! Fonts
 ! Sharp - no antialiasing...
-URxvt*font: xft:Terminess Powerline:xft:Fixed:antialias=false:size=9
-URxvt*boldFont: xft:Terminess Powerline:xft:style=bold:antialias=false:size=9
+URxvt*font: xft:xos4 Terminess Powerline:xft:Fixed:antialias=false:size=9
+URxvt*boldFont: xft:xos4 Terminess Powerline:xft:style=bold:antialias=false:size=9
 
 ! Normal - aliased slightly blurry
 !URxvt*font: xft:DejaVu Sans Mono for Powerline:antialias=true:size=9
 !URxvt*boldFont: xft:DejaVu Sans Mono for Powerline:style=bold:antialias=true:pixelsize=9
-
-! Bind C-0, C-+ and C-= to activate small, medium, and big font size resp (works only with terminess font)
-URxvt.keysym.C-0: command:\033]710;xft:Terminess Powerline:xft:Fixed:antialias=false:size=9\007
-URxvt.keysym.C-minus: command:\033]710;xft:Terminess Powerline:xft:Fixed:antialias=false:size=10\007
-URxvt.keysym.C-equal: command:\033]710;xft:Terminess Powerline:xft:Fixed:antialias=false:size=16\007
 
 ! Fix font space (use only when patched urxvt not installed)
 !URxvt*letterSpace: -1
