@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -d $HOME/.qcshext ]; then
+    source "$HOME/.qcshext/qcrc"
+fi
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
