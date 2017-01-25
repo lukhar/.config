@@ -82,6 +82,7 @@ if [ -f ~/.dynamic-colors  ]; then
     source $HOME/.dynamic-colors/completions/dynamic-colors.bash
 fi
 
+export PATH="$HOME/bin:$PATH"
 
 # platform specific stuff
 if [ "$HOSTNAME" = piecyk ]; then
