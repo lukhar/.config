@@ -18,3 +18,4 @@ ln -sf ~/.config/.yaourtrc ~/.yaourtrc
 ln -sf ~/.vim/gvimrc ~/.gvimrc
 ln -sf ~/.vim/vimrc ~/.vimrc
 ln -sf ~/.config/tmux/tools/safe-reattach-to-user-namespace ~/bin/safe-reattach-to-user-namespace
+ln -sf ~/.config/confupdate.sh ~/bin/confupdate
