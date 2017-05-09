@@ -32,3 +32,6 @@ tmux/plugins/bundle/
 
 # tags
 tags
+
+# osx
+.DS_Store
