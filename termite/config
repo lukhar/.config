@@ -1,5 +1,8 @@
 [options]
+font = Tamzen for Powerline 11
+font = DejaVu Sans Mono 9
 font = xos4 Terminess Powerline 9
+font = DejaVu Sans Mono for Powerline 9
 
 [colors]
 foreground = #839496
