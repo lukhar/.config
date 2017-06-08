@@ -3,3 +3,4 @@ if hash setxkbmap 2>/dev/null; then
 fi
 
 export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"

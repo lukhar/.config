@@ -129,6 +129,7 @@ if [ "$HOSTNAME" = fruitbox ]; then
 
     alias ls='ls -G'
     alias vim='/usr/local/bin/vim'
+    alias vi='vim'
     alias nvim='DYLD_FORCE_FLAT_NAMESPACE=1 nvim'
     alias git=hub
     source /usr/local/etc/bash_completion.d/hub.bash_completion.sh
