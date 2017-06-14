@@ -13,7 +13,6 @@ ln -sf ~/.config/.profile ~/.profile
 ln -sf ~/.config/.ptpython ~/.ptpython
 ln -sf ~/.config/.pypirc ~/.pypirc
 ln -sf ~/.config/tmux/.tmux.conf ~/.tmux.conf
-ln -sf ~/.config/tmux/tools/safe-reattach-to-user-namespace ~/bin/safe-reattach-to-user-namespace
 ln -sf ~/.config/.vimperatorrc ~/.vimperatorrc
 ln -sf ~/.config/.Xresources ~/.Xdefaults
 ln -sf ~/.config/.Xresources ~/.Xresources
