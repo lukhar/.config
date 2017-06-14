@@ -12,6 +12,9 @@ URxvt.saveLines: 65535
 ! fix for not filling window
 URxvt.internalBorder: 1
 
+! enable alt key in xterm terminals
+xterm*metaSendsEscape: true
+
 ! Fonts
 ! Sharp - no antialiasing...
 URxvt*font: xft:xos4 Terminess Powerline:xft:Fixed:antialias=false:size=9
