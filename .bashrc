@@ -94,7 +94,6 @@ if [ "$HOSTNAME" = piecyk ]; then
         source /usr/bin/virtualenvwrapper.sh
         export NOTES=$HOME/documents/shared/notes
     fi
-    export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
 
     # ugly fix for bold fonts in tmux
     alias tmux='TERM=xterm-256color /usr/bin/tmux'
