@@ -1,0 +1,6 @@
+alias vim='/usr/local/bin/vim'
+alias vi='vim'
+alias nvim='DYLD_FORCE_FLAT_NAMESPACE=1 nvim'
+
+alias ssh='TERM=xterm-256color ssh'
+alias rfd='java -cp ~/.qctools/rmr/build/output/allinone-jar/rmr-gae9351a-allinone.jar -Xmx1024m com.implicitlabs.rmr.misc.RowFileDump'

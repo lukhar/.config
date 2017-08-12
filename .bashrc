@@ -23,16 +23,7 @@ force_color_prompt=yes
 
 PS1='\[\e[32m\]\u@\h\[\e[m\]:\w$(__git_ps1)\n\$ '
 
-alias ll='ls -lh'
-alias la='ls -lAh'
-alias l='ls -CFh'
-alias mc='mc -S $HOME/.config/mc/solarized.ini'
-alias ls='ls -G'
-
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
+source $HOME/.config/.bash_aliases
 
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
@@ -51,16 +42,13 @@ fi
 # platform specific stuff
 if [ "$HOSTNAME" = piecyk ]; then
     export NOTES=$HOME/documents/shared/notes
-    export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
 
     # ugly fix for bold fonts in tmux
     alias tmux='TERM=xterm-256color /usr/bin/tmux'
 fi
 
 if [ "$HOSTNAME" = fruitbox ]; then
-    alias vim='/usr/local/bin/vim'
-    alias vi='vim'
-    alias nvim='DYLD_FORCE_FLAT_NAMESPACE=1 nvim'
+    source $HOME/.config/.fruitbox_aliases
 fi
 
 # Less Colors for Man Pages
