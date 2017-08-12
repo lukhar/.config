@@ -58,13 +58,9 @@ if [ "$HOSTNAME" = piecyk ]; then
 fi
 
 if [ "$HOSTNAME" = fruitbox ]; then
-    export GITHUB_HOST=github.corp.qc
-
     alias vim='/usr/local/bin/vim'
     alias vi='vim'
     alias nvim='DYLD_FORCE_FLAT_NAMESPACE=1 nvim'
-    alias git=hub
-    source /usr/local/etc/bash_completion.d/hub.bash_completion.sh
 fi
 
 # Less Colors for Man Pages
