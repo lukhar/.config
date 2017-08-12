@@ -4,6 +4,7 @@ mkdir -p ~/bin
 
 ln -sf ~/.config/.agignore ~/.agignore
 ln -sf ~/.config/.bashrc ~/.bashrc
+ln -sf ~/.config/.bash_profile ~/.bash_profile
 ln -sf ~/.config/confupdate.sh ~/bin/confupdate
 ln -sf ~/.config/.dircolors ~/.dircolors
 ln -sf ~/.config/.gitignore ~/.gitignore
