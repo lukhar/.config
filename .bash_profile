@@ -21,3 +21,10 @@ if [ $HOSTNAME = fruitbox ]; then
 	export NOTES=$HOME/Documents/shared/notes
 	export EDITOR=/usr/local/bin/vim
 fi
+
+if [ "$HOSTNAME" = piecyk ]; then
+	export NOTES=$HOME/documents/shared/notes
+
+	# ugly fix for bold fonts in tmux
+	alias tmux='TERM=xterm-256color /usr/bin/tmux'
+fi
