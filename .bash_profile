@@ -23,6 +23,8 @@ if [ $HOSTNAME = fruitbox ]; then
 fi
 
 if [ "$HOSTNAME" = piecyk ]; then
+	source $HOME/.config/.profile
+
 	export NOTES=$HOME/documents/shared/notes
 
 	# ugly fix for bold fonts in tmux
