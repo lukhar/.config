@@ -10,12 +10,6 @@ source $HOME/.config/git-completion.bash
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-[ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
-[ -x "$(command -v pyenv)" ] && eval "$(pyenv virtualenv-init -)"
-
-export PATH=$HOME/.cargo/bin:$PATH
-export PATH=$HOME/bin:$PATH
-
 if [ $HOSTNAME = fruitbox ]; then
 	export PATH=/usr/local/sbin:$PATH
 	export NOTES=$HOME/Documents/shared/notes
@@ -30,3 +24,10 @@ if [ "$HOSTNAME" = piecyk ]; then
 	# ugly fix for bold fonts in tmux
 	alias tmux='TERM=xterm-256color /usr/bin/tmux'
 fi
+
+export PATH=$HOME/.cargo/bin:$PATH
+export PATH=$HOME/bin:$PATH
+export PATH=$PYENV_ROOT/bin:$PATH
+
+[ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
+[ -x "$(command -v pyenv)" ] && eval "$(pyenv virtualenv-init -)"
