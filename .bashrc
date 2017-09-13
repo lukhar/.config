@@ -21,7 +21,17 @@ shopt -s checkwinsize
 # should be on the output of commands, not on the prompt
 force_color_prompt=yes
 
-PS1='\[\e[32m\]\u@\h\[\e[m\]:\w$(__git_ps1)\n\$ '
+function set_virtualenv () {
+  if [[ `pyenv version-name` == "system" ]] ; then
+      PYTHON_VIRTUALENV=""
+  else
+      PYTHON_VIRTUALENV="(`pyenv version-name`) "
+  fi
+}
+
+PROMPT_COMMAND=set_virtualenv
+
+PS1='${PYTHON_VIRTUALENV}\[\e[32m\]\u@\h\[\e[m\]:\w$(__git_ps1)\n\$ '
 
 source $HOME/.config/.bash_aliases
 
