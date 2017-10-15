@@ -1,8 +1,8 @@
+alias ls='ls --color=auto -G'
 alias ll='ls -lh'
 alias la='ls -lAh'
 alias l='ls -CFh'
 alias mc='mc -S $HOME/.config/mc/solarized.ini'
-alias ls='ls -G --color=auto'
 
 alias lsoftcp='lsof -iTCP -sTCP:LISTEN -n -P'
 

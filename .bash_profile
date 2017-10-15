@@ -16,7 +16,7 @@ if [ "$HOSTNAME" = piecyk ]; then
 	export NOTES=$HOME/documents/shared/notes
 
 	# solarized highligthing for ls
-	eval `dircolors`
+	eval `dircolors ~/.dircolors`
 
 	# ugly fix for bold fonts in tmux
 	alias tmux='TERM=xterm-256color /usr/bin/tmux'
