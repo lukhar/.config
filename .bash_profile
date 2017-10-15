@@ -15,6 +15,9 @@ if [ "$HOSTNAME" = piecyk ]; then
 	source $HOME/.config/git-completion.bash
 	export NOTES=$HOME/documents/shared/notes
 
+	# solarized highligthing for ls
+	eval `dircolors`
+
 	# ugly fix for bold fonts in tmux
 	alias tmux='TERM=xterm-256color /usr/bin/tmux'
 
