@@ -18,7 +18,6 @@ if [ "$HOSTNAME" = piecyk ]; then
 	# ugly fix for bold fonts in tmux
 	alias tmux='TERM=xterm-256color /usr/bin/tmux'
 
-	export PATH=$HOME/bin:$PATH
 	export PATH=$PYENV_ROOT/bin:$PATH
 
 	[ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
@@ -38,5 +37,7 @@ fi
 [ -d $HOME/.sdkman ] && source $HOME/.sdkman/bin/sdkman-init.sh
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+export PATH=$HOME/bin:$PATH
 
 source $HOME/.config/.bashrc
