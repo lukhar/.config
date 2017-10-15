@@ -2,7 +2,7 @@ alias ll='ls -lh'
 alias la='ls -lAh'
 alias l='ls -CFh'
 alias mc='mc -S $HOME/.config/mc/solarized.ini'
-alias ls='ls -G'
+alias ls='ls -G --color=auto'
 
 alias lsoftcp='lsof -iTCP -sTCP:LISTEN -n -P'
 
@@ -20,3 +20,10 @@ FZF-EOF"
 
 alias snvim='nvim -c "colorscheme jellybeans"'
 alias tailf='tail -f'
+
+
+function hfsplus_mount() {
+    sudo mount -t hfsplus $1 $2
+}
+
+alias hmount=hfsplus_mount
