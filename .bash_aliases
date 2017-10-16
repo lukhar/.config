@@ -1,4 +1,10 @@
-alias ls='ls --color=auto -G'
+if [ $HOSTNAME = piecyk ]; then
+  alias ls='ls --color=auto'
+fi
+if [ $HOSTNAME = fruitbox ]; then
+  alias ls='ls -G'
+fi
+
 alias ll='ls -lh'
 alias la='ls -lAh'
 alias l='ls -CFh'
