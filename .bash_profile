@@ -34,7 +34,20 @@ if [ "$HOSTNAME" = piecyk ]; then
 		fi
 	}
 
-	PROMPT_COMMAND=set_virtualenv
+	function set_terraform_workspace () {
+		if [ -d .terraform ] ; then
+				TERRAFORM_WORKSPACE="[`terraform workspace show`]"
+		else
+				TERRAFORM_WORKSPACE=""
+		fi
+	}
+
+	function prompt_command () {
+		set_virtualenv
+		set_terraform_workspace
+	}
+
+	PROMPT_COMMAND=prompt_command
 fi
 
 [ -d $HOME/.sdkman ] && source $HOME/.sdkman/bin/sdkman-init.sh
