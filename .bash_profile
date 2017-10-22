@@ -50,6 +50,11 @@ if [ "$HOSTNAME" = piecyk ]; then
 	PROMPT_COMMAND=prompt_command
 fi
 
+function ts {
+	args=$@
+	tmux send-keys -t right "$args" C-m
+}
+
 [ -d $HOME/.sdkman ] && source $HOME/.sdkman/bin/sdkman-init.sh
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
