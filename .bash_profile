@@ -2,6 +2,7 @@
 
 if [ $HOSTNAME = fruitbox ]; then
 	[ -d $HOME/.qcshext ] && source $HOME/.qcshext/qcrc
+	[ -x "$(command -v terraform)" ]	&& complete -C /usr/local/Cellar/terraform/0.10.8/bin/terraform terraform
 
 	export PATH=/usr/local/sbin:$PATH
 	export PATH=$HOME/.cargo/bin:$PATH
