@@ -26,7 +26,7 @@ PS1='${TERRAFORM_WORKSPACE}${PYTHON_VIRTUALENV}\[\e[32m\]\u@\h\[\e[m\]:\w$(__git
 source $HOME/.config/.bash_aliases
 
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-    . /etc/bash_completion
+  . /etc/bash_completion
 fi
 
 # vim like mode
@@ -35,20 +35,20 @@ export EDITOR=`which vim`
 
 # command line copy paste for tmux
 if [ ! $(uname -s) = "Darwin"  ]; then
-    alias pbcopy='xclip -selection clipboard'
-    alias pbpaste='xclip -selection clipboard -o'
+  alias pbcopy='xclip -selection clipboard'
+  alias pbpaste='xclip -selection clipboard -o'
 fi
 
 # platform specific stuff
 if [ "$HOSTNAME" = piecyk ]; then
-    export NOTES=$HOME/documents/shared/notes
+  export NOTES=$HOME/documents/shared/notes
 
-    # ugly fix for bold fonts in tmux
-    alias tmux='TERM=xterm-256color /usr/bin/tmux'
+  # ugly fix for bold fonts in tmux
+  alias tmux='TERM=xterm-256color /usr/bin/tmux'
 fi
 
 if [ "$HOSTNAME" = fruitbox ]; then
-    source $HOME/.config/.fruitbox_aliases
+  source $HOME/.config/.fruitbox_aliases
 fi
 
 # Less Colors for Man Pages
@@ -59,3 +59,5 @@ export LESS_TERMCAP_se=$'\E[0m'           # end standout-mode
 export LESS_TERMCAP_so=$'\E[38;5;016m\E[48;5;220m'    # begin standout-mode - info box
 export LESS_TERMCAP_ue=$'\E[0m'           # end underline
 export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
+
+# vim: tabstop=2 shiftwidth=2 expandtab
