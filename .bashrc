@@ -23,7 +23,6 @@ force_color_prompt=yes
 
 PS1='${TERRAFORM_WORKSPACE}${PYTHON_VIRTUALENV}\[\e[32m\]\u@\h\[\e[m\]:\w$(__git_ps1)\n\$ '
 
-source $HOME/.config/.bash_aliases
 
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
   . /etc/bash_completion
@@ -47,9 +46,9 @@ if [ "$HOSTNAME" = piecyk ]; then
   alias tmux='TERM=xterm-256color /usr/bin/tmux'
 fi
 
-if [ "$HOSTNAME" = fruitbox ]; then
-  source $HOME/.config/.fruitbox_aliases
-fi
+source $HOME/.config/.bash_aliases
+[ "$HOSTNAME" = fruitbox ] &&  source $HOME/.config/.fruitbox_aliases
+[ -f $HOME/.scratch_aliases ] && source $HOME/.scratch_aliases
 
 # Less Colors for Man Pages
 export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
