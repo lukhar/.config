@@ -1,6 +1,8 @@
 #!/bin/bash
 
 mkdir -p ~/bin
+mkdir -p ~/.cache/vim/swp
+mkdir -p ~/.cache/vim/undo
 
 ln -sf ~/.config/.agignore ~/.agignore
 ln -sf ~/.config/.bashrc ~/.bashrc
