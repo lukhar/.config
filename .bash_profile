@@ -2,12 +2,14 @@
 
 if [ $HOSTNAME = fruitbox ]; then
   [ -d $HOME/.qcshext ] && source $HOME/.qcshext/qcrc
-  [ -x "$(command -v terraform)" ] && complete -C /usr/local/Cellar/terraform/0.10.8/bin/terraform terraform
+  [ -f $(brew --prefix)/etc/bash_completion  ] && . $(brew --prefix)/etc/bash_completion
 
   export PATH=/usr/local/sbin:$PATH
   export PATH=$HOME/.cargo/bin:$PATH
   export NOTES=$HOME/Documents/shared/notes
   export EDITOR=/usr/local/bin/vim
+
+  export GOPATH=$HOME/sdk/go
 fi
 
 if [ "$HOSTNAME" = piecyk ]; then
