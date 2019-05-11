@@ -10,6 +10,7 @@ if [ $HOSTNAME = fruitbox ]; then
   export EDITOR=/usr/local/bin/vim
 
   export GOPATH=$HOME/sdk/go
+  export HOMEBREW_GITHUB_API_TOKEN=2b3edc249b2df92c2e49f267f4d685d4a9c74b7c
 fi
 
 if [ "$HOSTNAME" = piecyk ]; then
