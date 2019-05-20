@@ -33,3 +33,12 @@ function hfsplus_mount() {
 }
 
 alias hmount=hfsplus_mount
+
+
+vf() {
+  nvim ${@:2} $(fd -i -t f | fzf --multi -q "$1" --preview='bat --color "always" {}' )
+}
+
+fkill() {
+  pid=$(ps aux | fzf -q "$1" --multi --header-lines=1 | awk '{print $2}')  && kill $pid
+}
