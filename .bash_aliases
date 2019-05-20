@@ -42,3 +42,7 @@ vf() {
 fkill() {
   pid=$(ps aux | fzf -q "$1" --multi --header-lines=1 | awk '{print $2}')  && kill $pid
 }
+
+if [ -x "$(command -v bat)"  ]; then
+  alias cat='bat --theme=solarized_dark'
+fi
