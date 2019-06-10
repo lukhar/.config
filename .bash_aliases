@@ -44,5 +44,6 @@ fkill() {
 }
 
 if [ -x "$(command -v bat)"  ]; then
+  alias catp='bat -p'
   alias cat='bat --theme=solarized_dark'
 fi
