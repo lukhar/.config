@@ -26,6 +26,7 @@ ubuntu-tweak/
 user-dirs.dirs
 user-dirs.locale
 .ptpython/history
+__pycache__/
 
 # plugin bundle dir of tpm
 tmux/plugins/bundle/
