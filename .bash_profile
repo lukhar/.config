@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source $HOME/.config/gradle-completion.bash
+
 if [ $HOSTNAME = fruitbox ]; then
   [ -d $HOME/.qcshext ] && source $HOME/.qcshext/qcrc
   [ -f $(brew --prefix)/etc/bash_completion  ] && . $(brew --prefix)/etc/bash_completion
