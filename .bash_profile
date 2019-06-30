@@ -4,7 +4,6 @@ source $HOME/.config/gradle-completion.bash
 
 if [ $HOSTNAME = fruitbox ]; then
   [ -d $HOME/.qcshext ] && source $HOME/.qcshext/qcrc
-  [ -f $(brew --prefix)/etc/bash_completion  ] && . $(brew --prefix)/etc/bash_completion
 
   export PATH=/usr/local/sbin:$PATH
   export PATH=$HOME/.cargo/bin:$PATH
@@ -33,6 +32,8 @@ if [ "$HOSTNAME" = piecyk ]; then
   [ -x "$(command -v pyenv)" ] && eval "$(pyenv virtualenv-init -)"
 
   [ -x "$(command -v hub)" ] && eval "$(hub alias -s)"
+
+  [ -d $HOME/.sdkman ] && source $HOME/.sdkman/bin/sdkman-init.sh
 
   function set_virtualenv () {
     if [[ `pyenv version-name` == "system" ]] ; then
@@ -67,7 +68,6 @@ function sr {
   [ -f $HOME/.scratch_aliases ] && source $HOME/.scratch_aliases
 }
 
-[ -d $HOME/.sdkman ] && source $HOME/.sdkman/bin/sdkman-init.sh
 
 [ -f $HOME/.fzf.bash ] && source $HOME/.fzf.bash
 
