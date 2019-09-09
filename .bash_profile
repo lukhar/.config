@@ -71,6 +71,8 @@ function sr {
 
 [ -f $HOME/.fzf.bash ] && source $HOME/.fzf.bash
 
+[ -f $HOME/.poetry/env ] && source $HOME/.poetry/env
+
 export PATH=$HOME/bin:$PATH
 
 source $HOME/.config/.bashrc
