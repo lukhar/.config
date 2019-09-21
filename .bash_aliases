@@ -47,3 +47,8 @@ if [ -x "$(command -v bat)"  ]; then
   alias catp='bat -p'
   alias cat='bat --theme=solarized_dark'
 fi
+
+if [ -x "$(command -v kubectl)" ]; then
+  alias k=kubectl
+  complete -F __start_kubectl k
+fi
