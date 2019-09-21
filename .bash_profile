@@ -73,6 +73,8 @@ function sr {
 
 [ -f $HOME/.poetry/env ] && source $HOME/.poetry/env
 
+[ -x "$(command -v kubectl)" ] && source <(kubectl completion bash)
+
 export PATH=$HOME/bin:$PATH
 
 source $HOME/.config/.bashrc
