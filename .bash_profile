@@ -19,6 +19,7 @@ if [ "$HOSTNAME" = piecyk ]; then
   source $HOME/.config/git-prompt.sh
   source $HOME/.config/git-completion.bash
   export NOTES=$HOME/documents/shared/notes
+  export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
   # solarized highligthing for ls
   eval `dircolors $HOME/.dircolors`
