@@ -25,6 +25,7 @@ ln -sf ~/.config/.Xresources ~/.Xresources
 ln -sf ~/.config/.yaourtrc ~/.yaourtrc
 ln -sf ~/.vim/gvimrc ~/.gvimrc
 ln -sf ~/.vim/vimrc ~/.vimrc
+ln -sf ~/.config/ctags ~/.ctags.d
 
 if [ "$HOSTNAME" = fruitbox ]; then
   ln -sf ~/Dropbox/Shared ~/Documents/shared
