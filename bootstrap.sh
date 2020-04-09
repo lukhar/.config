@@ -15,7 +15,6 @@ ln -sf ~/.config/.gitignore ~/.gitignore
 ln -sf ~/.config/.inputrc ~/.inputrc
 ln -sf ~/.config/pentadactyl/pentadactylrc ~/.pentadactylrc
 ln -sf ~/.config/.profile ~/.profile
-ln -sf ~/.config/.ptpython ~/.ptpython
 ln -sf ~/.config/.pypirc ~/.pypirc
 ln -sf ~/.config/tmux/.tmux.conf ~/.tmux.conf
 ln -sf ~/.config/tmux/tools/safe-reattach-to-user-namespace ~/bin/safe-reattach-to-user-namespace
