@@ -1,7 +1,9 @@
 --exclude=.git
+--exclude=.vscode
 --exclude=node_modules
 --exclude=gulp
 --exclude=*.md
 --exclude=*.svg
+--exclude=*.json
 
 --map-TypeScript=+.tsx
