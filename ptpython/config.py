@@ -7,4 +7,4 @@ __all__ = (
 
 def configure(repl):
     repl.vi_mode = True
-    repl.use_code_colorscheme('vim')
+    repl.use_code_colorscheme("monokai")
