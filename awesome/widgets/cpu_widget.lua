@@ -1,4 +1,4 @@
--- taken from: https://raw.githubusercontent.com/streetturtle/awesome-wm-widgets/master/cpu-widget/cpu-widget.lua  
+-- taken from: https://raw.githubusercontent.com/streetturtle
 -------------------------------------------------
 -- CPU Widget for Awesome Window Manager
 -- Shows the current CPU utilization
