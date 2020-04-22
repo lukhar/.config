@@ -25,6 +25,7 @@ ln -sf ~/.config/.xinitrc ~/.xinitrc
 ln -sf ~/.vim/gvimrc ~/.gvimrc
 ln -sf ~/.vim/vimrc ~/.vimrc
 ln -sf ~/.config/ctags ~/.ctags.d
+ln -sf ~/.config/.gtkrc-2.0 ~/.gtkrc-2.0
 
 if [ "$HOSTNAME" = fruitbox ]; then
   ln -sf ~/Dropbox/Shared ~/Documents/shared
