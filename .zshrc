@@ -25,33 +25,14 @@ WORDCHARS=${WORDCHARS//\/[&.;]}                                 # Don't consider
 
 
 ## Keybindings section
-bindkey -e
-bindkey '^[[7~' beginning-of-line                               # Home key
-bindkey '^[[H' beginning-of-line                                # Home key
-if [[ "${terminfo[khome]}" != "" ]]; then
-  bindkey "${terminfo[khome]}" beginning-of-line                # [Home] - Go to beginning of line
-fi
-bindkey '^[[8~' end-of-line                                     # End key
-bindkey '^[[F' end-of-line                                     # End key
-if [[ "${terminfo[kend]}" != "" ]]; then
-  bindkey "${terminfo[kend]}" end-of-line                       # [End] - Go to end of line
-fi
-bindkey '^[[2~' overwrite-mode                                  # Insert key
-bindkey '^[[3~' delete-char                                     # Delete key
-bindkey '^[[C'  forward-char                                    # Right key
-bindkey '^[[D'  backward-char                                   # Left key
-bindkey '^[[5~' history-beginning-search-backward               # Page up key
-bindkey '^[[6~' history-beginning-search-forward                # Page down key
-
-# Navigate words with ctrl+arrow keys
-bindkey '^[Oc' forward-word                                     #
-bindkey '^[Od' backward-word                                    #
-bindkey '^[[1;5D' backward-word                                 #
-bindkey '^[[1;5C' forward-word                                  #
-bindkey '^H' backward-kill-word                                 # delete previous word with ctrl+backspace
-bindkey '^[[Z' undo                                             # Shift+tab undo last action
+bindkey -v
 
 ## Alias section 
+[ "$HOST" = 'piecyk' ] && alias ls='ls --color=auto'
+
+# ugly fix for bold fonts in tmux
+alias tmux='TERM=xterm-256color /usr/bin/tmux'
+
 alias ll='ls -lh'
 alias la='ls -lAh'
 alias l='ls -CFh'
@@ -172,24 +153,24 @@ case $(basename "$(cat "/proc/$PPID/comm")") in
     	RPROMPT="%{$fg[red]%} %(?..[%?])" 
     	alias x='startx ~/.xinitrc'      # Type name of desired desktop after x, xinitrc is configured for it
     ;;
-#  'tmux: server')
-#        RPROMPT='$(git_prompt_string)'
-#		## Base16 Shell color themes.
-#		#possible themes: 3024, apathy, ashes, atelierdune, atelierforest, atelierhearth,
-#		#atelierseaside, bespin, brewer, chalk, codeschool, colors, default, eighties, 
-#		#embers, flat, google, grayscale, greenscreen, harmonic16, isotope, londontube,
-#		#marrakesh, mocha, monokai, ocean, paraiso, pop (dark only), railscasts, shapesifter,
-#		#solarized, summerfruit, tomorrow, twilight
-#		#theme="eighties"
-#		#Possible variants: dark and light
-#		#shade="dark"
-#		#BASE16_SHELL="/usr/share/zsh/scripts/base16-shell/base16-$theme.$shade.sh"
-#		#[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
-#		# Use autosuggestion
-#		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-#		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-#  		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
-#     ;;
+  'tmux: server')
+        RPROMPT='$(git_prompt_string)'
+		## Base16 Shell color themes.
+		#possible themes: 3024, apathy, ashes, atelierdune, atelierforest, atelierhearth,
+		#atelierseaside, bespin, brewer, chalk, codeschool, colors, default, eighties, 
+		#embers, flat, google, grayscale, greenscreen, harmonic16, isotope, londontube,
+		#marrakesh, mocha, monokai, ocean, paraiso, pop (dark only), railscasts, shapesifter,
+		#solarized, summerfruit, tomorrow, twilight
+		theme="solarized"
+		#Possible variants: dark and light
+		shade="dark"
+		#BASE16_SHELL="/usr/share/zsh/scripts/base16-shell/base16-$theme.$shade.sh"
+		#[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
+		# Use autosuggestion
+		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+  		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+     ;;
   *)
         RPROMPT='$(git_prompt_string)'
 		# Use autosuggestion
@@ -200,3 +181,5 @@ case $(basename "$(cat "/proc/$PPID/comm")") in
 esac
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# vim: tabstop=2 shiftwidth=2 expandtab
