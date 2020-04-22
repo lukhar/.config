@@ -24,7 +24,7 @@ ln -sf ~/.config/.Xclients ~/.Xclients
 ln -sf ~/.config/.xinitrc ~/.xinitrc
 ln -sf ~/.vim/gvimrc ~/.gvimrc
 ln -sf ~/.vim/vimrc ~/.vimrc
-ln -sf ~/.config/ctags ~/.ctags.d
+ln -sf ~/.config/ctags ~/.ctags.d && rm ~/.config/ctags/ctags
 ln -sf ~/.config/.gtkrc-2.0 ~/.gtkrc-2.0
 
 if [ "$HOSTNAME" = fruitbox ]; then
