@@ -7,3 +7,8 @@ text/plain=mousepad.desktop
 image/png=ristretto.desktop
 image/svg+xml=ristretto.desktop
 image/jpeg=ristretto.desktop
+
+[Added Associations]
+x-scheme-handler/http=exo-web-browser.desktop;
+x-scheme-handler/https=exo-web-browser.desktop;
+
