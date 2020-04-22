@@ -169,14 +169,14 @@ case $(basename "$(cat "/proc/$PPID/comm")") in
 		# Use autosuggestion
 		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-  		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+  		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
      ;;
   *)
         RPROMPT='$(git_prompt_string)'
 		# Use autosuggestion
 		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-  		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+  		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
     ;;
 esac
 
