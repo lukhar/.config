@@ -28,6 +28,8 @@ else:
     c.fonts.prompts = "9pt sans-serif"
     c.fonts.statusbar = "9pt monospace"
     c.fonts.tabs = "9pt monospace"
+    c.fonts.web.family.standard = "NotoSans Nerd Font"
+    c.fonts.web.family.fixed = "DroidSansMono Nerd Font"
 
 c.url.searchengines = {
     "g": "https://encrypted.google.com/search?q={}",
