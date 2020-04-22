@@ -57,7 +57,7 @@ beautiful.notification_font = "Noto Sans Bold 12"
 -- This is used later as the default terminal and editor to run.
 browser = "exo-open --launch WebBrowser" or "firefox"
 filemanager = "exo-open --launch FileManager" or "thunar"
-terminal = os.getenv("TERMINAL") or "termite"
+terminal = "termite"
 editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 
