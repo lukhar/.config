@@ -24,8 +24,24 @@ export EDITOR=/usr/bin/nvim
 WORDCHARS=${WORDCHARS//\/[&.;]}                                 # Don't consider certain characters part of the word
 
 
-## Keybindings section
+## vi mode adjustments
 bindkey -v
+
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd v edit-command-line
+
+# Updates editor information when the keymap changes.
+function zle-keymap-select() {
+  zle reset-prompt
+  zle -R
+}
+
+zle -N zle-keymap-select
+
+function vi_mode_prompt_info() {
+  echo "${${KEYMAP/vicmd/[% NORMAL]%}/(main|viins)/[% INSERT]%}"
+}
 
 ## Alias section 
 [ "$HOST" = 'piecyk' ] && alias ls='ls --color=auto'
@@ -154,7 +170,7 @@ case $(basename "$(cat "/proc/$PPID/comm")") in
     	alias x='startx ~/.xinitrc'      # Type name of desired desktop after x, xinitrc is configured for it
     ;;
   'tmux: server')
-        RPROMPT='$(git_prompt_string)'
+        RPROMPT='$(git_prompt_string)$(vi_mode_prompt_info)'
 		## Base16 Shell color themes.
 		#possible themes: 3024, apathy, ashes, atelierdune, atelierforest, atelierhearth,
 		#atelierseaside, bespin, brewer, chalk, codeschool, colors, default, eighties, 
@@ -172,7 +188,7 @@ case $(basename "$(cat "/proc/$PPID/comm")") in
   		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
      ;;
   *)
-        RPROMPT='$(git_prompt_string)'
+      RPROMPT='$(git_prompt_string)$(vi_mode_prompt_info)'
 		# Use autosuggestion
 		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
