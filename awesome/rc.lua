@@ -51,7 +51,7 @@ beautiful.bg_normal         = "#222D32"
 beautiful.bg_focus          = "#2C3940"
 beautiful.titlebar_close_button_normal = awful.util.get_themes_dir() .. "cesious/titlebar/close_normal_adapta.png"
 beautiful.titlebar_close_button_focus = awful.util.get_themes_dir() .. "cesious/titlebar/close_focus_adapta.png"
-beautiful.font              = "Noto Sans Regular 10"
+beautiful.font              = "Noto Sans Regular 9"
 beautiful.notification_font = "Noto Sans Bold 12"
 
 -- This is used later as the default terminal and editor to run.
