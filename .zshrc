@@ -18,7 +18,7 @@ zstyle ':completion:*' accept-exact '*(N)'
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 HISTFILE=~/.zhistory
-HISTSIZE=1000
+HISTSIZE=100000
 SAVEHIST=500
 export EDITOR=/usr/bin/nvim
 WORDCHARS=${WORDCHARS//\/[&.;]}                                 # Don't consider certain characters part of the word
@@ -197,5 +197,15 @@ case $(basename "$(cat "/proc/$PPID/comm")") in
 esac
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export PATH=$PYENV_ROOT/bin:$PATH
+export NOTES=$HOME/documents/shared/notes
+
+[ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
+[ -x "$(command -v pyenv)" ] && eval "$(pyenv virtualenv-init -)"
+
+[ -x "$(command -v hub)" ] && eval "$(hub alias -s)"
+
+[ -d $HOME/.sdkman ] && source $HOME/.sdkman/bin/sdkman-init.sh
 
 # vim: tabstop=2 shiftwidth=2 expandtab
