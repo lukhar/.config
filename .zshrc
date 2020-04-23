@@ -196,7 +196,8 @@ case $(basename "$(cat "/proc/$PPID/comm")") in
     ;;
 esac
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -x "$(command -v fzf)" ] && source /usr/share/fzf/completion.zsh && source /usr/share/fzf/key-bindings.zsh
+
 
 export PATH=$PYENV_ROOT/bin:$PATH
 export NOTES=$HOME/documents/shared/notes
