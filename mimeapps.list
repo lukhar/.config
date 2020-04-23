@@ -7,6 +7,7 @@ text/plain=mousepad.desktop
 image/png=ristretto.desktop
 image/svg+xml=ristretto.desktop
 image/jpeg=ristretto.desktop
+x-scheme-handler/jetbrains=jetbrains-toolbox.desktop
 
 [Added Associations]
 x-scheme-handler/http=exo-web-browser.desktop;
