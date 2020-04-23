@@ -3,6 +3,9 @@ if hash setxkbmap 2>/dev/null; then
     # setxkbmap pl -option altwin:swap_lalt_lwin
     # disable crtl+alt+F-x combos
     setxkbmap -option srvrkeys:none
+
+	# use F13 as PrintScr
+	setxkbmap -option "apple:alupckeys"
 fi
 
 export EDITOR=/usr/bin/nvim
