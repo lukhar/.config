@@ -21,6 +21,7 @@ if (command -v  xfce4-power-manager && ! pgrep xfce4-power-man) ; then
     xfce4-power-manager &
 fi
 
+run blueman-applet
 run slack
 run dropbox
 run xfsettingsd
