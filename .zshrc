@@ -18,8 +18,8 @@ zstyle ':completion:*' accept-exact '*(N)'
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 HISTFILE=~/.zhistory
-HISTSIZE=100000
-SAVEHIST=500
+HISTSIZE=500000000
+SAVEHIST=5000
 export EDITOR=/usr/bin/nvim
 WORDCHARS=${WORDCHARS//\/[&.;]}                                 # Don't consider certain characters part of the word
 
@@ -196,8 +196,7 @@ case $(basename "$(cat "/proc/$PPID/comm")") in
     ;;
 esac
 
-[ -d $HOME/.fzf ] && source $HOME/.fzf/shell/key-bindings.zsh && source $HOME/.fzf/shell/completion.zsh
-
+[ -d $HOME/.fzf ] && source ~/.fzf.zsh
 
 export PATH=$PYENV_ROOT/bin:$PATH
 export NOTES=$HOME/documents/shared/notes
