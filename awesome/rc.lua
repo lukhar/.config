@@ -650,15 +650,13 @@ for s = 1, screen.count() do screen[s]:connect_signal("arrange", function ()
 end)
 end
 
+client.connect_signal("property::floating", function (c)
+    if c.floating then
+        awful.titlebar.show(c)
+    else
+        awful.titlebar.hide(c)
+    end
+end)
 -- }}}
 
---client.connect_signal("property::floating", function (c)
---    if c.floating then
---        awful.titlebar.show(c)
---    else
---        awful.titlebar.hide(c)
---    end
---end)
-
 awful.spawn.with_shell("~/.config/awesome/autorun.sh")
-
