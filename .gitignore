@@ -21,3 +21,6 @@ tags
 
 # osx
 .DS_Store
+
+# Thunar
+Thunar/accels.scm
