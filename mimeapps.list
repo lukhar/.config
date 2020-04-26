@@ -13,3 +13,4 @@ x-scheme-handler/jetbrains=jetbrains-toolbox.desktop
 x-scheme-handler/http=exo-web-browser.desktop;
 x-scheme-handler/https=exo-web-browser.desktop;
 application/pdf=org.pwmt.zathura-pdf-mupdf.desktop;
+image/svg+xml=chromium.desktop;
