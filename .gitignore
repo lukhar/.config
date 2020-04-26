@@ -24,3 +24,13 @@ tags
 
 # Thunar
 Thunar/accels.scm
+
+
+yarn/
+htop/
+pamac/
+pulse/
+hub
+
+# I'm using autostart.sh instead
+autostart/
