@@ -1,3 +1,4 @@
+
 source ~/.zplug/init.zsh
 zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
 zplug "zsh-users/zsh-completions"
@@ -92,6 +93,7 @@ fi
 [ -d $HOME/.fzf ] && source ~/.fzf.zsh
 
 export PATH=$PYENV_ROOT/bin:$PATH
+export PATH=$HOME/bin:$PATH
 export NOTES=$HOME/documents/shared/notes
 
 [ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
