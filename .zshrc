@@ -1,11 +1,13 @@
 source ~/.zplug/init.zsh
 zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
+zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
+zplug "zsh-users/zsh-autosuggestions",  defer:2, on:"zsh-users/zsh-completions"
 zplug load
 
 SPACESHIP_CHAR_SUFFIX="  "
 
-eval `dircolors ~/.config/.dircolors`
+[ "$HOST" = 'piecyk' ] && eval `dircolors ~/.config/.dircolors`
 ## Options section
 setopt correct                                                  # Auto correct mistakes
 setopt extendedglob                                             # Extended globbing. Allows using regular expressions with *
@@ -53,6 +55,7 @@ function vi_mode_prompt_info() {
 
 ## Alias section 
 [ "$HOST" = 'piecyk' ] && alias ls='ls --color=auto'
+[ "$HOST" = 'fruitbox' ] && alias ls='ls -G'
 
 # ugly fix for bold fonts in tmux
 alias tmux='TERM=xterm-256color /usr/bin/tmux'
@@ -68,35 +71,23 @@ alias free='free -m'                                            # Show sizes in 
 alias gitu='git add . && git commit && git push'
 
 
-# Apply different settigns for different terminals
-case $(basename "$(cat "/proc/$PPID/comm")") in
-  login)
-    	alias x='startx ~/.xinitrc'      # Type name of desired desktop after x, xinitrc is configured for it
-    ;;
-  'tmux: server')
-		## Base16 Shell color themes.
-		#possible themes: 3024, apathy, ashes, atelierdune, atelierforest, atelierhearth,
-		#atelierseaside, bespin, brewer, chalk, codeschool, colors, default, eighties, 
-		#embers, flat, google, grayscale, greenscreen, harmonic16, isotope, londontube,
-		#marrakesh, mocha, monokai, ocean, paraiso, pop (dark only), railscasts, shapesifter,
-		#solarized, summerfruit, tomorrow, twilight
-		theme="solarized"
-		#Possible variants: dark and light
-		shade="dark"
-		#BASE16_SHELL="/usr/share/zsh/scripts/base16-shell/base16-$theme.$shade.sh"
-		#[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
-		# Use autosuggestion
-		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-  		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
-     ;;
-  *)
-		# Use autosuggestion
-		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-  		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
-    ;;
-esac
+if [[ "$HOST" = 'piecyk' ]]; then
+  case $(basename "$(cat "/proc/$PPID/comm")") in
+    login)
+        alias x='startx ~/.xinitrc'      # Type name of desired desktop after x, xinitrc is configured for it
+      ;;
+    'tmux: server')
+      theme="solarized"
+      shade="dark"
+      ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+        ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
+       ;;
+    *)
+      ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+        ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
+      ;;
+  esac
+fi
 
 [ -d $HOME/.fzf ] && source ~/.fzf.zsh
 
