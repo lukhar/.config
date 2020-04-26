@@ -19,9 +19,6 @@ tmux/plugins/bundle/
 # tags
 tags
 
-# osx
-.DS_Store
-
 # Thunar
 Thunar/accels.scm
 
@@ -36,3 +33,15 @@ GIMP
 
 # I'm using autostart.sh instead
 autostart/
+
+# OSX [work]
+.DS_Store
+.pypirc
+.metals/
+.ptpython/history
+pip/
+configstore/
+kitty/
+telepresence/
+darktable/
+.metals/
