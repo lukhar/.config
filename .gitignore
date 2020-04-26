@@ -32,6 +32,7 @@ pamac/
 pulse/
 hub
 Mousepad/
+GIMP
 
 # I'm using autostart.sh instead
 autostart/
