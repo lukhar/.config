@@ -59,6 +59,7 @@ function vi_mode_prompt_info() {
 
 # ugly fix for bold fonts in tmux
 alias tmux='TERM=xterm-256color /usr/bin/tmux'
+[ -x "$(command -v bat)" ] && alias cat=bat
 
 alias ll='ls -lh'
 alias la='ls -lAh'
