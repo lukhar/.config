@@ -1,3 +1,5 @@
+set sandbox none # fixes "Failed to execute default Web Browser" error
+
 # zathurarc-dark
 set notification-error-bg       "#586e75" # base01  # seem not work
 set notification-error-fg       "#dc322f" # red
