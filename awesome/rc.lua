@@ -56,7 +56,7 @@ beautiful.notification_font = "Noto Sans Regular 9"
 awesome.set_preferred_icon_size(24) -- fix for Thunar having to small icons in wiibox
 
 -- This is used later as the default terminal and editor to run.
-browser = "exo-open --launch WebBrowser" or "firefox"
+browser = "exo-open --launch WebBrowser" or "chromium"
 filemanager = "exo-open --launch FileManager" or "thunar"
 terminal = "alacritty"
 editor = os.getenv("EDITOR") or "vim"
