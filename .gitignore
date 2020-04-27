@@ -29,7 +29,8 @@ pamac/
 pulse/
 hub
 Mousepad/
-GIMP
+GIMP/
+xfce4/
 
 # I'm using autostart.sh instead
 autostart/
