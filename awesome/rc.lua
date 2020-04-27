@@ -58,7 +58,7 @@ awesome.set_preferred_icon_size(24) -- fix for Thunar having to small icons in w
 -- This is used later as the default terminal and editor to run.
 browser = "exo-open --launch WebBrowser" or "firefox"
 filemanager = "exo-open --launch FileManager" or "thunar"
-terminal = "termite"
+terminal = "alacritty"
 editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 
