@@ -8,7 +8,7 @@ if [ $HOSTNAME = fruitbox ]; then
   export PATH=/usr/local/sbin:$PATH
   export PATH=$HOME/.cargo/bin:$PATH
   export NOTES=$HOME/Documents/shared/notes
-  export EDITOR=/usr/local/bin/vim
+  export EDITOR=/usr/local/bin/nvim
 
   export GOPATH=$HOME/sdk/go
   export HOMEBREW_GITHUB_API_TOKEN=2b3edc249b2df92c2e49f267f4d685d4a9c74b7c

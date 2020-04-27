@@ -9,7 +9,7 @@ if hash setxkbmap 2>/dev/null; then
 fi
 
 export EDITOR=/usr/bin/nvim
-export TERMINAL=/bin/termite
+export TERMINAL=/bin/alacritty
 export QT_QPA_PLATFORMTHEME="qt5ct"
 export QT_AUTO_SCREEN_SCALE_FACTOR=0
 export XDG_CURRENT_DESKTOP=XFCE
