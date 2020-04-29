@@ -71,6 +71,8 @@ alias df='df -h'                                                # Human-readable
 alias free='free -m'                                            # Show sizes in MB
 alias gitu='git add . && git commit && git push'
 
+[ -f $HOME/.zsh_aliases ] && source $HOME/.zsh_aliases
+
 
 if [[ "$HOST" = 'piecyk' ]]; then
   case $(basename "$(cat "/proc/$PPID/comm")") in
