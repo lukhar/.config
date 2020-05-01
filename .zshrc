@@ -94,6 +94,7 @@ fi
 
 [ -d $HOME/.fzf ] && source ~/.fzf.zsh
 
+export PYENV_ROOT="$HOME/.pyenv"
 export PATH=$PYENV_ROOT/bin:$PATH
 export PATH=$HOME/bin:$PATH
 export NOTES=$HOME/documents/shared/notes
