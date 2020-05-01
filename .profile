@@ -4,11 +4,11 @@ if hash setxkbmap 2>/dev/null; then
     # disable crtl+alt+F-x combos
     setxkbmap -option srvrkeys:none
 
-	# use F13 as PrintScr
-	setxkbmap -option "apple:alupckeys"
+    # use F13 as PrintScr
+    setxkbmap -option "apple:alupckeys"
 fi
 
-export EDITOR=/usr/bin/nvim
+export EDITOR=/usr/bin/vim
 export TERMINAL=/bin/alacritty
 export QT_QPA_PLATFORMTHEME="qt5ct"
 export QT_AUTO_SCREEN_SCALE_FACTOR=0
