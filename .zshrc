@@ -3,6 +3,8 @@ zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-autosuggestions",  defer:2, on:"zsh-users/zsh-completions"
+export NVM_LAZY_LOAD=true
+zplug "lukechilds/zsh-nvm"
 zplug load
 
 SPACESHIP_CHAR_SUFFIX="  "
