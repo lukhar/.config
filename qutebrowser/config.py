@@ -35,5 +35,6 @@ else:
 c.url.searchengines = {
     "g": "https://encrypted.google.com/search?q={}",
     "d": "https://duckduckgo.com/?q={}",
+    "y": "https://www.youtube.com/results?search_query={}",
     "DEFAULT": "https://duckduckgo.com/?q=g! {}",
 }
