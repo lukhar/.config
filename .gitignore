@@ -19,6 +19,9 @@ tmux/plugins/bundle/
 # tags
 tags
 
+# ignore automatically generated files
+qutebrowser/autoconfig.yml
+
 # Thunar
 Thunar/accels.scm
 
