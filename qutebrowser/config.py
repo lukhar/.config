@@ -32,6 +32,9 @@ else:
     c.fonts.web.family.fixed = "DroidSansMono Nerd Font"
     c.downloads.location.directory = "~/downloads/"
 
+    config.bind(",m", "spawn mpv {url}")
+    config.bind(",M", "hint links spawn mpv {hint-url}")
+
 c.url.searchengines = {
     "g": "https://encrypted.google.com/search?q={}",
     "d": "https://duckduckgo.com/?q={}",
