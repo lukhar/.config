@@ -36,6 +36,8 @@ export EDITOR=/usr/bin/nvim
 WORDCHARS=${WORDCHARS//\/[&.;]}                                 # Don't consider certain characters part of the word
 
 
+bindkey '^ ' autosuggest-accept                                 # use ctrl + space to accept current suggestion
+
 ## vi mode adjustments
 bindkey -v
 
@@ -86,10 +88,12 @@ if [[ "$HOST" = 'piecyk' ]]; then
       shade="dark"
       ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
         ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
+        ZSH_AUTOSUGGEST_USE_ASYNC=true
        ;;
     *)
       ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
         ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
+        ZSH_AUTOSUGGEST_USE_ASYNC=true
       ;;
   esac
 fi
