@@ -14,5 +14,4 @@ x-scheme-handler/http=exo-web-browser.desktop;
 x-scheme-handler/https=exo-web-browser.desktop;
 application/pdf=org.pwmt.zathura-pdf-mupdf.desktop;
 image/svg+xml=chromium.desktop;
-image/png=imv.desktop;
-
+image/png=sxiv.desktop;imv.desktop;
