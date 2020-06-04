@@ -105,6 +105,9 @@ export PATH=$PYENV_ROOT/bin:$PATH
 export PATH=$HOME/bin:$PATH
 export NOTES=$HOME/documents/shared/notes
 
+export PATH="$HOME/.rbenv/bin:$PATH"
+[ -x "$(command -v rbenv)" ] && eval "$(rbenv init -)"
+
 [ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
 [ -x "$(command -v pyenv)" ] && eval "$(pyenv virtualenv-init -)"
 
