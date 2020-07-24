@@ -16,20 +16,6 @@ if platform == "darwin":
     c.fonts.statusbar = "14pt monospace"
     c.fonts.tabs = "14pt monospace"
 else:
-    c.fonts.completion.category = "bold 9pt monospace"
-    c.fonts.completion.entry = "9pt monospace"
-    c.fonts.debug_console = "9pt monospace"
-    c.fonts.downloads = "9pt monospace"
-    c.fonts.hints = "bold 11pt monospace"
-    c.fonts.keyhint = "9pt monospace"
-    c.fonts.messages.error = "9pt monospace"
-    c.fonts.messages.info = "9pt monospace"
-    c.fonts.messages.warning = "9pt monospace"
-    c.fonts.prompts = "9pt sans-serif"
-    c.fonts.statusbar = "9pt monospace"
-    c.fonts.tabs = "9pt monospace"
-    c.fonts.web.family.standard = "NotoSans Nerd Font"
-    c.fonts.web.family.fixed = "DroidSansMono Nerd Font"
     c.downloads.location.directory = "~/downloads/"
 
     config.bind(",m", "spawn mpv {url}")
