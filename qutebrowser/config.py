@@ -2,20 +2,7 @@ from sys import platform
 
 c.auto_save.session = True
 
-if platform == "darwin":
-    c.fonts.completion.category = "bold 14pt monospace"
-    c.fonts.completion.entry = "14pt monospace"
-    c.fonts.debug_console = "14pt monospace"
-    c.fonts.downloads = "14pt monospace"
-    c.fonts.hints = "bold 14pt monospace"
-    c.fonts.keyhint = "14pt monospace"
-    c.fonts.messages.error = "14pt monospace"
-    c.fonts.messages.info = "14pt monospace"
-    c.fonts.messages.warning = "14pt monospace"
-    c.fonts.prompts = "14pt sans-serif"
-    c.fonts.statusbar = "14pt monospace"
-    c.fonts.tabs = "14pt monospace"
-else:
+if platform != "darwin":
     c.downloads.location.directory = "~/downloads/"
 
     config.bind(",m", "spawn mpv {url}")
