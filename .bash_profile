@@ -70,6 +70,8 @@ function sr {
 }
 
 
+[ -x "$(command -v pipx)" ] && export PATH=$HOME/.local/bin:$PATH
+
 [ -f $HOME/.fzf.bash ] && source $HOME/.fzf.bash
 
 [ -f $HOME/.poetry/env ] && source $HOME/.poetry/env
