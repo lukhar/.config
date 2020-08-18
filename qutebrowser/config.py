@@ -8,6 +8,10 @@ if platform != "darwin":
     config.bind(",m", "spawn mpv {url}")
     config.bind(",M", "hint links spawn mpv {hint-url}")
 
+else:
+    c.fonts.default_size = "14pt"
+
+
 c.url.searchengines = {
     "g": "https://encrypted.google.com/search?q={}",
     "d": "https://duckduckgo.com/?q={}",
