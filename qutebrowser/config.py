@@ -9,7 +9,8 @@ if platform != "darwin":
     config.bind(",M", "hint links spawn mpv {hint-url}")
 
 else:
-    c.fonts.default_size = "14pt"
+    c.fonts.default_family = "Noto Sans"
+    c.fonts.default_size = "9pt"
 
 
 c.url.searchengines = {
