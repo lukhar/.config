@@ -5,13 +5,14 @@ c.auto_save.session = True
 if platform != "darwin":
     c.downloads.location.directory = "~/downloads/"
 
+    c.fonts.default_family = "Noto Sans"
+    c.fonts.default_size = "9pt"
+
     config.bind(",m", "spawn mpv {url}")
     config.bind(",M", "hint links spawn mpv {hint-url}")
 
 else:
-    c.fonts.default_family = "Noto Sans"
-    c.fonts.default_size = "9pt"
-
+    c.fonts.default_size = "14pt"
 
 c.url.searchengines = {
     "g": "https://encrypted.google.com/search?q={}",
