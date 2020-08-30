@@ -7,7 +7,7 @@ export NVM_LAZY_LOAD=true
 zplug "lukechilds/zsh-nvm"
 zplug load
 
-SPACESHIP_CHAR_SUFFIX="  "
+[ "$HOST" = 'piecyk' ] && SPACESHIP_CHAR_SUFFIX="  "
 
 [ "$HOST" = 'piecyk' ] && eval `dircolors ~/.config/.dircolors`
 ## Options section
@@ -62,7 +62,7 @@ function vi_mode_prompt_info() {
 [ "$HOST" = 'fruitbox' ] && alias ls='ls -G'
 
 # ugly fix for bold fonts in tmux
-alias tmux='TERM=xterm-256color /usr/bin/tmux'
+[ "$HOST" = 'piecyk' ] && alias tmux='TERM=xterm-256color /usr/bin/tmux'
 [ -x "$(command -v bat)" ] && alias cat=bat
 
 alias ll='ls -lh'
