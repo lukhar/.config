@@ -120,4 +120,5 @@ export PATH="$HOME/.rbenv/bin:$PATH"
 [ -f $HOME/.poetry/env ] && source $HOME/.poetry/env
 [ -d $HOME/.poetry/bin ] && export PATH="$HOME/.poetry/bin:$PATH"
 
+[ -f $HOME/.localrc ] && source $HOME/.localrc
 # vim: tabstop=2 shiftwidth=2 expandtab
