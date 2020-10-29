@@ -12,6 +12,9 @@ sysmodmap=/etc/X11/xinit/.Xmodmap
 # awesome is kept as default
 DEFAULT_SESSION=awesome
 
+# capslock to escape
+setxkbmap -option caps:escape
+
 # merge in defaults and keymaps
 
 if [ -f $sysresources ]; then
