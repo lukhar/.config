@@ -6,7 +6,7 @@ if platform != "darwin":
     c.downloads.location.directory = "~/downloads/"
 
     c.fonts.default_family = "Noto Sans"
-    c.fonts.default_size = "9pt"
+    c.fonts.default_size = "10pt"
 
     config.bind(",m", "spawn mpv {url}")
     config.bind(",M", "hint links spawn mpv {hint-url}")
