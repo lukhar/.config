@@ -115,7 +115,6 @@ export NOTES=$HOME/documents/shared/notes
 [ -d $HOME/.sdkman ] && source $HOME/.sdkman/bin/sdkman-init.sh
 
 [ -f $HOME/.poetry/env ] && source $HOME/.poetry/env
-[ -d $HOME/.poetry/bin ] && export PATH="$HOME/.poetry/bin:$PATH"
 
 [ -f $HOME/.localrc ] && source $HOME/.localrc
 # vim: tabstop=2 shiftwidth=2 expandtab
