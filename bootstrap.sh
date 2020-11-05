@@ -9,6 +9,7 @@ ln -sf ~/.config/.agignore ~/.agignore
 ln -sf ~/.config/.bashrc ~/.bashrc
 ln -sf ~/.config/.dmrc ~/.dmrc
 ln -sf ~/.config/.zshrc ~/.zshrc
+ln -sf ~/.config/.zsh_aliases ~/.zsh_aliases
 ln -sf ~/.config/.bash_profile ~/.bash_profile
 ln -sf ~/.config/.bash_aliases ~/.bash_aliases
 ln -sf ~/.config/confupdate.sh ~/bin/confupdate
