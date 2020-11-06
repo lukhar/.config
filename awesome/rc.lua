@@ -534,11 +534,12 @@ awful.rules.rules = {
     { rule_any = {type = { "normal", "dialog" } },
       properties = { titlebars_enabled = false }
     },
-	
-    -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
 
+    -- Set Firefox to always map on the tag named "2" on screen 1.
+    { rule = { class = "Chromium" },
+      properties = { screen = 2, tag = "2" } },
+    { rule = { class = "qutebrowser" },
+      properties = { screen = 2, tag = "3" } },
 
 }
 -- }}}
