@@ -98,20 +98,35 @@ if [[ "$HOST" = 'piecyk' ]]; then
   esac
 fi
 
-[ -d $HOME/.fzf ] && source ~/.fzf.zsh
 
+# lazy loaded pyenv
 export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
+
+if ! type pyenv > /dev/null && [ -f "${PYENV_ROOT}/bin/pyenv" ]; then
+    export PATH="${PYENV_ROOT}/bin:${PATH}"
+fi
+
+if type pyenv > /dev/null; then
+    export PATH="${PYENV_ROOT}/bin:${PYENV_ROOT}/shims:${PATH}"
+    function pyenv() {
+        unset -f pyenv
+        eval "$(command pyenv init -)"
+        if [[ -n "${ZSH_PYENV_LAZY_VIRTUALENV}" ]]; then
+            eval "$(command pyenv virtualenv-init -)"
+        fi
+        pyenv $@
+    }
+fi
+
+
 export PATH=$HOME/bin:$PATH
 export NOTES=$HOME/documents/shared/notes
 
+[ -d $HOME/.fzf ] && source ~/.fzf.zsh
 
 [ -x "$(command -v rbenv)" ] && eval "$(rbenv init -)"
 
 [ -x "$(command -v pipx)" ] && export PATH=$HOME/.local/bin:$PATH
-
-[ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
-[ -x "$(command -v pyenv)" ] && eval "$(pyenv virtualenv-init -)"
 
 [ -x "$(command -v hub)" ] && eval "$(hub alias -s)"
 
