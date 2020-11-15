@@ -46,6 +46,7 @@ autostart/
 .pypirc
 .metals/
 .ptpython/history
+.vim/
 pip/
 configstore/
 kitty/
