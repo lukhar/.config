@@ -37,6 +37,8 @@ export NOTES=$HOME/documents/shared/notes
 export EDITOR=`which nvim`
 
 # pyenv shell prompt
+unset VIRTUAL_ENV_DISABLE_PROMPT                                # TODO sommething in linux shell is setting this to true, figure out what
+
 precmd() {
   if [[ -n $PYENV_SHELL ]]; then
     local version
