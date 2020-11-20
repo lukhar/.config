@@ -61,6 +61,12 @@ __init_rbenv() {
   [ -x "$(command -v rbenv)" ] && eval "$(rbenv init -)"
 }
 
+__init_nvm() {
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+}
+
 __init_fzf() {
   [ -d $HOME/.fzf ] && source ~/.fzf.zsh
 }
@@ -82,7 +88,7 @@ __init_misc() {
   [ -f $HOME/.localrc ] && source $HOME/.localrc
 }
 
-__init_funcs=(__init_pyenv __init_rbenv __init_fzf __init_hub __init_pipx __init_sdk __init_misc)
+__init_funcs=(__init_pyenv __init_rbenv __init_nvm __init_fzf __init_hub __init_pipx __init_sdk __init_misc)
 __init_total=${#__init_funcs[*]}
 __init_index=1
 
@@ -90,8 +96,8 @@ __init_index=1
 # $1: the init function index to trigger
 # $2: the number of seconds to wait before triggering
 __run() {
-	sleep ${2:0}
-	echo $1
+  sleep ${2:0}
+  echo $1
 }
 
 async_init
