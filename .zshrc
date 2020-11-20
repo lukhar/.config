@@ -21,13 +21,21 @@ HISTFILE=~/.zhistory
 HISTSIZE=500000000
 SAVEHIST=5000
 
+
 # enable editing commands in EDITOR
 autoload -z edit-command-line
 zle -N edit-command-line
 bindkey -M vicmd v edit-command-line
 
-# use control space for autosuggest completion
-bindkey '^ ' autosuggest-accept
+# autosuggest settings
+bindkey '^ ' autosuggest-accept                                 # use control space for autosuggest completion
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
+ZSH_AUTOSUGGEST_USE_ASYNC=true
+
+
+# fix colors on linux
+[ "$HOST" = 'piecyk' ] && eval `dircolors ~/.config/.dircolors`
 
 # load aliases
 [ -f $HOME/.zsh_aliases ] && source $HOME/.zsh_aliases
