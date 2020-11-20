@@ -33,6 +33,9 @@ ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
 ZSH_AUTOSUGGEST_USE_ASYNC=true
 
+# custom completion files
+fpath=($HOME/.config/zsh/completions $fpath)
+
 
 # fix colors on linux
 [ "$HOST" = 'piecyk' ] && eval `dircolors ~/.config/.dircolors`
