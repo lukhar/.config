@@ -1,4 +1,15 @@
+[ "$HOST" = 'piecyk' ] && alias ls='ls --color=auto'
+[ "$HOST" = 'fruitbox' ] && alias ls='ls -G'
+
+# ugly fix for bold fonts in tmux
+[ "$HOST" = 'piecyk' ] && alias tmux='TERM=xterm-256color /usr/bin/tmux'
+[ -x "$(command -v bat)" ] && alias cat=bat
+
 alias sr='source ~/.zsh_aliases'
+
+alias ll='ls -lh'
+alias la='ls -lAh'
+alias l='ls -CFh'
 
 function fe() {
   IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0))

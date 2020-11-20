@@ -1,138 +1,101 @@
 source ~/.zplug/init.zsh
-zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
-zplug "zsh-users/zsh-completions"
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
-zplug "zsh-users/zsh-autosuggestions",  defer:2, on:"zsh-users/zsh-completions"
-export NVM_LAZY_LOAD=true
-zplug "lukechilds/zsh-nvm"
+zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
+zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
 zplug load
 
-[ "$HOST" = 'piecyk' ] && SPACESHIP_CHAR_SUFFIX="  "
-
-[ "$HOST" = 'piecyk' ] && eval `dircolors ~/.config/.dircolors`
-## Options section
-setopt correct                                                  # Auto correct mistakes
-setopt extendedglob                                             # Extended globbing. Allows using regular expressions with *
-setopt nocaseglob                                               # Case insensitive globbing
-setopt rcexpandparam                                            # Array expension with parameters
-setopt nocheckjobs                                              # Don't warn about running processes when exiting
-setopt numericglobsort                                          # Sort filenames numerically when it makes sense
-setopt nobeep                                                   # No beep
-setopt appendhistory                                            # Immediately append history instead of overwriting
-setopt histignorealldups                                        # If a new command is a duplicate, remove the older one
-setopt autocd                                                   # if only directory path is entered, cd there.
-
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'       # Case insensitive tab completion
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"         # Colored completion (different colors for dirs/files/etc)
-zstyle ':completion:*' rehash true                              # automatically find new executables in path 
-# Speed up completions
-zstyle ':completion:*' accept-exact '*(N)'
-zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ~/.zsh/cache
-HISTFILE=~/.zhistory
-HISTSIZE=500000000
-SAVEHIST=5000
-export EDITOR=`which nvim`
-WORDCHARS=${WORDCHARS//\/[&.;]}                                 # Don't consider certain characters part of the word
-
-
-bindkey '^ ' autosuggest-accept                                 # use ctrl + space to accept current suggestion
-
-## vi mode adjustments
-bindkey -v
-
-autoload -z edit-command-line
-zle -N edit-command-line
-bindkey -M vicmd v edit-command-line
-
-# Updates editor information when the keymap changes.
-function zle-keymap-select() {
-  zle reset-prompt
-  zle -R
-}
-
-zle -N zle-keymap-select
-
-function vi_mode_prompt_info() {
-  echo "${${KEYMAP/vicmd/[% NORMAL]%}/(main|viins)/[% INSERT]%}"
-}
-
-## Alias section 
-[ "$HOST" = 'piecyk' ] && alias ls='ls --color=auto'
-[ "$HOST" = 'fruitbox' ] && alias ls='ls -G'
-
-# ugly fix for bold fonts in tmux
-[ "$HOST" = 'piecyk' ] && alias tmux='TERM=xterm-256color /usr/bin/tmux'
-[ -x "$(command -v bat)" ] && alias cat=bat
-
-alias ll='ls -lh'
-alias la='ls -lAh'
-alias l='ls -CFh'
-alias mc='mc -S $HOME/.config/mc/solarized.ini'
-
-alias cp="cp -i"                                                # Confirm before overwriting something
-alias df='df -h'                                                # Human-readable sizes
-alias free='free -m'                                            # Show sizes in MB
-alias gitu='git add . && git commit && git push'
+# turn on git stash status
+zstyle :prompt:pure:git:stash show yes
 
 [ -f $HOME/.zsh_aliases ] && source $HOME/.zsh_aliases
-
-
-if [[ "$HOST" = 'piecyk' ]]; then
-  case $(basename "$(cat "/proc/$PPID/comm")") in
-    login)
-        alias x='startx ~/.xinitrc'      # Type name of desired desktop after x, xinitrc is configured for it
-      ;;
-    'tmux: server')
-      theme="solarized"
-      shade="dark"
-      ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-        ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
-        ZSH_AUTOSUGGEST_USE_ASYNC=true
-       ;;
-    *)
-      ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-        ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
-        ZSH_AUTOSUGGEST_USE_ASYNC=true
-      ;;
-  esac
-fi
-
-
-# lazy loaded pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-
-if ! type pyenv > /dev/null && [ -f "${PYENV_ROOT}/bin/pyenv" ]; then
-    export PATH="${PYENV_ROOT}/bin:${PATH}"
-fi
-
-if type pyenv > /dev/null; then
-    export PATH="${PYENV_ROOT}/bin:${PYENV_ROOT}/shims:${PATH}"
-    function pyenv() {
-        unset -f pyenv
-        eval "$(command pyenv init -)"
-        if [[ -n "${ZSH_PYENV_LAZY_VIRTUALENV}" ]]; then
-            eval "$(command pyenv virtualenv-init -)"
-        fi
-        pyenv $@
-    }
-fi
-
 
 export PATH=$HOME/bin:$PATH
 export NOTES=$HOME/documents/shared/notes
 
-[ -d $HOME/.fzf ] && source ~/.fzf.zsh
+export EDITOR=`which nvim`
 
-[ -x "$(command -v rbenv)" ] && eval "$(rbenv init -)"
+# pyenv shell prompt
+precmd() {
+  if [[ -n $PYENV_SHELL ]]; then
+    local version
+    version=${(@)$(pyenv version)[1]}
+    if [[ $version = system ]]; then
+      unset VIRTUAL_ENV
+    else
+      VIRTUAL_ENV=$version
+    fi
+  fi
+}
 
-[ -x "$(command -v pipx)" ] && export PATH=$HOME/.local/bin:$PATH
+# TODO move to separate file
+has_bin() {
+  which $1 > /dev/null
+}
 
-[ -x "$(command -v hub)" ] && eval "$(hub alias -s)"
+load_pyenv() {
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  [ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
+  [ -x "$(command -v pyenv)" ] && eval "$(pyenv virtualenv-init -)"
+}
 
-[ -d $HOME/.sdkman ] && source $HOME/.sdkman/bin/sdkman-init.sh
+load_rbenv() {
+  [ -x "$(command -v rbenv)" ] && eval "$(rbenv init -)"
+}
 
-[ -f $HOME/.poetry/env ] && source $HOME/.poetry/env
+load_fzf() {
+  [ -d $HOME/.fzf ] && source ~/.fzf.zsh
+}
 
-[ -f $HOME/.localrc ] && source $HOME/.localrc
-# vim: tabstop=2 shiftwidth=2 expandtab
+load_hub() {
+  [ -x "$(command -v hub)" ] && eval "$(hub alias -s)"
+}
+
+load_sdk() {
+  [ -d $HOME/.sdkman ] && source $HOME/.sdkman/bin/sdkman-init.sh
+}
+
+load_pipx() {
+  [ -x "$(command -v pipx)" ] && export PATH=$HOME/.local/bin:$PATH
+}
+
+load_misc() {
+  [ -f $HOME/.poetry/env ] && source $HOME/.poetry/env
+  [ -f $HOME/.localrc ] && source $HOME/.localrc
+}
+
+init_funcs=(load_pyenv load_rbenv load_fzf load_hub load_pipx load_sdk load_misc)
+init_total=${#init_funcs[*]}
+init_index=1
+
+# Triggers an init function
+# $1: the init function index to trigger
+# $2: the number of seconds to wait before triggering
+run() {
+	sleep ${2:0}
+	echo $1
+}
+
+async_init
+async_start_worker zsh -n
+
+init_callback() {
+  if [[ "$1" == "run" ]]
+  then
+    # Run the current init function
+    eval "$init_funcs[$3]"
+
+    # Trigger the next init function. This ensures the init
+    # functions runs in serial.
+    if (( init_index < init_total ))
+    then
+      init_index=$(( init_index + 1 ))
+      async_job zsh run $init_index 0
+    fi
+  fi
+}
+async_register_callback zsh init_callback
+
+# Delay init function triggering for 2s to make the shell starts faster.
+async_job zsh run 1 2
+
+#vim: tabstop=2 shiftwidth=2 expandtab
