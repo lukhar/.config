@@ -44,50 +44,46 @@ precmd() {
 }
 
 # TODO move to separate file
-has_bin() {
-  which $1 > /dev/null
-}
-
-load_pyenv() {
+__init_pyenv() {
   export PYENV_ROOT="$HOME/.pyenv"
   export PATH="$PYENV_ROOT/bin:$PATH"
   [ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
   [ -x "$(command -v pyenv)" ] && eval "$(pyenv virtualenv-init -)"
 }
 
-load_rbenv() {
+__init_rbenv() {
   [ -x "$(command -v rbenv)" ] && eval "$(rbenv init -)"
 }
 
-load_fzf() {
+__init_fzf() {
   [ -d $HOME/.fzf ] && source ~/.fzf.zsh
 }
 
-load_hub() {
+__init_hub() {
   [ -x "$(command -v hub)" ] && eval "$(hub alias -s)"
 }
 
-load_sdk() {
+__init_sdk() {
   [ -d $HOME/.sdkman ] && source $HOME/.sdkman/bin/sdkman-init.sh
 }
 
-load_pipx() {
+__init_pipx() {
   [ -x "$(command -v pipx)" ] && export PATH=$HOME/.local/bin:$PATH
 }
 
-load_misc() {
+__init_misc() {
   [ -f $HOME/.poetry/env ] && source $HOME/.poetry/env
   [ -f $HOME/.localrc ] && source $HOME/.localrc
 }
 
-init_funcs=(load_pyenv load_rbenv load_fzf load_hub load_pipx load_sdk load_misc)
-init_total=${#init_funcs[*]}
-init_index=1
+__init_funcs=(__init_pyenv __init_rbenv __init_fzf __init_hub __init_pipx __init_sdk __init_misc)
+__init_total=${#__init_funcs[*]}
+__init_index=1
 
 # Triggers an init function
 # $1: the init function index to trigger
 # $2: the number of seconds to wait before triggering
-run() {
+__run() {
 	sleep ${2:0}
 	echo $1
 }
@@ -96,23 +92,23 @@ async_init
 async_start_worker zsh -n
 
 init_callback() {
-  if [[ "$1" == "run" ]]
+  if [[ "$1" == "__run" ]]
   then
     # Run the current init function
-    eval "$init_funcs[$3]"
+    eval "$__init_funcs[$3]"
 
     # Trigger the next init function. This ensures the init
     # functions runs in serial.
-    if (( init_index < init_total ))
+    if (( __init_index < __init_total ))
     then
-      init_index=$(( init_index + 1 ))
-      async_job zsh run $init_index 0
+      __init_index=$(( __init_index + 1 ))
+      async_job zsh __run $__init_index 0
     fi
   fi
 }
 async_register_callback zsh init_callback
 
 # Delay init function triggering for 2s to make the shell starts faster.
-async_job zsh run 1 2
+async_job zsh __run 1 2
 
 #vim: tabstop=2 shiftwidth=2 expandtab
