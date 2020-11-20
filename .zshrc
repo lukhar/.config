@@ -1,6 +1,9 @@
 source ~/.zplug/init.zsh
 zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
 zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
+zplug "zsh-users/zsh-completions"
+zplug "zsh-users/zsh-syntax-highlighting", defer:2
+zplug "zsh-users/zsh-autosuggestions",  defer:2, on:"zsh-users/zsh-completions"
 zplug load
 
 zstyle :prompt:pure:git:stash show yes                          # turn on git stash status
@@ -22,6 +25,9 @@ SAVEHIST=5000
 autoload -z edit-command-line
 zle -N edit-command-line
 bindkey -M vicmd v edit-command-line
+
+# use control space for autosuggest completion
+bindkey '^ ' autosuggest-accept
 
 # load aliases
 [ -f $HOME/.zsh_aliases ] && source $HOME/.zsh_aliases
