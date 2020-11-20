@@ -3,14 +3,31 @@ zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
 zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
 zplug load
 
-# turn on git stash status
-zstyle :prompt:pure:git:stash show yes
+zstyle :prompt:pure:git:stash show yes                          # turn on git stash status
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'       # Case insensitive tab completion
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"         # Colored completion (different colors for dirs/files/etc)
+zstyle ':completion:*' rehash true                              # automatically find new executables in path 
 
+# Speed up completions
+zstyle ':completion:*' accept-exact '*(N)'
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh/cache
+
+# bigger history
+HISTFILE=~/.zhistory
+HISTSIZE=500000000
+SAVEHIST=5000
+
+# enable editing commands in EDITOR
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd v edit-command-line
+
+# load aliases
 [ -f $HOME/.zsh_aliases ] && source $HOME/.zsh_aliases
 
 export PATH=$HOME/bin:$PATH
 export NOTES=$HOME/documents/shared/notes
-
 export EDITOR=`which nvim`
 
 # pyenv shell prompt
