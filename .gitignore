@@ -23,10 +23,10 @@ tags
 
 # ignore automatically generated files
 qutebrowser/autoconfig.yml
+qutebrowser/qsettings
 
 # Thunar
 Thunar/accels.scm
-
 
 yarn/
 htop/
@@ -56,3 +56,12 @@ darktable/
 
 # oni2 - not sure about this one yet
 oni2
+
+# VsCode
+Code*
+
+# Cypress - browser testing
+Cypress
+
+# I'm not sure where's this comming from?
+menus 
