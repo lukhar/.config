@@ -34,7 +34,7 @@ export EDITOR=`which nvim`
 precmd() {
   if [[ -n $PYENV_SHELL ]]; then
     local version
-    version=${(@)$(pyenv version)[1]}
+    version=$(pyenv version-name)
     if [[ $version = system ]]; then
       unset VIRTUAL_ENV
     else
