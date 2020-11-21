@@ -20,7 +20,6 @@ ln -sf ~/.config/.profile ~/.profile
 ln -sf ~/.config/tmux/.tmux.conf ~/.tmux.conf
 ln -sf ~/.config/tmux/tools/safe-reattach-to-user-namespace ~/bin/safe-reattach-to-user-namespace
 ln -sf ~/.config/.Xresources ~/.Xresources
-ln -sf ~/.config/.Xmodmap ~/.Xmodmap
 ln -sf ~/.config/.Xclients ~/.Xclients
 ln -sf ~/.config/.xinitrc ~/.xinitrc
 ln -sf ~/.vim/gvimrc ~/.gvimrc
