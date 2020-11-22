@@ -5,7 +5,7 @@ c.auto_save.session = True
 if platform != "darwin":
     c.downloads.location.directory = "~/downloads/"
 
-    c.fonts.default_family = "Noto Sans"
+    c.fonts.default_family = "Liberation Sans"
     c.fonts.default_size = "10pt"
 
     config.bind(",m", "spawn mpv {url}")
