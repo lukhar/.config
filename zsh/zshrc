@@ -46,6 +46,7 @@ fpath=($HOME/.config/zsh/completions $fpath)
 export PATH=$HOME/bin:$PATH
 export NOTES=$HOME/documents/shared/notes
 export EDITOR=`which nvim`
+export LUA_PATH=/usr/share/awesome/lib
 
 # pyenv shell prompt
 unset VIRTUAL_ENV_DISABLE_PROMPT                                # TODO sommething in linux shell is setting this to true, figure out what
