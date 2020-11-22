@@ -227,7 +227,7 @@ awful.screen.connect_for_each_screen(function(s)
                            awful.button({ }, 5, function () awful.layout.inc(-1) end)))
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons)
-	
+
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
 
@@ -535,11 +535,12 @@ awful.rules.rules = {
       properties = { titlebars_enabled = false }
     },
 
-    -- Set Firefox to always map on the tag named "2" on screen 1.
-    { rule = { class = "Chromium" },
-      properties = { screen = 2, tag = "2" } },
+    { rule = { class = "slack" },
+      properties = { screen = 2, tag = "一" } },
     { rule = { class = "qutebrowser" },
-      properties = { screen = 2, tag = "3" } },
+      properties = { screen = 2, tag = "二" } },
+    { rule = { class = "Chromium" },
+      properties = { screen = 2, tag = "三" } },
 
 }
 -- }}}
