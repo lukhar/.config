@@ -1,5 +1,6 @@
 from sys import platform
 
+
 c.auto_save.session = True
 
 if platform != "darwin":
@@ -12,6 +13,7 @@ if platform != "darwin":
     config.bind(",M", "hint links spawn mpv {hint-url}")
 
 else:
+    config.load_autoconfig(False)
     c.fonts.default_size = "14pt"
 
 c.url.searchengines = {
