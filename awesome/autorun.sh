@@ -32,6 +32,7 @@ run thunar --daemon
 run pa-applet
 run pamac-tray
 run lxpolkit
+run signal-desktop --start-in-tray
 
 ## The following are not included in minimal edition by default
 ## but autorun.sh will pick them up if you install them

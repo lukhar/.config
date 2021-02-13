@@ -66,3 +66,6 @@ Cypress
 
 # I'm not sure where's this comming from?
 menus 
+
+# Signal settings are tad too much to keep in git
+Signal
