@@ -69,3 +69,6 @@ menus
 
 # Signal settings are tad too much to keep in git
 Signal
+
+# iTerm
+iterm2
