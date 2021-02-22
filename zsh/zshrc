@@ -21,6 +21,8 @@ HISTFILE=~/.zhistory
 HISTSIZE=500000000
 SAVEHIST=5000
 
+# use bat as manpager
+[ -x "$(command -v bat)" ] && export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
 # enable editing commands in EDITOR
 autoload -z edit-command-line
