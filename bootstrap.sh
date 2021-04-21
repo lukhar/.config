@@ -12,6 +12,7 @@ ln -sf ~/.config/zsh/zshrc ~/.zshrc
 ln -sf ~/.config/zsh/zsh_aliases ~/.zsh_aliases
 ln -sf ~/.config/.bash_profile ~/.bash_profile
 ln -sf ~/.config/.bash_aliases ~/.bash_aliases
+ln -sf ~/.config/fontconfig ~/.fontconfig
 ln -sf ~/.config/confupdate.sh ~/bin/confupdate
 ln -sf ~/.config/.dircolors ~/.dircolors
 ln -sf ~/.config/.gitignore ~/.gitignore
