@@ -6,6 +6,7 @@ config.load_autoconfig(False)
 c.auto_save.session = True
 
 if platform != "darwin":
+    c.qt.args = ["disable-remote-fonts"]
     c.downloads.location.directory = "~/downloads/"
 
     c.fonts.default_family = "Liberation Sans"
