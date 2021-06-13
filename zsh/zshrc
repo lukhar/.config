@@ -84,6 +84,7 @@ precmd() {
 __init_pyenv() {
   export PYENV_ROOT="$HOME/.pyenv"
   export PATH="$PYENV_ROOT/bin:$PATH"
+  [ -x "$(command -v pyenv)" ] && eval "$(pyenv init --path)"
   [ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
   [ -x "$(command -v pyenv)" ] && eval "$(pyenv virtualenv-init -)"
 
