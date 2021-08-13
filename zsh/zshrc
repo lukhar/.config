@@ -116,7 +116,6 @@ __init_pipx() {
 
 __init_misc() {
   [ -f $HOME/.poetry/env ] && source $HOME/.poetry/env
-  [ -f $HOME/.localrc ] && source $HOME/.localrc
 }
 
 __init_funcs=(__init_pyenv __init_rbenv __init_nvm __init_hub __init_pipx __init_sdk __init_misc)

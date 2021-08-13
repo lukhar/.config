@@ -6,6 +6,9 @@
 
 [ -x "$(command -v bat)" ] && alias cat=bat
 
+# load machine specific aliases
+[ -f $HOME/.localrc ] && source $HOME/.localrc
+
 alias sr='source ~/.zsh_aliases'
 
 alias ll='ls -lh'
