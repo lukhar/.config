@@ -64,6 +64,7 @@ export EDITOR=`which nvim`
 export LUA_PATH=/usr/share/awesome/lib
 
 # pyenv shell prompt
+unset PYENV_VERSION                                             # TODO sommething in linux shell is setting this to true, figure out what
 unset VIRTUAL_ENV_DISABLE_PROMPT                                # TODO sommething in linux shell is setting this to true, figure out what
 
 precmd() {
