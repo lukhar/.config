@@ -73,3 +73,6 @@ Signal
 
 # iTerm
 iterm2
+
+# pavucontrol gui
+pavucontrol.ini
