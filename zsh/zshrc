@@ -63,10 +63,6 @@ export NOTES=$HOME/documents/shared/notes
 export EDITOR=`which nvim`
 export LUA_PATH=/usr/share/awesome/lib
 
-# pyenv shell prompt
-unset PYENV_VERSION                                             # TODO sommething in linux shell is setting this to true, figure out what
-unset VIRTUAL_ENV_DISABLE_PROMPT                                # TODO sommething in linux shell is setting this to true, figure out what
-
 precmd() {
   if [[ -n $PYENV_SHELL ]]; then
     local version
@@ -85,8 +81,7 @@ precmd() {
 __init_pyenv() {
   export PYENV_ROOT="$HOME/.pyenv"
   export PATH="$PYENV_ROOT/bin:$PATH"
-  [[ -x "$(command -v pyenv)" && "$HOST" = "fruitbox" ]] && eval "$(pyenv init --path)"
-  [ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
+  [ -x "$(command -v pyenv)" ] && eval "$(pyenv init --path)"
   [ -x "$(command -v pyenv)" ] && eval "$(pyenv virtualenv-init -)"
 
   # ptpython
