@@ -14,6 +14,7 @@ alias sr='source ~/.zsh_aliases'
 alias ll='ls -lh'
 alias la='ls -lAh'
 alias l='ls -CFh'
+alias gradle='gradle --console rich'
 
 function fe() {
   IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0))
