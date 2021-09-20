@@ -4,6 +4,7 @@ from sys import platform
 config.load_autoconfig(False)
 
 c.auto_save.session = True
+c.content.notifications.enabled = False
 
 if platform != "darwin":
     c.downloads.location.directory = "~/downloads/"
