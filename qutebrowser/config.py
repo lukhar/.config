@@ -5,6 +5,8 @@ config.load_autoconfig(False)
 
 c.auto_save.session = True
 c.content.notifications.enabled = False
+c.colors.webpage.darkmode.enabled = True
+c.colors.webpage.preferred_color_scheme = "dark"
 
 if platform != "darwin":
     c.downloads.location.directory = "~/downloads/"
