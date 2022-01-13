@@ -58,7 +58,7 @@ fpath=($HOME/.config/zsh/completions $fpath)
 # load aliases
 [ -f $HOME/.zsh_aliases ] && source $HOME/.zsh_aliases
 
-export PATH=$HOME/bin:$PATH
+export PATH=$HOME/.pyenv/bin:$HOME/bin:$PATH
 export NOTES=$HOME/documents/shared/notes
 export EDITOR=`which nvim`
 export LUA_PATH=/usr/share/awesome/lib
@@ -79,11 +79,11 @@ precmd() {
 
 # for some reason it doesn't work asyncchronously in OSX
 [ -z "$VIRTUAL_ENV"] && eval "$(pyenv virtualenv-init -)"
+[ -x "$(command -v pyenv)" ] && eval "$(pyenv init --path)"
 
 # TODO move to separate file
 __init_pyenv() {
   [ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
-  [ -x "$(command -v pyenv)" ] && eval "$(pyenv init --path)"
 
   # ptpython
   [ -x "$(command -v ptpython)" ] && export PTPYTHON_CONFIG_HOME=$HOME/.config/ptpython

@@ -78,4 +78,9 @@ function tp() {
   fi
 }
 
+timezsh() {
+  shell=${1-$SHELL}
+  for i in $(seq 1 10); do time ($shell -i -c exit); done
+}
+
 alias pip-upgrade="pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U"
