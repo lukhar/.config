@@ -361,14 +361,9 @@ globalkeys = gears.table.join(
 
     awful.key({ modkey, "Control" }, "n",
               function ()
-                  local c = awful.client.restore()
-                  -- Focus restored client
-                  if c then
-                      client.focus = c
-                      c:raise()
-                  end
+                   awful.spawn(terminal.." --class nvim -e nvim /home/lukhar/documents/shared/notes/gtd/input/input.md")
               end,
-              {description = "restore minimized", group = "client"}),
+              {description = "open notes", group = "launcher"}),
 
     -- Prompt
     awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
@@ -406,13 +401,6 @@ clientkeys = gears.table.join(
               {description = "move to screen", group = "client"}),
     awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end,
               {description = "toggle keep on top", group = "client"}),
-    awful.key({ modkey,           }, "n",
-        function (c)
-            -- The client currently has the input focus, so it cannot be
-            -- minimized, since minimized clients can't have the focus.
-            c.minimized = true
-        end ,
-        {description = "minimize", group = "client"}),
     awful.key({ modkey,           }, "m",
         function (c)
             c.maximized = not c.maximized
@@ -535,6 +523,10 @@ awful.rules.rules = {
           "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
         }
       }, properties = { floating = true }},
+
+    { rule_any = { instance = { "nvim"} },
+      properties = {  placement = awful.placement.centered , floating = true, titlebars_enabled = false },
+    },
 
     -- Add titlebars to normal clients and dialogs
     { rule_any = {type = { "normal", "dialog" } },
@@ -660,7 +652,8 @@ end
 
 client.connect_signal("property::floating", function (c)
     if c.floating then
-        awful.titlebar.show(c)
+        -- TODO disable only for nvim
+        --awful.titlebar.show(c)
     else
         awful.titlebar.hide(c)
     end
