@@ -28,7 +28,7 @@ ln -sf ~/.vim/vimrc ~/.vimrc
 ln -sf ~/.config/ctags ~/.ctags.d 
 ln -sf ~/.config/.gtkrc-2.0 ~/.gtkrc-2.0
 
-if [ "$HOSTNAME" = fruitbox ]; then
+if [ "$HOSTNAME" = grapebox ]; then
   ln -sf ~/Dropbox/Shared ~/Documents/shared
 fi
 
