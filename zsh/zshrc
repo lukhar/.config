@@ -78,7 +78,7 @@ precmd() {
   fi
 }
 
-[ -d $HOME/.fzf ] && source ~/.fzf.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # for some reason it doesn't work asyncchronously in OSX
 [ -z "$VIRTUAL_ENV"] && eval "$(pyenv virtualenv-init -)"
