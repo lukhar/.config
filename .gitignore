@@ -6,6 +6,7 @@ jgit
 
 # all chromium settings (rather big)
 chromium/    
+google-chrome/
 # coc-nvim releated runtime files
 coc/        
 # gnome settings database
