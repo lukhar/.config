@@ -32,6 +32,11 @@ zstyle ':completion:*' accept-exact '*(N)'
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.cache/zsh
 
+if [ "$HOST" = "piecyk" ]; then
+  PURE_PROMPT_SYMBOL=">"
+  PURE_PROMPT_VICMD_SYMBOL="<"
+fi
+
 # bigger history
 HISTFILE=~/.zhistory
 HISTSIZE=500000000
