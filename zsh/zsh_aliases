@@ -16,6 +16,17 @@ alias la='ls -lAh'
 alias l='ls -CFh'
 alias gradle='gradle --console rich'
 
+# git aliases
+alias g='git add -p'
+alias ga='git add '
+alias gc='git commit'
+alias gch='git checkout'
+alias gp='git push'
+alias gcl='git branch  | grep -v master | xargs -I {} git branch -D {} && git fetch --prune'
+alias grep='grep --color=auto'
+alias gs='git status'
+alias gw='git add -p && git commit && git pull && git push'
+
 function fe() {
   IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0))
   [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
