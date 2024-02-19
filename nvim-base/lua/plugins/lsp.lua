@@ -1,4 +1,12 @@
 -- [[ Configure LSP ]]
+local function python_path()
+  if vim.env.VIRTUAL_ENV then
+    return require('lspconfig').util.path.join(vim.env.VIRTUAL_ENV, "bin", "python")
+  end
+
+  return exepath("python3") or exepath("python") or "python"
+end
+
 local servers = vim.tbl_keys({
   efm = {},
   gopls = {},
@@ -105,6 +113,21 @@ return {
             }
           end,
         }
+
+        require('lspconfig').pyright.setup({
+          on_init = function(client)
+            client.config.settings.python.pythonPath = python_path()
+          end,
+          settings = {
+            python = {
+              analysis = {
+                -- Disable strict type checking
+                typeCheckingMode = "off"
+              }
+            }
+          }
+        })
+
       end
     },
     { 'folke/neodev.nvim', opts = {} },
