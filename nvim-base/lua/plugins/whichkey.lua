@@ -2,7 +2,16 @@ return {
   'folke/which-key.nvim',
   config = function()
     -- document existing key chains
-    require('which-key').register {
+    local which_key = require('which-key')
+
+    which_key.setup {
+      layout = {
+        align = "center",
+      }
+    }
+
+
+    which_key.register {
       ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
       ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
       ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
@@ -14,7 +23,7 @@ return {
     }
     -- register which-key VISUAL mode
     -- required for visual <leader>hs (hunk stage) to work
-    require('which-key').register({
+    which_key.register({
       ['<leader>'] = { name = 'VISUAL <leader>' },
       ['<leader>h'] = { 'Git [H]unk' },
     }, { mode = 'v' })

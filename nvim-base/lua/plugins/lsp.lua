@@ -11,7 +11,7 @@ local servers = vim.tbl_keys({
   efm = {},
   gopls = {},
   pyright = {},
-  tssserver = {},
+  tsserver = {},
   vimls = {},
   terraformls = {},
   ltex = {},
@@ -96,13 +96,16 @@ return {
     },
     {
       'williamboman/mason-lspconfig.nvim',
-      opts = {
-        ensure_installed = servers,
-        automatic_installation = true,
-      },
 
       config = function()
-        require('mason-lspconfig').setup_handlers{
+        local mason_lspconfig = require("mason-lspconfig")
+
+        mason_lspconfig.setup {
+          ensure_installed = servers,
+          automatic_installation = true,
+        }
+
+        mason_lspconfig.setup_handlers{
           function(server_name)
             require('neodev').setup()
             require('lspconfig')[server_name].setup {
