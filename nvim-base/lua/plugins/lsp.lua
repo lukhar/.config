@@ -52,10 +52,12 @@ local on_attach = function(_, bufnr)
   nmap('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
   nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
   nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+  nmap('[d', vim.diagnostic.goto_prev, 'Previous [D]iagnostic')
+  nmap(']d', vim.diagnostic.goto_next, 'Next [D]iagnostic')
 
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  -- colides with vim/tmux integration 
+  -- colides with vim/tmux integration
   -- nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
   -- Lesser used LSP functionality
@@ -106,7 +108,7 @@ return {
           automatic_installation = true,
         }
 
-        mason_lspconfig.setup_handlers{
+        mason_lspconfig.setup_handlers {
           function(server_name)
             require('neodev').setup()
             require('lspconfig')[server_name].setup {
@@ -131,7 +133,6 @@ return {
             }
           }
         })
-
       end
     },
     { 'folke/neodev.nvim', opts = {} },
