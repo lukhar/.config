@@ -42,8 +42,8 @@ vim.cmd [[
   augroup END
 ]]
 
-vim.o.directory = '~/.cache/nvim/swp/'
-vim.o.undodir = '~/.cache/nvim/undo/'
+vim.o.directory = vim.fn.expand('~/.cache/nvim/swp/')
+vim.o.undodir = vim.fn.expand('~/.cache/nvim/undo/')
 
 -- set pop up menu to have fixed length
 vim.o.pumheight = 35
