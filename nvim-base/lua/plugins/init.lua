@@ -8,5 +8,5 @@ return {
   'tpope/vim-sleuth',
   'tpope/vim-surround',
   'tpope/vim-unimpaired',
-  'christoomey/vim-tmux-navigator'
+  'christoomey/vim-tmux-navigator',
 }
