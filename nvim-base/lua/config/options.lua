@@ -34,6 +34,9 @@ vim.o.relativenumber = true
 vim.api.nvim_create_autocmd('InsertEnter', { pattern = '*', command = 'set norelativenumber number' })
 vim.api.nvim_create_autocmd('InsertLeave', { pattern = '*', command = 'set relativenumber number' })
 
+-- enabled copying to clipboard
+vim.api.nvim_set_option("clipboard","unnamed")
+
 -- highlight on yank
 vim.cmd [[
   augroup highlight_yank
