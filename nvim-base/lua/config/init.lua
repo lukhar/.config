@@ -1,9 +1,3 @@
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
-
-vim.g.loaded_python_provider = 0
-vim.g.python3_host_prog = '~/.pyenv/versions/neovim/bin/python'
-
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
