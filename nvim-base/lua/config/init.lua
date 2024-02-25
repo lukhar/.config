@@ -22,7 +22,7 @@ local options = {
     lazy = false,
   },
   install = {
-    colorscheme = { 'catppuccin' },
+    colorscheme = { 'solarized' },
   },
   rtp = {
     disabled_plugins = {

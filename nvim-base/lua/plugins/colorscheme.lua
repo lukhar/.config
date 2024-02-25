@@ -1,9 +1,13 @@
 return {
-  'catppuccin/nvim',
+  'maxmx03/solarized.nvim',
   lazy = false,
-  name = 'catppuccin',
   priority = 1000,
   config = function()
-    vim.cmd([[colorscheme catppuccin]])
+    vim.o.background = 'dark'
+    vim.cmd([[colorscheme solarized]])
+
+    require('solarized').setup({
+      theme = 'neo',
+    })
   end,
 }
