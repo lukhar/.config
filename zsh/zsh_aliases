@@ -27,8 +27,6 @@ alias grep='grep --color=auto'
 alias gs='git status'
 alias gw='git add -p && git commit && git pull && git push'
 
-alias lvim='NVIM_APPNAME="legacy-nvim" nvim'
-
 function fe() {
   IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0))
   [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
