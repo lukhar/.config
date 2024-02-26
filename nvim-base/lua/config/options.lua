@@ -24,8 +24,6 @@ vim.o.splitright = true
 vim.o.completeopt = 'menuone,longest,preview'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
--- Keep signcolumn on by default
-vim.wo.signcolumn = 'yes'
 
 -- disable the splash screen
 vim.opt.shortmess:append({ I = true })
@@ -38,6 +36,7 @@ vim.api.nvim_create_autocmd('InsertLeave', { pattern = '*', command = 'set relat
 vim.api.nvim_set_option("clipboard","unnamed")
 
 -- highlight on yank
+-- TODO below rewrite in Lua
 vim.cmd [[
   augroup highlight_yank
   autocmd!
