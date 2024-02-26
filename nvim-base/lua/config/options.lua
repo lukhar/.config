@@ -57,3 +57,33 @@ vim.opt.wildignore:append { '*.a', '*.o', '*.pyc' }
 vim.opt.wildignore:append { '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png' }
 vim.opt.wildignore:append { '*~', '*.swp', '*.tmp' }
 vim.opt.wildmode = 'longest:full,full'
+
+-- Dim inactive panes
+-- TODO below rewrite in Lua
+vim.cmd([[
+  hi ActiveWindow guibg=None
+  hi InactiveWindow guibg=#073642
+
+  " Call method on window enter
+  augroup WindowManagement
+    autocmd!
+    autocmd WinEnter * call HandleWinEnter()
+    autocmd FocusLost * call FocusLostInactive()
+    autocmd FocusGained * call FocusGainedActive()
+  augroup END
+
+  " Change highlight group of active/inactive windows
+  function! HandleWinEnter()
+    setlocal winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
+  endfunction
+
+  " Change color when focus lost
+  function! FocusLostInactive()
+    setlocal winhighlight=Normal:InactiveWindow,NormalNC:InactiveWindow
+  endfunction
+
+  " Change color when focus gained
+  function! FocusGainedActive()
+    setlocal winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
+  endfunction
+]])
