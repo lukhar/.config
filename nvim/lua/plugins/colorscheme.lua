@@ -9,12 +9,12 @@ return {
     require('solarized').setup({
       theme = 'neo',
 
-      -- ensure cursor line is highlighted
       highlights = function(colors)
         return {
           LineNr = { fg = colors.base1, bg = colors.base02 },
           CursorLineNr = { bg = colors.base02 },
           CursorLine = { bg = colors.base02 },
+          Visual = { fg = colors.base03, bg = colors.base01 },
         }
       end
     })
