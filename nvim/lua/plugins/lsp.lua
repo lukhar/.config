@@ -7,23 +7,59 @@ local function python_path()
   return exepath("python3") or exepath("python") or "python"
 end
 
-local servers = vim.tbl_keys({
-  efm = {},
+local function capabilities()
+  return require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+end
+
+local servers = {
+  efm = {
+    init_options = { documentFormatting = true },
+    settings = {
+      rootMarkers = { '.git/' },
+      languages = {
+        python = {
+          { formatCommand = 'isort --profile=black --quiet -', formatStdin = true },
+          { formatCommand = 'black --quiet -',                 formatStdin = true },
+          {
+            lintCommand = 'flake8 --stdin-display-name ${INPUT} -',
+            lintStdin = true,
+            lintIgnoreExitCode = true,
+            lintFormats = { '%f:%l:%c: %m' }
+          }
+        },
+      },
+    },
+  },
   gopls = {},
-  pyright = {},
+  pyright = {
+    on_init = function(client)
+      client.config.settings.python.pythonPath = python_path()
+    end,
+    settings = {
+      python = {
+        analysis = {
+          -- Disable strict type checking
+          typeCheckingMode = 'off'
+        },
+      },
+    },
+  },
   tsserver = {},
   vimls = {},
   terraformls = {},
   ltex = {},
   lua_ls = {
-    Lua = {
-      workspace = { checkThirdParty = false },
-      telemetry = { enable = false },
-      -- NOTE: toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-      -- diagnostics = { disable = { 'missing-fields' } },
+    settings = {
+      Lua = {
+        library = {
+          [vim.fn.expand('/usr/share/awesome/lib')] = true
+        },
+        workspace = { checkThirdParty = false },
+        telemetry = { enable = false },
+      },
     },
   },
-})
+}
 
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
@@ -79,9 +115,6 @@ local on_attach = function(_, bufnr)
 end
 
 
-local function capabilities()
-  return require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
-end
 
 
 return {
@@ -105,37 +138,26 @@ return {
       'williamboman/mason-lspconfig.nvim',
 
       config = function()
+        require('neodev').setup()
+        local lspconfig = require('lspconfig')
         local mason_lspconfig = require("mason-lspconfig")
 
         mason_lspconfig.setup {
-          ensure_installed = servers,
+          ensure_installed = vim.tbl_keys(servers),
           automatic_installation = true,
         }
 
-        mason_lspconfig.setup_handlers {
+        mason_lspconfig.setup_handlers({
           function(server_name)
-            require('neodev').setup()
-            require('lspconfig')[server_name].setup {
+            lspconfig[server_name].setup({
               capabilities = capabilities(),
+              init_options = (servers[server_name] or {}).init_options,
+              on_init = (servers[server_name] or {}).on_init,
               on_attach = on_attach,
-              settings = servers[server_name],
+              settings = (servers[server_name] or {}).settings,
               filetypes = (servers[server_name] or {}).filetypes,
-            }
+            })
           end,
-        }
-
-        require('lspconfig').pyright.setup({
-          on_init = function(client)
-            client.config.settings.python.pythonPath = python_path()
-          end,
-          settings = {
-            python = {
-              analysis = {
-                -- Disable strict type checking
-                typeCheckingMode = "off"
-              }
-            }
-          }
         })
       end
     },
