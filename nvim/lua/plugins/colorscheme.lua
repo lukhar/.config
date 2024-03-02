@@ -23,7 +23,7 @@ return {
           Visual = { fg = colors.base03, bg = colors.base01 },
           CurSearch = { fg = colors.base03, bg = colors.orange },
           Search = { fg = colors.base03, bg = colors.change },
-          IncSearch = { fg = colors.base03, bg = colors.change },
+          -- IncSearch = { fg = colors.base03, bg = colors.change },
           diffAdded = { fg = colors.hint },
           diffChanged = { fg = colors.warning },
           diffRemoved = { fg = colors.delete },
