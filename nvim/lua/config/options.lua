@@ -37,12 +37,12 @@ vim.api.nvim_set_option("clipboard","unnamed")
 
 -- highlight on yank
 -- TODO below rewrite in Lua
-vim.cmd [[
+vim.cmd([[
   augroup highlight_yank
   autocmd!
-  au TextYankPost * silent! lua vim.highlight.on_yank({timeout = 250})
+  au TextYankPost * silent! lua vim.highlight.on_yank({timeout = 150})
   augroup END
-]]
+]])
 
 vim.o.directory = vim.fn.expand('~/.cache/nvim/swp/')
 vim.o.undodir = vim.fn.expand('~/.cache/nvim/undo/')
