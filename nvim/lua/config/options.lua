@@ -86,3 +86,17 @@ vim.cmd([[
     setlocal winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
   endfunction
 ]])
+
+-- manage sessions in projects
+vim.cmd([[
+  augroup SessionManagment
+  autocmd VimEnter * call OpenSession()
+  augroup END
+
+  function! OpenSession()
+    if isdirectory(".git")
+      execute ":Mkdir! .vim"
+      execute ":Obsession .vim/session.vim"
+    end
+  endfunction
+]])
