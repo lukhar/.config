@@ -16,6 +16,5 @@ return {
     end
   },
   'christoomey/vim-tmux-navigator',
-  -- automatically disable `hlsearch`
-  'junegunn/vim-slash'
+  'junegunn/vim-slash',        -- automatically disable `hlsearch`
 }
