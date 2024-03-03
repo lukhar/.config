@@ -33,16 +33,16 @@ vim.api.nvim_create_autocmd('InsertEnter', { pattern = '*', command = 'set norel
 vim.api.nvim_create_autocmd('InsertLeave', { pattern = '*', command = 'set relativenumber number' })
 
 -- enabled copying to clipboard
-vim.api.nvim_set_option("clipboard","unnamed")
+vim.api.nvim_set_option("clipboard", "unnamed")
 
 -- highlight on yank
--- TODO below rewrite in Lua
-vim.cmd([[
-  augroup highlight_yank
-  autocmd!
-  au TextYankPost * silent! lua vim.highlight.on_yank({timeout = 150})
-  augroup END
-]])
+vim.api.nvim_create_autocmd('TextYankPost', {
+  pattern = '*',
+  callback = function()
+    vim.highlight.on_yank({ timeout = 150 })
+  end,
+  group = vim.api.nvim_create_augroup('highlight_yank', { clear = true })
+})
 
 vim.o.directory = vim.fn.expand('~/.cache/nvim/swp/')
 vim.o.undodir = vim.fn.expand('~/.cache/nvim/undo/')
