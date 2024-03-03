@@ -51,6 +51,10 @@ vim.o.undodir = vim.fn.expand('~/.cache/nvim/undo/')
 -- set pop up menu to have fixed length
 vim.o.pumheight = 35
 
+-- display whitespace characters
+vim.opt.list = true
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+
 -- wildmenu
 vim.o.wildmenu = true
 vim.opt.wildignore:append({ '*.a', '*.o', '*.pyc' })
