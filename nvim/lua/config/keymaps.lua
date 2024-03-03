@@ -18,3 +18,6 @@ vim.keymap.set({ 'n' }, '<A-l>', '<C-w>2>', { silent = true })
 
 -- numbered search results for easier navigation
 vim.keymap.set({ 'n' }, '//', ':g//#<Left><Left>')
+
+-- disable highlight search with esc key
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
