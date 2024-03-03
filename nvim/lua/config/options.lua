@@ -80,7 +80,7 @@ local function reload_config()
   dofile(vim.env.MYVIMRC)
 end
 
-vim.keymap.set('n', '<leader>R', reload_config)
+vim.keymap.set('n', '<leader>R', reload_config, { desc = '[R]eload Configuration' })
 
 -- dim inactive panes
 -- TODO below rewrite in Lua
