@@ -20,7 +20,8 @@ vim.o.laststatus = 2
 vim.o.hidden = true
 vim.o.mouse = 'a'
 vim.o.splitright = true
--- Set completeopt to have a better completion experience
+
+-- set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,longest,preview'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
@@ -57,7 +58,18 @@ vim.opt.wildignore:append({ '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png' })
 vim.opt.wildignore:append({ '*~', '*.swp', '*.tmp' })
 vim.opt.wildmode = 'longest:full,full'
 
--- Dim inactive panes
+-- use faster grepping tools if available
+if vim.fn.executable('ag') then
+  vim.opt.grepprg = 'ag --nogroup --nocolor'
+  vim.opt.grepformat = '%f:%l:%c:%m,%f:%l:%m'
+end
+
+if vim.fn.executable('rg') then
+  vim.opt.grepprg = 'rg --vimgrep --no-heading'
+  vim.opt.grepformat = '%f:%l:%c:%m,%f:%l:%m'
+end
+
+-- dim inactive panes
 -- TODO below rewrite in Lua
 vim.cmd([[
   hi ActiveWindow guibg=None
