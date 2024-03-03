@@ -24,7 +24,6 @@ vim.o.scrolloff = 10
 
 -- set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,longest,preview'
--- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
 -- disable the splash screen
@@ -69,6 +68,19 @@ if vim.fn.executable('rg') then
   vim.opt.grepprg = 'rg --vimgrep --no-heading'
   vim.opt.grepformat = '%f:%l:%c:%m,%f:%l:%m'
 end
+
+-- reload configuration
+local function reload_config()
+  local reload = require('plenary.reload').reload_module
+  reload('config.options', false)
+  reload('config.keymaps', false)
+  reload('config.plugins', false)
+  reload('config.globals', false)
+
+  dofile(vim.env.MYVIMRC)
+end
+
+vim.keymap.set('n', '<leader>R', reload_config)
 
 -- dim inactive panes
 -- TODO below rewrite in Lua
