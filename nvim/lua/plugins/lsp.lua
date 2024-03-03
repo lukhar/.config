@@ -4,7 +4,7 @@ local function python_path()
     return require('lspconfig').util.path.join(vim.env.VIRTUAL_ENV, 'bin', 'python')
   end
 
-  return vim.fn.exepath 'python3' or vim.fn.exepath 'python' or 'python'
+  return vim.fn.exepath('python3') or vim.fn.exepath('python') or 'python'
 end
 
 local function capabilities()
@@ -57,7 +57,7 @@ local servers = {
     settings = {
       Lua = {
         library = {
-          [vim.fn.expand '/usr/share/awesome/lib'] = true,
+          [vim.fn.expand('/usr/share/awesome/lib')] = true,
         },
         workspace = { checkThirdParty = false },
         telemetry = { enable = false },
@@ -80,7 +80,7 @@ local on_attach = function(_, bufnr)
 
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   nmap('<leader>ca', function()
-    vim.lsp.buf.code_action { context = { only = { 'quickfix', 'refactor', 'source' } } }
+    vim.lsp.buf.code_action({ context = { only = { 'quickfix', 'refactor', 'source' } } })
   end, '[C]ode [A]ction')
 
   nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
@@ -107,7 +107,7 @@ local on_attach = function(_, bufnr)
 
   -- Create a command `:Format` local to the LSP buffer
   local format = function(_)
-    vim.lsp.buf.format { async = true }
+    vim.lsp.buf.format({ async = true })
   end
 
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', format, { desc = 'Format current buffer with LSP' })
@@ -135,14 +135,14 @@ return {
     {
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       config = function()
-        local mason_tool_installer = require 'mason-tool-installer'
+        local mason_tool_installer = require('mason-tool-installer')
         local ensure_installed = vim.tbl_keys(servers)
         vim.list_extend(ensure_installed, tools)
 
-        mason_tool_installer.setup {
+        mason_tool_installer.setup({
           ensure_installed = ensure_installed,
           automatic_installation = true,
-        }
+        })
       end,
     },
     {
@@ -150,21 +150,21 @@ return {
 
       config = function()
         require('neodev').setup()
-        local lspconfig = require 'lspconfig'
-        local mason_lspconfig = require 'mason-lspconfig'
+        local lspconfig = require('lspconfig')
+        local mason_lspconfig = require('mason-lspconfig')
 
-        mason_lspconfig.setup_handlers {
+        mason_lspconfig.setup_handlers({
           function(server_name)
-            lspconfig[server_name].setup {
+            lspconfig[server_name].setup({
               capabilities = capabilities(),
               init_options = (servers[server_name] or {}).init_options,
               on_init = (servers[server_name] or {}).on_init,
               on_attach = on_attach,
               settings = (servers[server_name] or {}).settings,
               filetypes = (servers[server_name] or {}).filetypes,
-            }
+            })
           end,
-        }
+        })
       end,
     },
     { 'folke/neodev.nvim', opts = {} },

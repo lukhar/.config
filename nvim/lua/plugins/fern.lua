@@ -1,13 +1,13 @@
 return {
   'lambdalisue/fern.vim',
-  init = function ()
+  init = function()
     vim.g.loaded_netrw = false
     vim.g.loaded_netrwPlugin = false
     vim.g.loaded_netrwSettings = false
     vim.g.loaded_netrwFileHandlers = false
 
     -- TODO rewrite to Lua
-    vim.cmd [[
+    vim.cmd([[
       function! s:init_fern() abort
         nmap <buffer><expr>
             \ <Plug>(fern-my-expand-or-collapse)
@@ -35,9 +35,9 @@ return {
         autocmd FileType fern call s:init_fern()
         autocmd BufEnter * ++nested call s:hijack_directory()
       augroup END
-    ]]
+    ]])
 
     vim.keymap.set('n', '-', ':Fern %:h -reveal=%<CR>')
     vim.keymap.set('n', '_', ':Fern %:h -drawer -toggle -reveal=%<CR>')
-  end
+  end,
 }

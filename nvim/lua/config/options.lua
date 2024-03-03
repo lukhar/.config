@@ -33,7 +33,7 @@ vim.api.nvim_create_autocmd('InsertEnter', { pattern = '*', command = 'set norel
 vim.api.nvim_create_autocmd('InsertLeave', { pattern = '*', command = 'set relativenumber number' })
 
 -- enabled copying to clipboard
-vim.api.nvim_set_option("clipboard", "unnamed")
+vim.api.nvim_set_option('clipboard', 'unnamed')
 
 -- highlight on yank
 vim.api.nvim_create_autocmd('TextYankPost', {
@@ -41,7 +41,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
     vim.highlight.on_yank({ timeout = 150 })
   end,
-  group = vim.api.nvim_create_augroup('highlight_yank', { clear = true })
+  group = vim.api.nvim_create_augroup('highlight_yank', { clear = true }),
 })
 
 vim.o.directory = vim.fn.expand('~/.cache/nvim/swp/')
@@ -52,9 +52,9 @@ vim.o.pumheight = 35
 
 -- wildmenu
 vim.o.wildmenu = true
-vim.opt.wildignore:append { '*.a', '*.o', '*.pyc' }
-vim.opt.wildignore:append { '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png' }
-vim.opt.wildignore:append { '*~', '*.swp', '*.tmp' }
+vim.opt.wildignore:append({ '*.a', '*.o', '*.pyc' })
+vim.opt.wildignore:append({ '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png' })
+vim.opt.wildignore:append({ '*~', '*.swp', '*.tmp' })
 vim.opt.wildmode = 'longest:full,full'
 
 -- Dim inactive panes
