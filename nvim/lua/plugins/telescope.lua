@@ -99,5 +99,10 @@ return {
     vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
     vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
     vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
+
+    -- Shortcut for searching your neovim configuration files
+    vim.keymap.set('n', '<leader>sn', function()
+      require('telescope.builtin').find_files({ cwd = vim.fn.stdpath('config') })
+    end, { desc = '[S]earch [N]eovim files' })
   end,
 }
