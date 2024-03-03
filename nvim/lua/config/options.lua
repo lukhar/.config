@@ -20,6 +20,7 @@ vim.o.laststatus = 2
 vim.o.hidden = true
 vim.o.mouse = 'a'
 vim.o.splitright = true
+vim.o.scrolloff = 10
 
 -- set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,longest,preview'
