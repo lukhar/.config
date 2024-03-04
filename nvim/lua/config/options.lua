@@ -2,7 +2,6 @@ vim.o.tabstop = 4
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
 vim.o.background = 'dark'
-vim.o.number = true
 vim.o.showmatch = true
 vim.o.expandtab = true
 vim.o.incsearch = true
@@ -29,6 +28,8 @@ vim.o.termguicolors = true
 -- disable the splash screen
 vim.opt.shortmess:append({ I = true })
 
+-- smart relative numbers
+vim.o.number = true
 vim.o.relativenumber = true
 vim.api.nvim_create_autocmd('InsertEnter', { pattern = '*', command = 'set norelativenumber number' })
 vim.api.nvim_create_autocmd('InsertLeave', { pattern = '*', command = 'set relativenumber number' })
@@ -87,45 +88,38 @@ end
 vim.keymap.set('n', '<leader>R', reload_config, { desc = '[R]eload Configuration' })
 
 -- dim inactive panes
--- TODO below rewrite in Lua
-vim.cmd([[
-  hi ActiveWindow guibg=None
-  hi InactiveWindow guibg=#073642
+local window_managment = vim.api.nvim_create_augroup('window_managment', { clear = true })
+vim.api.nvim_set_hl(0, 'ActiveWindow', { bg = '' })
+vim.api.nvim_set_hl(0, 'InactiveWindow', { bg = '#073642' })
 
-  " Call method on window enter
-  augroup WindowManagement
-    autocmd!
-    autocmd WinEnter * call HandleWinEnter()
-    autocmd FocusLost * call FocusLostInactive()
-    autocmd FocusGained * call FocusGainedActive()
-  augroup END
+vim.api.nvim_create_autocmd({ 'WinEnter' }, {
+  group = window_managment,
+  callback = function()
+    vim.opt_local.winhighlight = 'Normal:ActiveWindow,NormalNC:InactiveWindow'
+  end,
+})
 
-  " Change highlight group of active/inactive windows
-  function! HandleWinEnter()
-    setlocal winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
-  endfunction
+vim.api.nvim_create_autocmd({ 'FocusLost' }, {
+  group = window_managment,
+  callback = function()
+    vim.opt_local.winhighlight = 'Normal:InactiveWindow,NormalNC:InactiveWindow'
+  end,
+})
 
-  " Change color when focus lost
-  function! FocusLostInactive()
-    setlocal winhighlight=Normal:InactiveWindow,NormalNC:InactiveWindow
-  endfunction
-
-  " Change color when focus gained
-  function! FocusGainedActive()
-    setlocal winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
-  endfunction
-]])
+vim.api.nvim_create_autocmd({ 'FocusGained' }, {
+  group = window_managment,
+  callback = function()
+    vim.opt_local.winhighlight = 'Normal:ActiveWindow,NormalNC:InactiveWindow'
+  end,
+})
 
 -- manage sessions in projects
-vim.cmd([[
-  augroup SessionManagment
-  autocmd VimEnter * call OpenSession()
-  augroup END
-
-  function! OpenSession()
-    if isdirectory(".git")
-      execute ":Mkdir! .vim"
-      execute ":Obsession .vim/session.vim"
+vim.api.nvim_create_autocmd({ 'VimEnter' }, {
+  group = vim.api.nvim_create_augroup('session_managment', { clear = true }),
+  callback = function()
+    if vim.fn.isdirectory('.git') then
+      vim.fn.mkdir('.vim/', 'p')
+      vim.fn.execute(':Obsession .vim/session.vim')
     end
-  endfunction
-]])
+  end,
+})
