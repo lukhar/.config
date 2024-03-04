@@ -13,7 +13,7 @@ return {
 
     local icons = {
       vim = '',
-      git = '',
+      git = '',
       diff = { added = '󰐕', modified = '~', removed = '󰍴' },
       default = { left = '', right = ' ' },
       round = { left = '', right = '' },
