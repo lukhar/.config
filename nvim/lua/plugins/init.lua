@@ -17,4 +17,5 @@ return {
   },
   'christoomey/vim-tmux-navigator',
   'junegunn/vim-slash',        -- automatically disable `hlsearch`
+  'mfussenegger/nvim-jdtls'
 }
