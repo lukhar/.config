@@ -2,9 +2,7 @@
 local function python_path()
   if vim.env.VIRTUAL_ENV then
     local pyenv_root = vim.fn.systemlist('pyenv root')[1]
-    local virtualenv_path =
-      require('lspconfig').util.path.join(pyenv_root, 'versions', vim.env.VIRTUAL_ENV, 'bin', 'python')
-    return virtualenv_path
+    return require('lspconfig').util.path.join(pyenv_root, 'versions', vim.env.VIRTUAL_ENV, 'bin', 'python')
   end
 
   return vim.fn.exepath('python3') or vim.fn.exepath('python') or 'python'
