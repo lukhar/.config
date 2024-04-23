@@ -25,6 +25,19 @@ return {
       sections['lualine_' .. location] = component
     end
 
+    local function resolve_icon(filename)
+      local icon = '󰈚'
+
+      local devicons_present, devicons = pcall(require, 'nvim-web-devicons')
+
+      if devicons_present then
+        local ft_icon = devicons.get_icon(filename)
+        icon = (ft_icon ~= nil and ft_icon) or icon
+      end
+
+      return icon
+    end
+
     ins_config('a', {
       {
         'mode',
@@ -38,16 +51,8 @@ return {
       {
         'filename',
         fmt = function(filename)
-          local icon = '󰈚'
-
-          local devicons_present, devicons = pcall(require, 'nvim-web-devicons')
-
-          if devicons_present then
-            local ft_icon = devicons.get_icon(filename)
-            icon = (ft_icon ~= nil and ft_icon) or icon
-          end
-
-          return string.format('%s %s', icon, filename)
+          local icon = resolve_icon(filename)
+          return string.format('%s %s', icon, vim.fn.expand('%'))
         end,
       },
     })
@@ -121,7 +126,7 @@ return {
       },
     })
 
-    require('lualine').setup {
+    require('lualine').setup({
       options = {
         component_separators = '',
         section_separators = { left = icons.default.right, right = icons.default.left },
@@ -135,13 +140,21 @@ return {
       },
       sections = sections,
       inactive_sections = {
-        lualine_a = { 'filename' },
+        lualine_a = {
+          {
+            'filename',
+            fmt = function(filename)
+              local icon = resolve_icon(filename)
+              return string.format('%s %s', icon, vim.fn.pathshorten(vim.fn.expand('%')))
+            end,
+          },
+        },
         lualine_b = {},
         lualine_c = {},
         lualine_x = {},
         lualine_y = {},
         lualine_z = { 'location' },
       },
-    }
+    })
   end,
 }
