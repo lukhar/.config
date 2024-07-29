@@ -14,8 +14,8 @@ return {
     vim.keymap.set('n', '_', ':Fern %:h -drawer -toggle -reveal=%<CR>')
   end,
   config = function()
-    vim.api.nvim_create_autocmd({'FileType'}, {
-      group = vim.api.nvim_create_augroup('glyph_palette', {clear = true}),
+    vim.api.nvim_create_autocmd({ 'FileType' }, {
+      group = vim.api.nvim_create_augroup('glyph_palette', { clear = true }),
       pattern = 'fern',
       callback = function()
         vim.opt_local.signcolumn = 'no'

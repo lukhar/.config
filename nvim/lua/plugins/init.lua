@@ -13,9 +13,9 @@ return {
       if vim.fn.executable('hub') then
         vim.g.fugitive_git_executable = 'hub'
       end
-    end
+    end,
   },
   'christoomey/vim-tmux-navigator',
-  'junegunn/vim-slash',        -- automatically disable `hlsearch`
-  'mfussenegger/nvim-jdtls'
+  'junegunn/vim-slash', -- automatically disable `hlsearch`
+  'mfussenegger/nvim-jdtls',
 }

@@ -130,8 +130,8 @@ vim.api.nvim_create_autocmd({ 'VimEnter' }, {
 })
 
 -- fancy diagnostics symbols
-local signs = { Error = "", Warn = "", Hint = "", Info = "" }
+local signs = { Error = '', Warn = '', Hint = '', Info = '' }
 for type, icon in pairs(signs) do
-  local highlight_symbol = "DiagnosticSign" .. type
+  local highlight_symbol = 'DiagnosticSign' .. type
   vim.fn.sign_define(highlight_symbol, { text = icon, texthl = highlight_symbol, numhl = highlight_symbol })
 end

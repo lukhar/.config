@@ -32,7 +32,7 @@ return {
           fugitiveStagedHeading = { fg = colors.orange },
           fugitiveHeading = { fg = colors.orange },
         }
-      end
+      end,
     })
   end,
 }
