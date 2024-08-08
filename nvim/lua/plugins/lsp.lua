@@ -25,7 +25,7 @@ local servers = {
         },
         python = {
           { formatCommand = 'isort --profile=black --quiet -', formatStdin = true },
-          { formatCommand = 'black --quiet -',                 formatStdin = true },
+          { formatCommand = 'black --quiet -', formatStdin = true },
           {
             lintCommand = 'flake8 --stdin-display-name ${INPUT} -',
             lintStdin = true,
@@ -114,6 +114,11 @@ local on_attach = function(_, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', format, { desc = 'Format current buffer with LSP' })
 
   nmap('gF', format, '[G]o [Format] code')
+
+  -- Toogles
+  nmap('<leader>tD', function(_)
+    vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+  end, 'toggle [D]iagnostics')
 end
 
 return {
