@@ -4,6 +4,9 @@ JetBrains
 Popcorn-Time
 jgit
 
+# dictionaries binaries
+*.spl
+
 # all chromium settings (rather big)
 chromium/    
 google-chrome/

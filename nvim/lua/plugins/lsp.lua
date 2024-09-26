@@ -12,6 +12,14 @@ local function capabilities()
   return require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 end
 
+local function custom_dictionary(path)
+  local spell = {}
+  for word in io.open(path, 'r'):lines() do
+    table.insert(spell, word)
+  end
+  return spell
+end
+
 local tools = { 'stylua', 'black', 'flake8' }
 
 local servers = {
@@ -53,7 +61,15 @@ local servers = {
   tsserver = {},
   vimls = {},
   terraformls = {},
-  ltex = {},
+  ltex = {
+    settings = {
+      ltex = {
+        dictionary = {
+          ['en-US'] = custom_dictionary(vim.fn.stdpath('config') .. '/spell/en.utf-8.add'),
+        },
+      },
+    },
+  },
   lua_ls = {
     settings = {
       Lua = {

@@ -28,6 +28,9 @@ vim.o.termguicolors = true
 -- disable the splash screen
 vim.opt.shortmess:append({ I = true })
 
+-- custom dictionary
+vim.opt.spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
+
 -- smart relative numbers
 vim.o.number = true
 vim.o.relativenumber = true
