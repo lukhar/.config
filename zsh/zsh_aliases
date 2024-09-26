@@ -11,6 +11,7 @@
 
 alias sr='source ~/.zsh_aliases'
 
+alias ls='ls --color'
 alias ll='ls -lh'
 alias la='ls -lAh'
 alias l='ls -CFh'
