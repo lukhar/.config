@@ -58,7 +58,7 @@ local servers = {
       },
     },
   },
-  tsserver = {},
+  ts_ls = {},
   vimls = {},
   terraformls = {},
   ltex = {
