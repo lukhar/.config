@@ -37,6 +37,10 @@ vim.o.relativenumber = true
 vim.api.nvim_create_autocmd('InsertEnter', { pattern = '*', command = 'set norelativenumber number' })
 vim.api.nvim_create_autocmd('InsertLeave', { pattern = '*', command = 'set relativenumber number' })
 
+-- wrapped lines match indentation
+vim.o.breakindent = true
+vim.o.breakindentopt="shift:2"
+
 -- enabled copying to clipboard
 vim.api.nvim_set_option('clipboard', 'unnamed')
 
