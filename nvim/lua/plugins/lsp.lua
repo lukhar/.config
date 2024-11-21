@@ -33,7 +33,7 @@ local servers = {
         },
         python = {
           { formatCommand = 'isort --profile=black --quiet -', formatStdin = true },
-          { formatCommand = 'black --quiet -', formatStdin = true },
+          { formatCommand = 'black --quiet -',                 formatStdin = true },
           {
             lintCommand = 'flake8 --stdin-display-name ${INPUT} -',
             lintStdin = true,
@@ -97,12 +97,14 @@ local on_attach = function(_, bufnr)
 
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   nmap('gA', function()
-    vim.lsp.buf.code_action({ context = { only = { 'quickfix', 'refactor', 'source' } } })
+    vim.lsp.buf.code_action({ context = { only = { 'quickfix', 'refactor', 'source' }, diagnostics = {} } })
   end, '[G]oto Code [A]ction')
 
   nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
   nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+  nmap('gC', require('telescope.builtin').lsp_incoming_calls, '[G]oto Incoming [C]alls')
+  nmap('gO', require('telescope.builtin').lsp_outgoing_calls, '[G]oto [O]utgoing Calls')
   nmap('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
   nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
   nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
