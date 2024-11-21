@@ -1,5 +1,15 @@
 return {
-  'folke/zen-mode.nvim',
+  {
+    'folke/zen-mode.nvim',
+    opts = {
+      window = {
+        options = {
+          number = false,
+          relativenumber = false,
+        },
+      },
+    },
+  },
   'tpope/vim-abolish',
   'tpope/vim-commentary',
   'tpope/vim-eunuch',
