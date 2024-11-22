@@ -38,6 +38,16 @@ return {
       return icon
     end
 
+    local function resolve_filepath()
+      local filepath = vim.fn.expand('%')
+
+      if vim.startswith(filepath, 'jdt://') then
+        return filepath:gsub('?.*$', '')
+      end
+
+      return filepath
+    end
+
     ins_config('a', {
       {
         'mode',
@@ -51,8 +61,9 @@ return {
       {
         'filename',
         fmt = function(filename)
+          local filepath = resolve_filepath()
           local icon = resolve_icon(filename)
-          return string.format('%s %s', icon, vim.fn.expand('%'))
+          return string.format('%s %s', icon, filepath)
         end,
       },
     })
@@ -144,8 +155,9 @@ return {
           {
             'filename',
             fmt = function(filename)
+              local filepath = resolve_filepath()
               local icon = resolve_icon(filename)
-              return string.format('%s %s', icon, vim.fn.pathshorten(vim.fn.expand('%')))
+              return string.format('%s %s', icon, vim.fn.pathshorten(filepath))
             end,
           },
         },
