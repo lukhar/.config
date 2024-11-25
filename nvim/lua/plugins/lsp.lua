@@ -33,7 +33,7 @@ local servers = {
         },
         python = {
           { formatCommand = 'isort --profile=black --quiet -', formatStdin = true },
-          { formatCommand = 'black --quiet -',                 formatStdin = true },
+          { formatCommand = 'black --quiet -', formatStdin = true },
           {
             lintCommand = 'flake8 --stdin-display-name ${INPUT} -',
             lintStdin = true,
@@ -97,7 +97,10 @@ local on_attach = function(_, bufnr)
 
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   nmap('gA', function()
-    vim.lsp.buf.code_action({ context = { only = { 'quickfix', 'refactor', 'source' }, diagnostics = {} } })
+    local current_buffer_diagnostics = vim.diagnostic.get(0)
+    vim.lsp.buf.code_action({
+      context = { only = { 'quickfix', 'refactor', 'source' }, diagnostics = current_buffer_diagnostics },
+    })
   end, '[G]oto Code [A]ction')
 
   nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
