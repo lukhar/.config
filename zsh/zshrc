@@ -87,7 +87,7 @@ precmd() {
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # for some reason it doesn't work asyncchronously in OSX
-[ -z "$VIRTUAL_ENV"] && eval "$(pyenv virtualenv-init -)"
+[ -z "$VIRTUAL_ENV" ] && eval "$(pyenv virtualenv-init -)"
 [ -x "$(command -v pyenv)" ] && eval "$(pyenv init --path)"
 
 # TODO move to separate file
