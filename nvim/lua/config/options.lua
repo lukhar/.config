@@ -29,7 +29,7 @@ vim.o.termguicolors = true
 vim.opt.shortmess:append({ I = true })
 
 -- custom dictionary
-vim.opt.spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
+vim.opt.spellfile = vim.fn.stdpath('config') .. '/spell/en.utf-8.add'
 
 -- smart relative numbers
 vim.o.number = true
@@ -39,7 +39,7 @@ vim.api.nvim_create_autocmd('InsertLeave', { pattern = '*', command = 'set relat
 
 -- wrapped lines match indentation
 vim.o.breakindent = true
-vim.o.breakindentopt="shift:2"
+vim.o.breakindentopt = 'shift:2'
 
 -- enabled copying to clipboard
 vim.api.nvim_set_option('clipboard', 'unnamed')
@@ -138,12 +138,12 @@ vim.api.nvim_create_autocmd({ 'VimEnter' }, {
 
 -- fancy diagnostics symbols
 vim.diagnostic.config({
-  sings = {
+  signs = {
     text = {
-      [vim.diagnostic.severity.ERROR] =  '',
-      [vim.diagnostic.severity.WARN] =  '',
-      [vim.diagnostic.severity.HINT] =  '',
-      [vim.diagnostic.severity.INFO] =  '',
-    }
-  }
+      [vim.diagnostic.severity.ERROR] = '',
+      [vim.diagnostic.severity.WARN] = '',
+      [vim.diagnostic.severity.HINT] = '',
+      [vim.diagnostic.severity.INFO] = '',
+    },
+  },
 })
