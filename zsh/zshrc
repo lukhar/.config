@@ -1,3 +1,4 @@
+# zmodload zsh/zprof                                            # uncomment to profile
 ### Added by Zinit's installer
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d $ZINIT_HOME  ] && mkdir -p "$(dirname $ZINIT_HOME)"
@@ -13,7 +14,6 @@ zinit ice pick"async.zsh" src"pure.zsh"
 zinit light sindresorhus/pure
 
 zinit ice depth"1" from"gitlab"
-zinit light RiverGlide/zsh-goenv
 
 zstyle :prompt:pure:git:stash show yes                          # turn on git stash status
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'       # Case insensitive tab completion
@@ -98,6 +98,10 @@ __init_pyenv() {
   [ -x "$(command -v ptpython)" ] && export PTPYTHON_CONFIG_HOME=$HOME/.config/ptpython
 }
 
+__init_goenv() {
+  [ -x "$(command -v goenv)" ] && eval "$(goenv init -)"
+}
+
 __init_rbenv() {
   [ -x "$(command -v rbenv)" ] && eval "$(rbenv init -)"
 }
@@ -120,7 +124,7 @@ __init_pipx() {
   [ -x "$(command -v pipx)" ] && export PATH=$HOME/.local/bin:$PATH
 }
 
-__init_funcs=(__init_pyenv __init_rbenv __init_nvm __init_hub __init_pipx __init_sdk)
+__init_funcs=(__init_pyenv __init_rbenv __init_nvm __init_hub __init_pipx __init_sdk __init_goenv)
 __init_total=${#__init_funcs[*]}
 __init_index=1
 
@@ -155,4 +159,5 @@ async_register_callback zsh init_callback
 # Delay init function triggering for 2s to make the shell starts faster.
 async_job zsh __run 1 2
 
+# zprof                                                         # uncomment to profile
 #vim: tabstop=2 shiftwidth=2 expandtab
