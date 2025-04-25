@@ -75,11 +75,11 @@ export LUA_PATH=/usr/share/awesome/lib
 precmd() {
   if [[ -n $PYENV_SHELL ]]; then
     local version
-    version=$(pyenv virtualenv-prefix)/envs/$(pyenv version-name)
-    if [[ $version = system ]]; then
+    version=$(pyenv version-name)
+    if [[ $version == system ]]; then
       unset VIRTUAL_ENV
     else
-      VIRTUAL_ENV=$version
+      VIRTUAL_ENV=$(pyenv virtualenv-prefix)/envs/$(pyenv version-name)
     fi
   fi
 }
