@@ -84,15 +84,14 @@ precmd() {
   fi
 }
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+__init_fzf() {
+  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+}
 
-# for some reason it doesn't work asyncchronously in OSX
-[ -z "$VIRTUAL_ENV" ] && eval "$(pyenv virtualenv-init -)"
-[ -x "$(command -v pyenv)" ] && eval "$(pyenv init --path)"
-
-# TODO move to separate file
 __init_pyenv() {
   [ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
+  [ -x "$(command -v pyenv)" ] && eval "$(pyenv init --path)"
+  [ -z "$VIRTUAL_ENV" ] && eval "$(pyenv virtualenv-init -)"
 
   # ptpython
   [ -x "$(command -v ptpython)" ] && export PTPYTHON_CONFIG_HOME=$HOME/.config/ptpython
@@ -124,7 +123,7 @@ __init_pipx() {
   [ -x "$(command -v pipx)" ] && export PATH=$HOME/.local/bin:$PATH
 }
 
-__init_funcs=(__init_pyenv __init_rbenv __init_nvm __init_hub __init_pipx __init_sdk __init_goenv)
+__init_funcs=(__init_fzf __init_pyenv __init_rbenv __init_nvm __init_hub __init_pipx __init_sdk __init_goenv)
 __init_total=${#__init_funcs[*]}
 __init_index=1
 
