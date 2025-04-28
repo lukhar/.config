@@ -43,9 +43,6 @@ setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
 
-# use bat as manpager
-[ -x "$(command -v bat)" ] && export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-
 # enable editing commands in EDITOR
 autoload -z edit-command-line
 zle -N edit-command-line
@@ -115,6 +112,11 @@ __init_hub() {
   [ -x "$(command -v hub)" ] && eval "$(hub alias -s)"
 }
 
+__init_bat() {
+  # use bat as manpager
+  [ -x "$(command -v bat)" ] && export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+}
+
 __init_sdk() {
   [ -d $HOME/.sdkman ] && source $HOME/.sdkman/bin/sdkman-init.sh
 }
@@ -123,7 +125,7 @@ __init_pipx() {
   [ -x "$(command -v pipx)" ] && export PATH=$HOME/.local/bin:$PATH
 }
 
-__init_funcs=(__init_fzf __init_pyenv __init_rbenv __init_nvm __init_hub __init_pipx __init_sdk __init_goenv)
+__init_funcs=(__init_fzf __init_pyenv __init_bat __init_rbenv __init_nvm __init_hub __init_pipx __init_sdk __init_goenv)
 __init_total=${#__init_funcs[*]}
 __init_index=1
 
