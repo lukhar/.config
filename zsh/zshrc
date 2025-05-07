@@ -81,6 +81,9 @@ precmd() {
   fi
 }
 
+# breaks `poetry` env resolution if run lazily
+[ -z "$VIRTUAL_ENV" ] && eval "$(pyenv virtualenv-init -)"
+
 __init_fzf() {
   [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 }
