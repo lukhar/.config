@@ -32,7 +32,7 @@ local servers = {
         },
         python = {
           { formatCommand = 'isort --profile=black --quiet -', formatStdin = true },
-          { formatCommand = 'black --quiet -', formatStdin = true },
+          { formatCommand = 'black --quiet -',                 formatStdin = true },
           {
             lintCommand = 'flake8 --stdin-display-name ${INPUT} -',
             lintStdin = true,
@@ -148,6 +148,7 @@ return {
     -- Automatically install LSPs to stdpath for neovim
     {
       'williamboman/mason.nvim',
+      version = '^1.11',
       opts = {
         ui = {
           icons = {
@@ -173,7 +174,7 @@ return {
     },
     {
       'williamboman/mason-lspconfig.nvim',
-
+      version = '^1.32',
       config = function()
         require('neodev').setup()
         local lspconfig = require('lspconfig')
