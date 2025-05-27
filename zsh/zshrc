@@ -90,7 +90,6 @@ __init_fzf() {
 
 __init_pyenv() {
   [ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
-  [ -x "$(command -v pyenv)" ] && eval "$(pyenv init --path)"
   [ -z "$VIRTUAL_ENV" ] && eval "$(pyenv virtualenv-init -)"
 
   # ptpython
