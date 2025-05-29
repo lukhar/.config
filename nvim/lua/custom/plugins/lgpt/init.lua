@@ -100,29 +100,22 @@ function M.execute_stream_query(query)
 
       for _, chunk in ipairs(data) do
         if chunk ~= '' then
-          local message = vim.fn.json_decode(chunk).message.content
-          if message == '\n' then
-            vim.api.nvim_buf_set_lines(buffer, current_line_index + 1, current_line_index + 1, false, { '' })
+          local content = vim.fn.json_decode(chunk).message.content
+          if content == '\n' then
             current_line_index = current_line_index + 1
+            vim.api.nvim_buf_set_lines(buffer, current_line_index, current_line_index, false, { '' })
           else
-            local current_line = vim.api.nvim_buf_get_lines(buffer, current_line_index, current_line_index + 1, false)[1]
-              or ''
-            vim.api.nvim_buf_set_lines(
-              buffer,
-              current_line_index,
-              current_line_index + 1,
-              false,
-              { current_line .. message }
-            )
+            local line = vim.api.nvim_buf_get_lines(buffer, current_line_index, current_line_index + 1, false)[1] or ''
+            vim.api.nvim_buf_set_lines(buffer, current_line_index, current_line_index + 1, false, { line .. content })
           end
         end
       end
     end,
 
     on_stderr = function(_, data, _)
-      for _, line in ipairs(data) do
-        if line ~= '' then
-          vim.api.nvim_buf_set_lines(buffer, -1, -1, false, { '[stderr] ' .. line })
+      for _, chunk in ipairs(data) do
+        if chunk ~= '' then
+          vim.api.nvim_buf_set_lines(buffer, -1, -1, false, { '[stderr] ' .. chunk })
         end
       end
     end,
@@ -148,7 +141,7 @@ vim.api.nvim_create_user_command('Lgen', function(input)
 
   local query = M.ollama_query(
     { host = 'localhost', port = '11434', model = 'mistral', role = 'user', stream = tostring(stream) },
-    prompt
+    prompt:gsub('`', '')
   )
 
   if stream then
