@@ -7,58 +7,60 @@ function M.sanitize_prompt(prompt)
 
   -- Escape characters that are problematic in JSON strings within shell commands
   local sanitized = prompt
-      :gsub('\\', '\\\\') -- Escape backslashes first
-      :gsub('"', '\\"') -- Escape double quotes
-      :gsub('\n', '\\n') -- Escape newlines
-      :gsub('\r', '\\r') -- Escape carriage returns
-      :gsub('\t', '\\t') -- Escape tabs
-      :gsub('\b', '\\b') -- Escape backspace
-      :gsub('\f', '\\f') -- Escape form feed
-      :gsub('`', '\\`') -- Escape backticks for shell safety
-      :gsub('%$', '\\$') -- Escape dollar signs for shell safety
+    :gsub('\\', '\\\\') -- Escape backslashes first
+    :gsub('"', '\\"') -- Escape double quotes
+    :gsub('\n', '\\n') -- Escape newlines
+    :gsub('\r', '\\r') -- Escape carriage returns
+    :gsub('\t', '\\t') -- Escape tabs
+    :gsub('\b', '\\b') -- Escape backspace
+    :gsub('\f', '\\f') -- Escape form feed
+    :gsub('`', '\\`') -- Escape backticks for shell safety
+    :gsub('%$', '\\$') -- Escape dollar signs for shell safety
   return sanitized
 end
 
 function M.ollama_query(options, content)
-  local body = '{\\"model\\": \\"'
-      .. options.model
-      .. '\\", \\"messages\\": [ { \\"role\\": \\"'
-      .. options.role
-      .. '\\", \\"content\\": \\"'
-      .. content
-      .. '\\" } ], \\"stream\\": '
-      .. options.stream
-      .. ', \\"store\\": '
-      .. options.store
-      .. '}'
+  -- Create JSON body using proper JSON encoding
+  local body = vim.fn.json_encode({
+    model = options.model,
+    messages = {
+      { role = options.role, content = content },
+    },
+    stream = options.stream == 'true',
+    store = options.store == 'true',
+  })
 
-  local openai = 'curl -q --silent --no-buffer '
-      .. '-H "Content-Type: application/json" '
-      .. '-H "Authorization: Bearer '
-      .. options.api_key
-      .. '" '
-      .. 'https://'
-      .. options.host
-      .. ':'
-      .. options.port
-      .. '/v1/chat/completions -d "'
-      .. body
-      .. '"'
+  -- Build command as table for vim.system
+  local cmd = {
+    'curl',
+    '-q',
+    '--silent',
+    '--no-buffer',
+    '-X',
+    'POST',
+  }
 
+  local headers = { '-H', '"Content-Type: application/json"' }
+
+  -- Add authorization header for OpenAI
   if options.host:match('.*openai.*') then
-    return openai
+    table.insert(headers, '-H')
+    table.insert(headers, '"Authorization: Bearer ' .. options.api_key .. '"')
   end
 
-  local ollama = 'curl -q --silent --no-buffer -X POST '
-      .. 'http://'
-      .. options.host
-      .. ':'
-      .. options.port
-      .. '/v1/chat/completions -d "'
-      .. body
-      .. '"'
+  -- Determine URL
+  local url
+  if options.host:match('.*openai.*') then
+    url = 'https://' .. options.host .. ':' .. options.port .. '/v1/chat/completions'
+  else
+    url = 'http://' .. options.host .. ':' .. options.port .. '/v1/chat/completions'
+  end
 
-  return ollama
+  -- Add URL and data
+  vim.list_extend(cmd, headers)
+  vim.list_extend(cmd, { url, '-d', "'" .. body .. "'" })
+
+  return cmd
 end
 
 function load_credentials()
@@ -73,8 +75,8 @@ function M.content(raw)
   local json = vim.fn.json_decode(json_string)
 
   return (json.choices[1].delta and json.choices[1].delta.content)
-      or (json.choices[1].message and json.choices[1].message.content)
-      or ''
+    or (json.choices[1].message and json.choices[1].message.content)
+    or ''
 end
 
 function M.open_window(buffer, width, height)
@@ -210,18 +212,17 @@ vim.api.nvim_create_user_command('Lgen', function(input)
   local query = M.ollama_query({
     api_key = load_credentials(),
     host = 'api.openai.com', -- localhost, api.openai.com
-    port = '443',            -- 443, 11434
-    model = 'gpt-4.1',       -- gpt-4o-mini, mistral
+    port = '443', -- 443, 11434
+    model = 'gpt-4.1', -- gpt-4o-mini, mistral
     role = 'user',
     store = 'true',
     stream = tostring(stream),
   }, M.sanitize_prompt(prompt))
 
-  print(query)
   if stream then
-    M.execute_stream_query(query)
+    M.execute_stream_query(table.concat(query, ' '))
   else
-    M.execute_query(query)
+    M.execute_query(table.concat(query, ' '))
   end
 end, {
   bang = true,
