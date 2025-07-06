@@ -7,56 +7,56 @@ function M.sanitize_prompt(prompt)
 
   -- Escape characters that are problematic in JSON strings within shell commands
   local sanitized = prompt
-    :gsub('\\', '\\\\') -- Escape backslashes first
-    :gsub('"', '\\"') -- Escape double quotes
-    :gsub('\n', '\\n') -- Escape newlines
-    :gsub('\r', '\\r') -- Escape carriage returns
-    :gsub('\t', '\\t') -- Escape tabs
-    :gsub('\b', '\\b') -- Escape backspace
-    :gsub('\f', '\\f') -- Escape form feed
-    :gsub('`', '\\`') -- Escape backticks for shell safety
-    :gsub('%$', '\\$') -- Escape dollar signs for shell safety
+      :gsub('\\', '\\\\') -- Escape backslashes first
+      :gsub('"', '\\"') -- Escape double quotes
+      :gsub('\n', '\\n') -- Escape newlines
+      :gsub('\r', '\\r') -- Escape carriage returns
+      :gsub('\t', '\\t') -- Escape tabs
+      :gsub('\b', '\\b') -- Escape backspace
+      :gsub('\f', '\\f') -- Escape form feed
+      :gsub('`', '\\`') -- Escape backticks for shell safety
+      :gsub('%$', '\\$') -- Escape dollar signs for shell safety
   return sanitized
 end
 
 function M.ollama_query(options, content)
   local body = '{\\"model\\": \\"'
-    .. options.model
-    .. '\\", \\"messages\\": [ { \\"role\\": \\"'
-    .. options.role
-    .. '\\", \\"content\\": \\"'
-    .. content
-    .. '\\" } ], \\"stream\\": '
-    .. options.stream
-    .. ', \\"store\\": '
-    .. options.store
-    .. '}'
+      .. options.model
+      .. '\\", \\"messages\\": [ { \\"role\\": \\"'
+      .. options.role
+      .. '\\", \\"content\\": \\"'
+      .. content
+      .. '\\" } ], \\"stream\\": '
+      .. options.stream
+      .. ', \\"store\\": '
+      .. options.store
+      .. '}'
 
   local openai = 'curl -q --silent --no-buffer '
-    .. '-H "Content-Type: application/json" '
-    .. '-H "Authorization: Bearer '
-    .. options.api_key
-    .. '" '
-    .. 'https://'
-    .. options.host
-    .. ':'
-    .. options.port
-    .. '/v1/chat/completions -d "'
-    .. body
-    .. '"'
+      .. '-H "Content-Type: application/json" '
+      .. '-H "Authorization: Bearer '
+      .. options.api_key
+      .. '" '
+      .. 'https://'
+      .. options.host
+      .. ':'
+      .. options.port
+      .. '/v1/chat/completions -d "'
+      .. body
+      .. '"'
 
   if options.host:match('.*openai.*') then
     return openai
   end
 
   local ollama = 'curl -q --silent --no-buffer -X POST '
-    .. 'http://'
-    .. options.host
-    .. ':'
-    .. options.port
-    .. '/v1/chat/completions -d "'
-    .. body
-    .. '"'
+      .. 'http://'
+      .. options.host
+      .. ':'
+      .. options.port
+      .. '/v1/chat/completions -d "'
+      .. body
+      .. '"'
 
   return ollama
 end
@@ -73,8 +73,8 @@ function M.content(raw)
   local json = vim.fn.json_decode(json_string)
 
   return (json.choices[1].delta and json.choices[1].delta.content)
-    or (json.choices[1].message and json.choices[1].message.content)
-    or ''
+      or (json.choices[1].message and json.choices[1].message.content)
+      or ''
 end
 
 function M.open_window(buffer, width, height)
@@ -164,12 +164,17 @@ function M.execute_stream_query(query)
       for _, chunk in ipairs(data) do
         if chunk ~= '' and chunk ~= 'data: [DONE]' then
           local content = M.content(chunk)
-          if content:match('.*\n') then
-            current_line_index = current_line_index + 1
-            vim.api.nvim_buf_set_lines(buffer, current_line_index, current_line_index, false, { '' })
-          else
+          local line_part = content:match('[^\n]+')
+          local new_lines = content:match('[\n]+')
+
+          if line_part then
             local line = vim.api.nvim_buf_get_lines(buffer, current_line_index, current_line_index + 1, false)[1] or ''
-            vim.api.nvim_buf_set_lines(buffer, current_line_index, current_line_index + 1, false, { line .. content })
+            vim.api.nvim_buf_set_lines(buffer, current_line_index, current_line_index + 1, false, { line .. line_part })
+          end
+
+          if new_lines then
+            current_line_index = current_line_index + #new_lines
+            vim.api.nvim_buf_set_lines(buffer, current_line_index, current_line_index, false, { '' })
           end
         end
       end
@@ -205,13 +210,14 @@ vim.api.nvim_create_user_command('Lgen', function(input)
   local query = M.ollama_query({
     api_key = load_credentials(),
     host = 'api.openai.com', -- localhost, api.openai.com
-    port = '443', -- 443, 11434
-    model = 'gpt-4.1', -- gpt-4o-mini, mistral
+    port = '443',            -- 443, 11434
+    model = 'gpt-4.1',       -- gpt-4o-mini, mistral
     role = 'user',
     store = 'true',
     stream = tostring(stream),
   }, M.sanitize_prompt(prompt))
 
+  print(query)
   if stream then
     M.execute_stream_query(query)
   else
