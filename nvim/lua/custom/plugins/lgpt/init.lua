@@ -1,5 +1,24 @@
 local M = {}
 
+function M.sanitize_prompt(prompt)
+  if not prompt then
+    return ''
+  end
+
+  -- Escape characters that are problematic in JSON strings within shell commands
+  local sanitized = prompt
+    :gsub('\\', '\\\\') -- Escape backslashes first
+    :gsub('"', '\\"') -- Escape double quotes
+    :gsub('\n', '\\n') -- Escape newlines
+    :gsub('\r', '\\r') -- Escape carriage returns
+    :gsub('\t', '\\t') -- Escape tabs
+    :gsub('\b', '\\b') -- Escape backspace
+    :gsub('\f', '\\f') -- Escape form feed
+    :gsub('`', '\\`') -- Escape backticks for shell safety
+    :gsub('%$', '\\$') -- Escape dollar signs for shell safety
+  return sanitized
+end
+
 function M.ollama_query(options, content)
   local body = '{\\"model\\": \\"'
     .. options.model
@@ -43,18 +62,19 @@ function M.ollama_query(options, content)
 end
 
 function load_credentials()
-  local raw_credentials = vim.fn.readfile(".credentials.secret")
+  local raw_credentials = vim.fn.readfile('.credentials.secret')
   local credentials = vim.fn.json_decode(raw_credentials)
 
-  return credentials["openai"]["key"]
+  return credentials['openai']['key']
 end
 
-print(load_credentials())
-
 function M.content(raw)
-  local json_string = raw:match('^data:%s*(.*)')
+  local json_string = raw:match('^data:%s*(.*)') or raw
   local json = vim.fn.json_decode(json_string)
-  return json.choices[1].delta.content or ''
+
+  return (json.choices[1].delta and json.choices[1].delta.content)
+    or (json.choices[1].message and json.choices[1].message.content)
+    or ''
 end
 
 function M.open_window(buffer, width, height)
@@ -96,20 +116,25 @@ function M.execute_query(query)
 
   vim.fn.jobstart(query, {
     on_stdout = function(_, data, _)
+      if not data then
+        return
+      end
+
       for _, line in ipairs(data) do
-        raw_result = raw_result .. line
+        if line ~= '' and line ~= 'data: [DONE]' then
+          raw_result = raw_result .. line
+        end
       end
     end,
 
     on_exit = function(_, _)
-      local result = vim.fn.json_decode(raw_result)
-
+      local content = M.content(raw_result)
       local buffer = vim.api.nvim_create_buf(false, true)
 
-      vim.api.nvim_buf_set_lines(buffer, 0, -1, false, vim.split(result.message.content, '\n'))
+      vim.api.nvim_buf_set_lines(buffer, 0, -1, false, vim.split(content, '\n'))
       vim.api.nvim_buf_set_option(buffer, 'filetype', 'markdown')
 
-      local width = math.min(#result.message.content, vim.o.columns - 100)
+      local width = math.min(content:len(), vim.o.columns - 100)
       local height = math.max(2, vim.api.nvim_buf_line_count(buffer))
 
       M.open_window(buffer, width, height)
@@ -185,7 +210,7 @@ vim.api.nvim_create_user_command('Lgen', function(input)
     role = 'user',
     store = 'true',
     stream = tostring(stream),
-  }, prompt:gsub('`', ''))
+  }, M.sanitize_prompt(prompt))
 
   if stream then
     M.execute_stream_query(query)
