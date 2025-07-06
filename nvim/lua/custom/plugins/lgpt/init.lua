@@ -40,12 +40,12 @@ function M.ollama_query(options, content)
     'POST',
   }
 
-  local headers = { '-H', '"Content-Type: application/json"' }
+  local headers = { '-H', 'Content-Type: application/json' }
 
   -- Add authorization header for OpenAI
   if options.host:match('.*openai.*') then
     table.insert(headers, '-H')
-    table.insert(headers, '"Authorization: Bearer ' .. options.api_key .. '"')
+    table.insert(headers, 'Authorization: Bearer ' .. options.api_key)
   end
 
   -- Determine URL
@@ -58,7 +58,7 @@ function M.ollama_query(options, content)
 
   -- Add URL and data
   vim.list_extend(cmd, headers)
-  vim.list_extend(cmd, { url, '-d', "'" .. body .. "'" })
+  vim.list_extend(cmd, { url, '-d', body })
 
   return cmd
 end
@@ -114,23 +114,19 @@ function M.open_window(buffer, width, height)
 end
 
 function M.execute_query(query)
-  local raw_result = ''
-
-  vim.fn.jobstart(query, {
-    on_stdout = function(_, data, _)
-      if not data then
+  vim.system(query, { text = true }, function(result)
+    vim.schedule(function()
+      if result.code ~= 0 then
+        vim.notify('API Error: ' .. (result.stderr or 'Unknown error'), vim.log.levels.ERROR)
         return
       end
 
-      for _, line in ipairs(data) do
-        if line ~= '' and line ~= 'data: [DONE]' then
-          raw_result = raw_result .. line
-        end
+      if not result.stdout or result.stdout == '' then
+        vim.notify('No response from API', vim.log.levels.WARN)
+        return
       end
-    end,
 
-    on_exit = function(_, _)
-      local content = M.content(raw_result)
+      local content = M.content(result.stdout)
       local buffer = vim.api.nvim_create_buf(false, true)
 
       vim.api.nvim_buf_set_lines(buffer, 0, -1, false, vim.split(content, '\n'))
@@ -140,8 +136,8 @@ function M.execute_query(query)
       local height = math.max(2, vim.api.nvim_buf_line_count(buffer))
 
       M.open_window(buffer, width, height)
-    end,
-  })
+    end)
+  end)
 end
 
 function M.execute_stream_query(query)
@@ -154,46 +150,82 @@ function M.execute_stream_query(query)
 
   M.open_window(buffer, width, height)
 
-  vim.fn.jobstart(query, {
-    stdout_buffered = false,
-    stderr_buffered = true,
+  local stdout = vim.uv.new_pipe(false)
+  local stderr = vim.uv.new_pipe(false)
 
-    on_stdout = function(_, data, _)
-      if not data then
-        return
+  local handle = vim.uv.spawn(query[1], {
+    args = vim.list_slice(query, 2),
+    stdio = { nil, stdout, stderr },
+  }, function(code, _)
+    vim.schedule(function()
+      vim.api.nvim_buf_set_option(buffer, 'filetype', 'markdown')
+      if code ~= 0 then
+        vim.notify('Stream process exited with code: ' .. code, vim.log.levels.WARN)
       end
+    end)
+  end)
 
-      for _, chunk in ipairs(data) do
+  if not handle then
+    vim.notify('Failed to start streaming process', vim.log.levels.ERROR)
+    return
+  end
+
+  stdout:read_start(function(error, data)
+    if error then
+      vim.schedule(function()
+        vim.notify('stdout error: ' .. error, vim.log.levels.ERROR)
+      end)
+      return
+    end
+
+    if not data then
+      return
+    end
+
+    vim.schedule(function()
+      for chunk in data:gmatch('[^\r\n]+') do
         if chunk ~= '' and chunk ~= 'data: [DONE]' then
           local content = M.content(chunk)
-          local line_part = content:match('[^\n]+')
-          local new_lines = content:match('[\n]+')
+          if content and content ~= '' then
+            local line_part = content:match('[^\n]+')
+            local new_lines = content:match('[\n]+')
 
-          if line_part then
-            local line = vim.api.nvim_buf_get_lines(buffer, current_line_index, current_line_index + 1, false)[1] or ''
-            vim.api.nvim_buf_set_lines(buffer, current_line_index, current_line_index + 1, false, { line .. line_part })
-          end
+            if line_part then
+              local line = vim.api.nvim_buf_get_lines(buffer, current_line_index, current_line_index + 1, false)[1]
+                or ''
+              vim.api.nvim_buf_set_lines(
+                buffer,
+                current_line_index,
+                current_line_index + 1,
+                false,
+                { line .. line_part }
+              )
+            end
 
-          if new_lines then
-            current_line_index = current_line_index + #new_lines
-            vim.api.nvim_buf_set_lines(buffer, current_line_index, current_line_index, false, { '' })
+            if new_lines then
+              current_line_index = current_line_index + #new_lines
+              vim.api.nvim_buf_set_lines(buffer, current_line_index, current_line_index, false, { '' })
+            end
           end
         end
       end
-    end,
+    end)
+  end)
 
-    on_stderr = function(_, data, _)
-      for _, chunk in ipairs(data) do
-        if chunk ~= '' then
-          vim.api.nvim_buf_set_lines(buffer, -1, -1, false, { '[stderr] ' .. chunk })
-        end
-      end
-    end,
+  stderr:read_start(function(error, data)
+    if error then
+      vim.schedule(function()
+        vim.notify('stderr error: ' .. error, vim.log.levels.ERROR)
+      end)
+      return
+    end
 
-    on_exit = function()
-      vim.api.nvim_buf_set_option(buffer, 'filetype', 'markdown')
-    end,
-  })
+    if data then
+      vim.schedule(function()
+        vim.api.nvim_buf_set_lines(buffer, -1, -1, false, { '[stderr] ' .. data })
+      end)
+    end
+  end)
 end
 
 vim.api.nvim_create_user_command('Lgen', function(input)
@@ -220,9 +252,9 @@ vim.api.nvim_create_user_command('Lgen', function(input)
   }, M.sanitize_prompt(prompt))
 
   if stream then
-    M.execute_stream_query(table.concat(query, ' '))
+    M.execute_stream_query(query)
   else
-    M.execute_query(table.concat(query, ' '))
+    M.execute_query(query)
   end
 end, {
   bang = true,
