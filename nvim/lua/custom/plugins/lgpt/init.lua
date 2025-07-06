@@ -9,14 +9,52 @@ function M.ollama_query(options, content)
     .. content
     .. '\\" } ], \\"stream\\": '
     .. options.stream
+    .. ', \\"store\\": '
+    .. options.store
     .. '}'
-  return 'curl -q --silent --no-buffer -X POST http://'
+
+  local openai = 'curl -q --silent --no-buffer '
+    .. '-H "Content-Type: application/json" '
+    .. '-H "Authorization: Bearer '
+    .. options.api_key
+    .. '" '
+    .. 'https://'
     .. options.host
     .. ':'
     .. options.port
-    .. '/api/chat -d "'
+    .. '/v1/chat/completions -d "'
     .. body
     .. '"'
+
+  if options.host:match('.*openai.*') then
+    return openai
+  end
+
+  local ollama = 'curl -q --silent --no-buffer -X POST '
+    .. 'http://'
+    .. options.host
+    .. ':'
+    .. options.port
+    .. '/v1/chat/completions -d "'
+    .. body
+    .. '"'
+
+  return ollama
+end
+
+function load_credentials()
+  local raw_credentials = vim.fn.readfile(".credentials.secret")
+  local credentials = vim.fn.json_decode(raw_credentials)
+
+  return credentials["openai"]["key"]
+end
+
+print(load_credentials())
+
+function M.content(raw)
+  local json_string = raw:match('^data:%s*(.*)')
+  local json = vim.fn.json_decode(json_string)
+  return json.choices[1].delta.content or ''
 end
 
 function M.open_window(buffer, width, height)
@@ -99,9 +137,9 @@ function M.execute_stream_query(query)
       end
 
       for _, chunk in ipairs(data) do
-        if chunk ~= '' then
-          local content = vim.fn.json_decode(chunk).message.content
-          if content == '\n' then
+        if chunk ~= '' and chunk ~= 'data: [DONE]' then
+          local content = M.content(chunk)
+          if content:match('.*\n') then
             current_line_index = current_line_index + 1
             vim.api.nvim_buf_set_lines(buffer, current_line_index, current_line_index, false, { '' })
           else
@@ -139,17 +177,21 @@ vim.api.nvim_create_user_command('Lgen', function(input)
     prompt = prefix .. ':\\n' .. table.concat(lines, '\\n')
   end
 
-  local query = M.ollama_query(
-    { host = 'localhost', port = '11434', model = 'mistral', role = 'user', stream = tostring(stream) },
-    prompt:gsub('`', '')
-  )
+  local query = M.ollama_query({
+    api_key = load_credentials(),
+    host = 'api.openai.com', -- localhost, api.openai.com
+    port = '443', -- 443, 11434
+    model = 'gpt-4.1', -- gpt-4o-mini, mistral
+    role = 'user',
+    store = 'true',
+    stream = tostring(stream),
+  }, prompt:gsub('`', ''))
 
   if stream then
     M.execute_stream_query(query)
   else
     M.execute_query(query)
   end
-  -- M.open_popup_and_stream()
 end, {
   bang = true,
   range = true,
