@@ -16,6 +16,7 @@ function M.sanitize_prompt(prompt)
     :gsub('\f', '\\f') -- Escape form feed
     :gsub('`', '\\`') -- Escape backticks for shell safety
     :gsub('%$', '\\$') -- Escape dollar signs for shell safety
+
   return sanitized
 end
 
@@ -63,9 +64,9 @@ function M.ollama_query(options, content)
   return cmd
 end
 
-function load_credentials()
-  local raw_credentials = vim.fn.readfile('.credentials.secret')
-  local credentials = vim.fn.json_decode(raw_credentials)
+function M.load_credentials()
+  local credentials_path = vim.fn.expand("~") .. '/.config/nvim/.credentials.secret'
+  local credentials = vim.fn.json_decode(vim.fn.readfile(credentials_path))
 
   return credentials['openai']['key']
 end
@@ -242,7 +243,7 @@ vim.api.nvim_create_user_command('Lgen', function(input)
   end
 
   local query = M.ollama_query({
-    api_key = load_credentials(),
+    api_key = M.load_credentials(),
     host = 'api.openai.com', -- localhost, api.openai.com
     port = '443', -- 443, 11434
     model = 'gpt-4.1', -- gpt-4o-mini, mistral
