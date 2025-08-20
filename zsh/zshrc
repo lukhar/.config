@@ -46,7 +46,7 @@ setopt hist_find_no_dups
 # enable editing commands in EDITOR
 autoload -z edit-command-line
 zle -N edit-command-line
-bindkey -M vicmd v edit-command-line
+bindkey -v
 
 # autosuggest settings
 bindkey '^ ' autosuggest-accept                                 # use control space for autosuggest completion
