@@ -47,6 +47,7 @@ setopt hist_find_no_dups
 autoload -z edit-command-line
 zle -N edit-command-line
 bindkey -v
+bindkey -M vicmd v edit-command-line
 
 # autosuggest settings
 bindkey '^ ' autosuggest-accept                                 # use control space for autosuggest completion
