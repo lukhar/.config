@@ -42,7 +42,7 @@ vim.o.breakindent = true
 vim.o.breakindentopt = 'shift:2'
 
 -- enabled copying to clipboard
-vim.api.nvim_set_option('clipboard', 'unnamed')
+vim.opt.clipboard = 'unnamed'
 
 -- highlight on yank
 vim.api.nvim_create_autocmd('TextYankPost', {

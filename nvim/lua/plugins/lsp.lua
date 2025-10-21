@@ -151,7 +151,7 @@ return {
 
         nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
         nmap('gA', function()
-          local current_buffer_diagnostics = vim.diagnostic.get(0)
+          local current_buffer_diagnostics = vim.diagnostic.get(bufnr)
           vim.lsp.buf.code_action({
             context = { only = { 'quickfix', 'refactor', 'source' }, diagnostics = current_buffer_diagnostics },
           })
@@ -165,8 +165,12 @@ return {
         nmap('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
         nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
         nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-        nmap('[d', vim.diagnostic.goto_prev, 'Previous [D]iagnostic')
-        nmap(']d', vim.diagnostic.goto_next, 'Next [D]iagnostic')
+        nmap('[d', function()
+          vim.diagnostic.jump({ count = -1, float = true })
+        end, 'Previous [D]iagnostic')
+        nmap(']d', function()
+          vim.diagnostic.jump({ count = 1, float = true })
+        end, 'Next [D]iagnostic')
 
         -- See `:help K` for why this keymap
         nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
@@ -191,7 +195,7 @@ return {
 
         -- Toggles
         nmap('<leader>tD', function()
-          vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+          vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
         end, 'toggle [D]iagnostics')
       end,
     })
