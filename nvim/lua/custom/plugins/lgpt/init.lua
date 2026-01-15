@@ -73,7 +73,18 @@ end
 
 function M.content(raw)
   local json_string = raw:match('^data:%s*(.*)') or raw
-  local json = vim.fn.json_decode(json_string)
+
+  local success, json = pcall(vim.fn.json_decode, json_string)
+
+  if not success then
+    vim.fn.writefile({os.date('%Y-%m-%d %H:%M:%S') .. ' - Decode failed: ' .. tostring(json)}, '/tmp/lgpt_debug.log', 'a')
+    return ''
+  end
+
+  if not json or not json.choices or not json.choices[1] then
+    print("null")
+    return ''
+  end
 
   return (json.choices[1].delta and json.choices[1].delta.content)
     or (json.choices[1].message and json.choices[1].message.content)
