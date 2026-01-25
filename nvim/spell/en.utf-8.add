@@ -7,3 +7,10 @@ libs
 jvm
 kubernetes
 api
+EKS
+ETCD
+Karpenter
+Graviton
+Kube
+finalizers
+artifactory
