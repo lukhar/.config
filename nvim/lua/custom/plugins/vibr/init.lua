@@ -77,7 +77,7 @@ function M.content(raw)
   local success, json = pcall(vim.fn.json_decode, json_string)
 
   if not success then
-    vim.fn.writefile({os.date('%Y-%m-%d %H:%M:%S') .. ' - Decode failed: ' .. tostring(json)}, '/tmp/lgpt_debug.log', 'a')
+    vim.fn.writefile({os.date('%Y-%m-%d %H:%M:%S') .. ' - Decode failed: ' .. tostring(json)}, '/tmp/vibr_debug.log', 'a')
     return ''
   end
 
@@ -240,7 +240,7 @@ function M.execute_stream_query(query)
   end)
 end
 
-vim.api.nvim_create_user_command('Lgen', function(input)
+vim.api.nvim_create_user_command('Vibr', function(input)
   local mode = (input.range == 0 and 'n') or 'v'
   local stream = not input.bang
   local prompt
