@@ -29,7 +29,7 @@ local server_configs = {
         },
         python = {
           { formatCommand = 'isort --profile=black --quiet -', formatStdin = true },
-          { formatCommand = 'black --quiet -', formatStdin = true },
+          { formatCommand = 'black --quiet -',                 formatStdin = true },
           {
             lintCommand = 'flake8 --stdin-display-name ${INPUT} -',
             lintStdin = true,
@@ -112,13 +112,18 @@ return {
         automatic_installation = true,
       },
     },
-    { 'folke/neodev.nvim', opts = {} },
+    {
+      'folke/lazydev.nvim',
+      ft = 'lua',
+      opts = {
+        library = {
+          { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+        },
+      },
+    },
     { 'j-hui/fidget.nvim', opts = {} },
   },
   config = function()
-    -- Set up neodev before configuring LSP servers
-    require('neodev').setup()
-
     -- Get capabilities from nvim-cmp
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
