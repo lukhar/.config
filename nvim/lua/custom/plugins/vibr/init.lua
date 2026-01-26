@@ -1,94 +1,43 @@
 local M = {}
 
-function M.sanitize_prompt(prompt)
-  if not prompt then
-    return ''
+local providers = require('custom.plugins.vibr.providers')
+
+---@class VibrMessage
+---@field role "user"|"assistant"|"system"
+---@field content string
+
+---@class VibrRequest
+---@field url string
+---@field method string
+---@field headers table<string, string>
+---@field body string
+
+-- Chat state
+M.chat = {
+  messages = {},      -- conversation history
+  buffer = nil,       -- chat display buffer
+  input_buffer = nil, -- input buffer
+  window = nil,       -- chat window
+  input_window = nil, -- input window
+  provider = nil,     -- current provider
+  api_key = nil,      -- cached credentials
+}
+
+---@param request VibrRequest
+---@return string[]
+function M.to_curl(request)
+  local cmd = { 'curl', '-q', '--silent', '--no-buffer', '-X', request.method }
+
+  for key, value in pairs(request.headers) do
+    table.insert(cmd, '-H')
+    table.insert(cmd, key .. ': ' .. value)
   end
 
-  -- Escape characters that are problematic in JSON strings within shell commands
-  local sanitized = prompt
-    :gsub('\\', '\\\\') -- Escape backslashes first
-    :gsub('"', '\\"') -- Escape double quotes
-    :gsub('\n', '\\n') -- Escape newlines
-    :gsub('\r', '\\r') -- Escape carriage returns
-    :gsub('\t', '\\t') -- Escape tabs
-    :gsub('\b', '\\b') -- Escape backspace
-    :gsub('\f', '\\f') -- Escape form feed
-    :gsub('`', '\\`') -- Escape backticks for shell safety
-    :gsub('%$', '\\$') -- Escape dollar signs for shell safety
-
-  return sanitized
-end
-
-function M.ollama_query(options, content)
-  -- Create JSON body using proper JSON encoding
-  local body = vim.fn.json_encode({
-    model = options.model,
-    messages = {
-      { role = options.role, content = content },
-    },
-    stream = options.stream == 'true',
-    store = options.store == 'true',
-  })
-
-  -- Build command as table for vim.system
-  local cmd = {
-    'curl',
-    '-q',
-    '--silent',
-    '--no-buffer',
-    '-X',
-    'POST',
-  }
-
-  local headers = { '-H', 'Content-Type: application/json' }
-
-  -- Add authorization header for OpenAI
-  if options.host:match('.*openai.*') then
-    table.insert(headers, '-H')
-    table.insert(headers, 'Authorization: Bearer ' .. options.api_key)
-  end
-
-  -- Determine URL
-  local url
-  if options.host:match('.*openai.*') then
-    url = 'https://' .. options.host .. ':' .. options.port .. '/v1/chat/completions'
-  else
-    url = 'http://' .. options.host .. ':' .. options.port .. '/v1/chat/completions'
-  end
-
-  -- Add URL and data
-  vim.list_extend(cmd, headers)
-  vim.list_extend(cmd, { url, '-d', body })
+  table.insert(cmd, request.url)
+  table.insert(cmd, '-d')
+  table.insert(cmd, request.body)
 
   return cmd
-end
-
-function M.load_credentials()
-  local credentials_path = vim.fn.expand("~") .. '/.config/nvim/.credentials.secret'
-  local credentials = vim.fn.json_decode(vim.fn.readfile(credentials_path))
-
-  return credentials['openai']['key']
-end
-
-function M.content(raw)
-  local json_string = raw:match('^data:%s*(.*)') or raw
-
-  local success, json = pcall(vim.fn.json_decode, json_string)
-
-  if not success then
-    vim.fn.writefile({os.date('%Y-%m-%d %H:%M:%S') .. ' - Decode failed: ' .. tostring(json)}, '/tmp/vibr_debug.log', 'a')
-    return ''
-  end
-
-  if not json or not json.choices or not json.choices[1] then
-    print("null")
-    return ''
-  end
-
-  return (json.choices[1].delta and json.choices[1].delta.content)
-    or (json.choices[1].message and json.choices[1].message.content)
-    or ''
 end
 
 function M.open_window(buffer, width, height)
@@ -125,62 +74,43 @@ function M.open_window(buffer, width, height)
   end, { buffer = buffer, nowait = true, silent = true })
 end
 
-function M.execute_query(query)
-  vim.system(query, { text = true }, function(result)
-    vim.schedule(function()
-      if result.code ~= 0 then
-        vim.notify('API Error: ' .. (result.stderr or 'Unknown error'), vim.log.levels.ERROR)
-        return
-      end
-
-      if not result.stdout or result.stdout == '' then
-        vim.notify('No response from API', vim.log.levels.WARN)
-        return
-      end
-
-      local content = M.content(result.stdout)
-      local buffer = vim.api.nvim_create_buf(false, true)
-
-      vim.api.nvim_buf_set_lines(buffer, 0, -1, false, vim.split(content, '\n'))
-      vim.api.nvim_buf_set_option(buffer, 'filetype', 'markdown')
-
-      local width = math.min(content:len(), vim.o.columns - 100)
-      local height = math.max(2, vim.api.nvim_buf_line_count(buffer))
-
-      M.open_window(buffer, width, height)
-    end)
-  end)
-end
-
-function M.execute_stream_query(query)
-  local buffer = vim.api.nvim_create_buf(false, true)
-  local current_line_index = 0
-
-  -- Calculate dimensions (80% of screen size)
-  local width = math.floor(vim.o.columns * 0.8)
-  local height = math.floor(vim.o.lines * 0.8)
-
-  M.open_window(buffer, width, height)
+---@param request VibrRequest
+---@param buffer integer
+---@param provider VibrProvider
+---@param opts? { start_line?: integer, on_complete?: fun(response: string), on_chunk?: fun(content: string) }
+function M.execute(request, buffer, provider, opts)
+  opts = opts or {}
+  local cmd = M.to_curl(request)
+  local current_line_index = opts.start_line or 0
+  local full_response = ''
 
   local stdout = vim.uv.new_pipe(false)
   local stderr = vim.uv.new_pipe(false)
 
-  local handle = vim.uv.spawn(query[1], {
-    args = vim.list_slice(query, 2),
+  if not stdout or not stderr then
+    if stdout then stdout:close() end
+    if stderr then stderr:close() end
+    vim.notify('Failed to create pipes', vim.log.levels.ERROR)
+    return
+  end
+
+  ---@diagnostic disable-next-line: missing-fields
+  vim.uv.spawn(cmd[1], {
+    args = vim.list_slice(cmd, 2),
     stdio = { nil, stdout, stderr },
   }, function(code, _)
+    stdout:close()
+    stderr:close()
     vim.schedule(function()
-      vim.api.nvim_buf_set_option(buffer, 'filetype', 'markdown')
+      vim.api.nvim_set_option_value('filetype', 'markdown', {buf = buffer})
       if code ~= 0 then
         vim.notify('Stream process exited with code: ' .. code, vim.log.levels.WARN)
       end
+      if opts.on_complete then
+        opts.on_complete(full_response)
+      end
     end)
   end)
-
-  if not handle then
-    vim.notify('Failed to start streaming process', vim.log.levels.ERROR)
-    return
-  end
 
   stdout:read_start(function(error, data)
     if error then
@@ -197,8 +127,14 @@ function M.execute_stream_query(query)
     vim.schedule(function()
       for chunk in data:gmatch('[^\r\n]+') do
         if chunk ~= '' and chunk ~= 'data: [DONE]' then
-          local content = M.content(chunk)
+          local content = provider.parse_chunk(chunk)
           if content and content ~= '' then
+            full_response = full_response .. content
+
+            if opts.on_chunk then
+              opts.on_chunk(content)
+            end
+
             local line_part = content:match('[^\n]+')
             local new_lines = content:match('[\n]+')
 
@@ -240,9 +176,219 @@ function M.execute_stream_query(query)
   end)
 end
 
+-- Render chat messages to the chat buffer
+function M.render_chat()
+  if not M.chat.buffer or not vim.api.nvim_buf_is_valid(M.chat.buffer) then
+    return
+  end
+
+  local lines = {}
+  for _, msg in ipairs(M.chat.messages) do
+    if msg.role == 'user' then
+      table.insert(lines, '## You')
+    else
+      table.insert(lines, '## Assistant')
+    end
+    table.insert(lines, '')
+    for _, line in ipairs(vim.split(msg.content, '\n')) do
+      table.insert(lines, line)
+    end
+    table.insert(lines, '')
+  end
+
+  vim.api.nvim_set_option_value('modifiable', true, { buf = M.chat.buffer })
+  vim.api.nvim_buf_set_lines(M.chat.buffer, 0, -1, false, lines)
+  vim.api.nvim_set_option_value('modifiable', false, { buf = M.chat.buffer })
+
+  -- Scroll to bottom
+  if M.chat.window and vim.api.nvim_win_is_valid(M.chat.window) then
+    local line_count = vim.api.nvim_buf_line_count(M.chat.buffer)
+    vim.api.nvim_win_set_cursor(M.chat.window, { line_count, 0 })
+  end
+end
+
+-- Open the chat UI
+function M.open_chat()
+  local provider = providers.get()
+  if not provider then
+    vim.notify('Vibr: no provider configured', vim.log.levels.ERROR)
+    return
+  end
+
+  local api_key = provider.load_credentials()
+  if not api_key then
+    return
+  end
+
+  M.chat.provider = provider
+  M.chat.api_key = api_key
+
+  -- Create or reuse chat history buffer
+  if not M.chat.buffer or not vim.api.nvim_buf_is_valid(M.chat.buffer) then
+    M.chat.buffer = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_set_option_value('buftype', 'nofile', { buf = M.chat.buffer })
+    vim.api.nvim_set_option_value('bufhidden', 'hide', { buf = M.chat.buffer })
+    vim.api.nvim_set_option_value('filetype', 'markdown', { buf = M.chat.buffer })
+    vim.api.nvim_set_option_value('modifiable', false, { buf = M.chat.buffer })
+    vim.api.nvim_buf_set_name(M.chat.buffer, '[Vibr Chat]')
+
+    vim.keymap.set('n', 'q', M.close_chat, { buffer = M.chat.buffer, nowait = true, silent = true })
+  end
+
+  -- Create or reuse input buffer
+  if not M.chat.input_buffer or not vim.api.nvim_buf_is_valid(M.chat.input_buffer) then
+    M.chat.input_buffer = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_set_option_value('buftype', 'nofile', { buf = M.chat.input_buffer })
+    vim.api.nvim_set_option_value('bufhidden', 'hide', { buf = M.chat.input_buffer })
+    vim.api.nvim_buf_set_name(M.chat.input_buffer, '[Vibr Input]')
+
+    vim.keymap.set('n', '<CR>', M.send_message, { buffer = M.chat.input_buffer, nowait = true, silent = true })
+    vim.keymap.set('i', '<C-CR>', function()
+      vim.cmd('stopinsert')
+      M.send_message()
+    end, { buffer = M.chat.input_buffer, nowait = true, silent = true })
+    vim.keymap.set('n', 'q', M.close_chat, { buffer = M.chat.input_buffer, nowait = true, silent = true })
+  end
+
+  -- Calculate dimensions (40% width on right side)
+  local width = math.floor(vim.o.columns * 0.4)
+  local input_height = 3
+
+  -- Open vertical split on right for chat history
+  vim.cmd('botright vsplit')
+  M.chat.window = vim.api.nvim_get_current_win()
+  vim.api.nvim_win_set_buf(M.chat.window, M.chat.buffer)
+  vim.api.nvim_win_set_width(M.chat.window, width)
+  vim.api.nvim_set_option_value('wrap', true, { win = M.chat.window })
+  vim.api.nvim_set_option_value('linebreak', true, { win = M.chat.window })
+  vim.api.nvim_set_option_value('number', false, { win = M.chat.window })
+  vim.api.nvim_set_option_value('relativenumber', false, { win = M.chat.window })
+  vim.api.nvim_set_option_value('signcolumn', 'no', { win = M.chat.window })
+
+  -- Split at bottom for input
+  vim.cmd('belowright split')
+  M.chat.input_window = vim.api.nvim_get_current_win()
+  vim.api.nvim_win_set_buf(M.chat.input_window, M.chat.input_buffer)
+  vim.api.nvim_win_set_height(M.chat.input_window, input_height)
+  vim.api.nvim_set_option_value('wrap', true, { win = M.chat.input_window })
+  vim.api.nvim_set_option_value('number', false, { win = M.chat.input_window })
+  vim.api.nvim_set_option_value('relativenumber', false, { win = M.chat.input_window })
+  vim.api.nvim_set_option_value('signcolumn', 'no', { win = M.chat.input_window })
+
+  -- Render existing messages
+  M.render_chat()
+
+  -- Focus input window and enter insert mode
+  vim.api.nvim_set_current_win(M.chat.input_window)
+  vim.cmd('startinsert')
+end
+
+-- Close the chat UI
+function M.close_chat()
+  if M.chat.window and vim.api.nvim_win_is_valid(M.chat.window) then
+    vim.api.nvim_win_close(M.chat.window, true)
+  end
+  if M.chat.input_window and vim.api.nvim_win_is_valid(M.chat.input_window) then
+    vim.api.nvim_win_close(M.chat.input_window, true)
+  end
+  M.chat.window = nil
+  M.chat.input_window = nil
+end
+
+-- Toggle the chat UI
+function M.toggle_chat()
+  if M.chat.window and vim.api.nvim_win_is_valid(M.chat.window) then
+    M.close_chat()
+  else
+    M.open_chat()
+  end
+end
+
+-- Send a message from the input buffer
+function M.send_message()
+  if not M.chat.input_buffer or not vim.api.nvim_buf_is_valid(M.chat.input_buffer) then
+    return
+  end
+
+  local lines = vim.api.nvim_buf_get_lines(M.chat.input_buffer, 0, -1, false)
+  local content = vim.trim(table.concat(lines, '\n'))
+
+  if content == '' then
+    return
+  end
+
+  -- Clear input buffer
+  vim.api.nvim_buf_set_lines(M.chat.input_buffer, 0, -1, false, {})
+
+  -- Append user message to history
+  table.insert(M.chat.messages, { role = 'user', content = content })
+
+  -- Render chat (shows user message immediately)
+  M.render_chat()
+
+  -- Build request with full messages array
+  local request = M.chat.provider.build_request(M.chat.messages, {
+    api_key = M.chat.api_key,
+    store = true,
+  })
+
+  -- Stream response
+  M.stream_chat_response(request)
+end
+
+-- Stream response to chat buffer
+function M.stream_chat_response(request)
+  -- Make buffer modifiable for streaming
+  vim.api.nvim_set_option_value('modifiable', true, { buf = M.chat.buffer })
+
+  -- Add placeholder for assistant response
+  local line_count = vim.api.nvim_buf_line_count(M.chat.buffer)
+  vim.api.nvim_buf_set_lines(M.chat.buffer, line_count, line_count, false, { '## Assistant', '', '' })
+
+  local response_start_line = line_count + 2
+
+  M.execute(request, M.chat.buffer, M.chat.provider, {
+    start_line = response_start_line,
+    on_chunk = function(_)
+      -- Scroll to bottom on each chunk
+      if M.chat.window and vim.api.nvim_win_is_valid(M.chat.window) then
+        local total_lines = vim.api.nvim_buf_line_count(M.chat.buffer)
+        vim.api.nvim_win_set_cursor(M.chat.window, { total_lines, 0 })
+      end
+    end,
+    on_complete = function(response)
+      table.insert(M.chat.messages, { role = 'assistant', content = response })
+      -- Add blank line after response and lock buffer
+      local final_line_count = vim.api.nvim_buf_line_count(M.chat.buffer)
+      vim.api.nvim_buf_set_lines(M.chat.buffer, final_line_count, final_line_count, false, { '' })
+      vim.api.nvim_set_option_value('modifiable', false, { buf = M.chat.buffer })
+    end,
+  })
+end
+
+-- Clear chat history
+function M.clear_chat()
+  M.chat.messages = {}
+  if M.chat.buffer and vim.api.nvim_buf_is_valid(M.chat.buffer) then
+    vim.api.nvim_set_option_value('modifiable', true, { buf = M.chat.buffer })
+    vim.api.nvim_buf_set_lines(M.chat.buffer, 0, -1, false, {})
+    vim.api.nvim_set_option_value('modifiable', false, { buf = M.chat.buffer })
+  end
+  vim.notify('Vibr: chat cleared', vim.log.levels.INFO)
+end
+
+-- Chat commands
+vim.api.nvim_create_user_command('VibrChat', M.toggle_chat, {})
+vim.api.nvim_create_user_command('VibrClear', M.clear_chat, {})
+
 vim.api.nvim_create_user_command('Vibr', function(input)
+  local provider = providers.get()
+  if not provider then
+    vim.notify('Vibr: no provider configured', vim.log.levels.ERROR)
+    return
+  end
+
   local mode = (input.range == 0 and 'n') or 'v'
-  local stream = not input.bang
   local prompt
 
   if mode == 'n' then
@@ -250,29 +396,46 @@ vim.api.nvim_create_user_command('Vibr', function(input)
   elseif mode == 'v' then
     local prefix = input.args or ''
     local lines = vim.api.nvim_buf_get_lines(0, input.line1 - 1, input.line2, false)
-    prompt = prefix .. ':\\n' .. table.concat(lines, '\\n')
+    prompt = prefix .. ':\n' .. table.concat(lines, '\n')
   end
 
-  local query = M.ollama_query({
-    api_key = M.load_credentials(),
-    host = 'api.openai.com', -- localhost, api.openai.com
-    port = '443', -- 443, 11434
-    model = 'gpt-4.1', -- gpt-4o-mini, mistral
-    role = 'user',
-    store = 'true',
-    stream = tostring(stream),
-  }, M.sanitize_prompt(prompt))
-
-  if stream then
-    M.execute_stream_query(query)
-  else
-    M.execute_query(query)
+  local api_key = provider.load_credentials()
+  if not api_key then
+    return
   end
+
+  local messages = {
+    { role = 'user', content = prompt },
+  }
+
+  local request = provider.build_request(messages, {
+    api_key = api_key,
+    store = true,
+  })
+
+  local buffer = vim.api.nvim_create_buf(false, true)
+  local width = math.floor(vim.o.columns * 0.8)
+  local height = math.floor(vim.o.lines * 0.8)
+
+  M.open_window(buffer, width, height)
+  M.execute(request, buffer, provider)
 end, {
-  bang = true,
   range = true,
   nargs = '?',
-  complete = function(ArgLead) end,
+  complete = function() end,
+})
+
+vim.api.nvim_create_user_command('VibrProvider', function(input)
+  if input.args == '' then
+    vim.notify('Vibr: current provider is ' .. providers.current, vim.log.levels.INFO)
+  else
+    providers.set(input.args)
+  end
+end, {
+  nargs = '?',
+  complete = function()
+    return providers.list()
+  end,
 })
 
 return M
