@@ -2,8 +2,7 @@ return {
   'nvim-lualine/lualine.nvim',
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   config = function()
-    local solarized_palette = require('solarized.palette')
-    local colors = solarized_palette.get_colors()
+    local palette = require('solarized.palette')
 
     local hide_in_width = function()
       return vim.fn.winwidth(0) > 80
@@ -71,7 +70,7 @@ return {
     ins_config('c', {
       {
         'branch',
-        icon = { icons.git, color = { fg = colors.magenta } },
+        icon = { icons.git, color = { fg = palette.magenta } },
         cond = hide_in_width,
       },
       {
@@ -79,9 +78,9 @@ return {
         symbols = icons.diff,
         colored = true,
         diff_color = {
-          added = { fg = colors.green },
-          modified = { fg = colors.orange },
-          removed = { fg = colors.red },
+          added = { fg = palette.green },
+          modified = { fg = palette.orange },
+          removed = { fg = palette.red },
         },
         cond = hide_in_width,
       },
