@@ -1,40 +1,60 @@
 local M = {}
 
+---@class VibrMessage
+---@field role "user"|"assistant"|"system"
+---@field content string
+
+---@class VibrRequest
+---@field url string
+---@field method string
+---@field headers table<string, string>
+---@field body string
+
+---@param options { backend: string, host: string, port: integer, model: string, role: string, stream: boolean, store: boolean, api_key?: string }
+---@param content string
+---@return VibrRequest
 function M.build_request(options, content)
   local body = vim.fn.json_encode({
     model = options.model,
     messages = {
       { role = options.role, content = content },
     },
-    stream = options.stream == 'true',
-    store = options.store == 'true',
+    stream = options.stream,
+    store = options.store,
   })
 
-  local cmd = {
-    'curl',
-    '-q',
-    '--silent',
-    '--no-buffer',
-    '-X',
-    'POST',
+  local is_openai = options.backend == 'openai'
+  local protocol = is_openai and 'https' or 'http'
+
+  local headers = {
+    ['Content-Type'] = 'application/json',
   }
 
-  local headers = { '-H', 'Content-Type: application/json' }
-
-  if options.host:match('.*openai.*') then
-    table.insert(headers, '-H')
-    table.insert(headers, 'Authorization: Bearer ' .. options.api_key)
+  if is_openai and options.api_key then
+    headers['Authorization'] = 'Bearer ' .. options.api_key
   end
 
-  local url
-  if options.host:match('.*openai.*') then
-    url = 'https://' .. options.host .. ':' .. options.port .. '/v1/chat/completions'
-  else
-    url = 'http://' .. options.host .. ':' .. options.port .. '/v1/chat/completions'
+  return {
+    url = protocol .. '://' .. options.host .. ':' .. options.port .. '/v1/chat/completions',
+    method = 'POST',
+    headers = headers,
+    body = body,
+  }
+end
+
+---@param request VibrRequest
+---@return string[]
+function M.to_curl(request)
+  local cmd = { 'curl', '-q', '--silent', '--no-buffer', '-X', request.method }
+
+  for key, value in pairs(request.headers) do
+    table.insert(cmd, '-H')
+    table.insert(cmd, key .. ': ' .. value)
   end
 
-  vim.list_extend(cmd, headers)
-  vim.list_extend(cmd, { url, '-d', body })
+  table.insert(cmd, request.url)
+  table.insert(cmd, '-d')
+  table.insert(cmd, request.body)
 
   return cmd
 end
@@ -108,8 +128,12 @@ function M.open_window(buffer, width, height)
   end, { buffer = buffer, nowait = true, silent = true })
 end
 
-function M.execute_query(query)
-  vim.system(query, { text = true }, function(result)
+---@param request VibrRequest
+---@param buffer integer
+---@param on_complete function
+function M.execute_query(request, buffer, on_complete)
+  local cmd = M.to_curl(request)
+  vim.system(cmd, { text = true }, function(result)
     vim.schedule(function()
       if result.code ~= 0 then
         vim.notify('API Error: ' .. (result.stderr or 'Unknown error'), vim.log.levels.ERROR)
@@ -122,39 +146,40 @@ function M.execute_query(query)
       end
 
       local content = M.parse_chunk(result.stdout)
-      local buffer = vim.api.nvim_create_buf(false, true)
 
       vim.api.nvim_buf_set_lines(buffer, 0, -1, false, vim.split(content, '\n'))
-      vim.api.nvim_buf_set_option(buffer, 'filetype', 'markdown')
+      vim.api.nvim_set_option_value('filetype', 'markdown', {buf = buffer})
 
-      local width = math.max(40, math.min(#content, vim.o.columns - 20))
-      local height = math.max(2, vim.api.nvim_buf_line_count(buffer))
-
-      M.open_window(buffer, width, height)
+      on_complete()
     end)
   end)
 end
 
-function M.execute_stream_query(query)
-  local buffer = vim.api.nvim_create_buf(false, true)
+---@param request VibrRequest
+---@param buffer integer
+function M.execute_stream_query(request, buffer)
+  local cmd = M.to_curl(request)
   local current_line_index = 0
-
-  local width = math.floor(vim.o.columns * 0.8)
-  local height = math.floor(vim.o.lines * 0.8)
-
-  M.open_window(buffer, width, height)
 
   local stdout = vim.uv.new_pipe(false)
   local stderr = vim.uv.new_pipe(false)
 
-  vim.uv.spawn(query[1], {
-    args = vim.list_slice(query, 2),
+  if not stdout or not stderr then
+    if stdout then stdout:close() end
+    if stderr then stderr:close() end
+    vim.notify('Failed to create pipes', vim.log.levels.ERROR)
+    return
+  end
+
+  ---@diagnostic disable-next-line: missing-fields
+  vim.uv.spawn(cmd[1], {
+    args = vim.list_slice(cmd, 2),
     stdio = { nil, stdout, stderr },
   }, function(code, _)
     stdout:close()
     stderr:close()
     vim.schedule(function()
-      vim.api.nvim_buf_set_option(buffer, 'filetype', 'markdown')
+      vim.api.nvim_set_option_value('filetype', 'markdown', {buf = buffer})
       if code ~= 0 then
         vim.notify('Stream process exited with code: ' .. code, vim.log.levels.WARN)
       end
@@ -237,20 +262,28 @@ vim.api.nvim_create_user_command('Vibr', function(input)
     return
   end
 
-  local query = M.build_request({
+  local request = M.build_request({
     api_key = api_key,
     host = 'api.openai.com',
-    port = '443',
+    port = 443,
     model = 'gpt-4.1',
     role = 'user',
-    store = 'true',
-    stream = tostring(stream),
+    store = true,
+    backend = 'openai',
+    stream = stream,
   }, prompt)
 
+  local buffer = vim.api.nvim_create_buf(false, true)
+  local width = math.floor(vim.o.columns * 0.8)
+  local height = math.floor(vim.o.lines * 0.8)
+
   if stream then
-    M.execute_stream_query(query)
+    M.open_window(buffer, width, height)
+    M.execute_stream_query(request, buffer)
   else
-    M.execute_query(query)
+    M.execute_query(request, buffer, function()
+      M.open_window(buffer, width, height)
+    end)
   end
 end, {
   bang = true,
