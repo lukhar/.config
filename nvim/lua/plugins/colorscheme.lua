@@ -14,8 +14,6 @@ return {
     ]])
 
     require('solarized').setup({
-      theme = 'neo',
-
       highlights = function(colors)
         return {
           LineNr = { fg = colors.base1, bg = colors.base02 },
