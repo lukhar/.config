@@ -1,27 +1,6 @@
 local M = {}
 
-function M.sanitize_prompt(prompt)
-  if not prompt then
-    return ''
-  end
-
-  -- Escape characters that are problematic in JSON strings within shell commands
-  local sanitized = prompt
-    :gsub('\\', '\\\\') -- Escape backslashes first
-    :gsub('"', '\\"') -- Escape double quotes
-    :gsub('\n', '\\n') -- Escape newlines
-    :gsub('\r', '\\r') -- Escape carriage returns
-    :gsub('\t', '\\t') -- Escape tabs
-    :gsub('\b', '\\b') -- Escape backspace
-    :gsub('\f', '\\f') -- Escape form feed
-    :gsub('`', '\\`') -- Escape backticks for shell safety
-    :gsub('%$', '\\$') -- Escape dollar signs for shell safety
-
-  return sanitized
-end
-
-function M.ollama_query(options, content)
-  -- Create JSON body using proper JSON encoding
+function M.build_request(options, content)
   local body = vim.fn.json_encode({
     model = options.model,
     messages = {
@@ -31,7 +10,6 @@ function M.ollama_query(options, content)
     store = options.store == 'true',
   })
 
-  -- Build command as table for vim.system
   local cmd = {
     'curl',
     '-q',
@@ -43,13 +21,11 @@ function M.ollama_query(options, content)
 
   local headers = { '-H', 'Content-Type: application/json' }
 
-  -- Add authorization header for OpenAI
   if options.host:match('.*openai.*') then
     table.insert(headers, '-H')
     table.insert(headers, 'Authorization: Bearer ' .. options.api_key)
   end
 
-  -- Determine URL
   local url
   if options.host:match('.*openai.*') then
     url = 'https://' .. options.host .. ':' .. options.port .. '/v1/chat/completions'
@@ -57,7 +33,6 @@ function M.ollama_query(options, content)
     url = 'http://' .. options.host .. ':' .. options.port .. '/v1/chat/completions'
   end
 
-  -- Add URL and data
   vim.list_extend(cmd, headers)
   vim.list_extend(cmd, { url, '-d', body })
 
@@ -65,24 +40,32 @@ function M.ollama_query(options, content)
 end
 
 function M.load_credentials()
-  local credentials_path = vim.fn.expand("~") .. '/.config/nvim/.credentials.secret'
-  local credentials = vim.fn.json_decode(vim.fn.readfile(credentials_path))
+  local path = vim.fn.expand('~') .. '/.config/nvim/.credentials.secret'
+  local ok, content = pcall(vim.fn.readfile, path)
+  if not ok then
+    vim.notify('Vibr: credentials file not found', vim.log.levels.ERROR)
+    return nil
+  end
 
-  return credentials['openai']['key']
+  local ok2, creds = pcall(vim.fn.json_decode, content)
+  if not ok2 or not creds or not creds.openai then
+    vim.notify('Vibr: invalid credentials format', vim.log.levels.ERROR)
+    return nil
+  end
+
+  return creds.openai.key
 end
 
-function M.content(raw)
+function M.parse_chunk(raw)
   local json_string = raw:match('^data:%s*(.*)') or raw
 
   local success, json = pcall(vim.fn.json_decode, json_string)
 
   if not success then
-    vim.fn.writefile({os.date('%Y-%m-%d %H:%M:%S') .. ' - Decode failed: ' .. tostring(json)}, '/tmp/vibr_debug.log', 'a')
     return ''
   end
 
   if not json or not json.choices or not json.choices[1] then
-    print("null")
     return ''
   end
 
@@ -138,13 +121,13 @@ function M.execute_query(query)
         return
       end
 
-      local content = M.content(result.stdout)
+      local content = M.parse_chunk(result.stdout)
       local buffer = vim.api.nvim_create_buf(false, true)
 
       vim.api.nvim_buf_set_lines(buffer, 0, -1, false, vim.split(content, '\n'))
       vim.api.nvim_buf_set_option(buffer, 'filetype', 'markdown')
 
-      local width = math.min(content:len(), vim.o.columns - 100)
+      local width = math.max(40, math.min(#content, vim.o.columns - 20))
       local height = math.max(2, vim.api.nvim_buf_line_count(buffer))
 
       M.open_window(buffer, width, height)
@@ -156,7 +139,6 @@ function M.execute_stream_query(query)
   local buffer = vim.api.nvim_create_buf(false, true)
   local current_line_index = 0
 
-  -- Calculate dimensions (80% of screen size)
   local width = math.floor(vim.o.columns * 0.8)
   local height = math.floor(vim.o.lines * 0.8)
 
@@ -165,10 +147,12 @@ function M.execute_stream_query(query)
   local stdout = vim.uv.new_pipe(false)
   local stderr = vim.uv.new_pipe(false)
 
-  local handle = vim.uv.spawn(query[1], {
+  vim.uv.spawn(query[1], {
     args = vim.list_slice(query, 2),
     stdio = { nil, stdout, stderr },
   }, function(code, _)
+    stdout:close()
+    stderr:close()
     vim.schedule(function()
       vim.api.nvim_buf_set_option(buffer, 'filetype', 'markdown')
       if code ~= 0 then
@@ -176,11 +160,6 @@ function M.execute_stream_query(query)
       end
     end)
   end)
-
-  if not handle then
-    vim.notify('Failed to start streaming process', vim.log.levels.ERROR)
-    return
-  end
 
   stdout:read_start(function(error, data)
     if error then
@@ -197,7 +176,7 @@ function M.execute_stream_query(query)
     vim.schedule(function()
       for chunk in data:gmatch('[^\r\n]+') do
         if chunk ~= '' and chunk ~= 'data: [DONE]' then
-          local content = M.content(chunk)
+          local content = M.parse_chunk(chunk)
           if content and content ~= '' then
             local line_part = content:match('[^\n]+')
             local new_lines = content:match('[\n]+')
@@ -250,18 +229,23 @@ vim.api.nvim_create_user_command('Vibr', function(input)
   elseif mode == 'v' then
     local prefix = input.args or ''
     local lines = vim.api.nvim_buf_get_lines(0, input.line1 - 1, input.line2, false)
-    prompt = prefix .. ':\\n' .. table.concat(lines, '\\n')
+    prompt = prefix .. ':\n' .. table.concat(lines, '\n')
   end
 
-  local query = M.ollama_query({
-    api_key = M.load_credentials(),
-    host = 'api.openai.com', -- localhost, api.openai.com
-    port = '443', -- 443, 11434
-    model = 'gpt-4.1', -- gpt-4o-mini, mistral
+  local api_key = M.load_credentials()
+  if not api_key then
+    return
+  end
+
+  local query = M.build_request({
+    api_key = api_key,
+    host = 'api.openai.com',
+    port = '443',
+    model = 'gpt-4.1',
     role = 'user',
     store = 'true',
     stream = tostring(stream),
-  }, M.sanitize_prompt(prompt))
+  }, prompt)
 
   if stream then
     M.execute_stream_query(query)
@@ -272,7 +256,7 @@ end, {
   bang = true,
   range = true,
   nargs = '?',
-  complete = function(ArgLead) end,
+  complete = function() end,
 })
 
 return M
