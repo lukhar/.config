@@ -27,8 +27,10 @@ function M.build_request(messages, options)
     stream = true,
   })
 
+  local port_suffix = (port == 80) and '' or (':' .. port)
+
   return {
-    url = 'http://' .. host .. ':' .. port .. '/api/chat',
+    url = 'http://' .. host .. port_suffix .. '/api/chat',
     method = 'POST',
     headers = {
       ['Content-Type'] = 'application/json',

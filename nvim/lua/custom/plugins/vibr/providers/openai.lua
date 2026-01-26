@@ -40,8 +40,10 @@ function M.build_request(messages, options)
     store = options.store or false,
   })
 
+  local port_suffix = (port == 443) and '' or (':' .. port)
+
   return {
-    url = 'https://' .. host .. ':' .. port .. '/v1/chat/completions',
+    url = 'https://' .. host .. port_suffix .. '/v1/chat/completions',
     method = 'POST',
     headers = {
       ['Content-Type'] = 'application/json',
