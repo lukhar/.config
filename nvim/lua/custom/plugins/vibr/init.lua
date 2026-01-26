@@ -1,43 +1,77 @@
 local M = {}
 
-local providers = require('custom.plugins.vibr.providers')
+function M.build_request(options, content)
+  local body = vim.fn.json_encode({
+    model = options.model,
+    messages = {
+      { role = options.role, content = content },
+    },
+    stream = options.stream == 'true',
+    store = options.store == 'true',
+  })
 
----@class VibrMessage
----@field role "user"|"assistant"|"system"
----@field content string
+  local cmd = {
+    'curl',
+    '-q',
+    '--silent',
+    '--no-buffer',
+    '-X',
+    'POST',
+  }
 
----@class VibrRequest
----@field url string
----@field method string
----@field headers table<string, string>
----@field body string
+  local headers = { '-H', 'Content-Type: application/json' }
 
--- Chat state
-M.chat = {
-  messages = {},      -- conversation history
-  buffer = nil,       -- chat display buffer
-  input_buffer = nil, -- input buffer
-  window = nil,       -- chat window
-  input_window = nil, -- input window
-  provider = nil,     -- current provider
-  api_key = nil,      -- cached credentials
-}
-
----@param request VibrRequest
----@return string[]
-function M.to_curl(request)
-  local cmd = { 'curl', '-q', '--silent', '--no-buffer', '-X', request.method }
-
-  for key, value in pairs(request.headers) do
-    table.insert(cmd, '-H')
-    table.insert(cmd, key .. ': ' .. value)
+  if options.host:match('.*openai.*') then
+    table.insert(headers, '-H')
+    table.insert(headers, 'Authorization: Bearer ' .. options.api_key)
   end
 
-  table.insert(cmd, request.url)
-  table.insert(cmd, '-d')
-  table.insert(cmd, request.body)
+  local url
+  if options.host:match('.*openai.*') then
+    url = 'https://' .. options.host .. ':' .. options.port .. '/v1/chat/completions'
+  else
+    url = 'http://' .. options.host .. ':' .. options.port .. '/v1/chat/completions'
+  end
+
+  vim.list_extend(cmd, headers)
+  vim.list_extend(cmd, { url, '-d', body })
 
   return cmd
+end
+
+function M.load_credentials()
+  local path = vim.fn.expand('~') .. '/.config/nvim/.credentials.secret'
+  local ok, content = pcall(vim.fn.readfile, path)
+  if not ok then
+    vim.notify('Vibr: credentials file not found', vim.log.levels.ERROR)
+    return nil
+  end
+
+  local ok2, creds = pcall(vim.fn.json_decode, content)
+  if not ok2 or not creds or not creds.openai then
+    vim.notify('Vibr: invalid credentials format', vim.log.levels.ERROR)
+    return nil
+  end
+
+  return creds.openai.key
+end
+
+function M.parse_chunk(raw)
+  local json_string = raw:match('^data:%s*(.*)') or raw
+
+  local success, json = pcall(vim.fn.json_decode, json_string)
+
+  if not success then
+    return ''
+  end
+
+  if not json or not json.choices or not json.choices[1] then
+    return ''
+  end
+
+  return (json.choices[1].delta and json.choices[1].delta.content)
+    or (json.choices[1].message and json.choices[1].message.content)
+    or ''
 end
 
 function M.open_window(buffer, width, height)
@@ -74,29 +108,47 @@ function M.open_window(buffer, width, height)
   end, { buffer = buffer, nowait = true, silent = true })
 end
 
----@param request VibrRequest
----@param buffer integer
----@param provider VibrProvider
----@param opts? { start_line?: integer, on_complete?: fun(response: string), on_chunk?: fun(content: string) }
-function M.execute(request, buffer, provider, opts)
-  opts = opts or {}
-  local cmd = M.to_curl(request)
-  local current_line_index = opts.start_line or 0
-  local full_response = ''
+function M.execute_query(query)
+  vim.system(query, { text = true }, function(result)
+    vim.schedule(function()
+      if result.code ~= 0 then
+        vim.notify('API Error: ' .. (result.stderr or 'Unknown error'), vim.log.levels.ERROR)
+        return
+      end
+
+      if not result.stdout or result.stdout == '' then
+        vim.notify('No response from API', vim.log.levels.WARN)
+        return
+      end
+
+      local content = M.parse_chunk(result.stdout)
+      local buffer = vim.api.nvim_create_buf(false, true)
+
+      vim.api.nvim_buf_set_lines(buffer, 0, -1, false, vim.split(content, '\n'))
+      vim.api.nvim_buf_set_option(buffer, 'filetype', 'markdown')
+
+      local width = math.max(40, math.min(#content, vim.o.columns - 20))
+      local height = math.max(2, vim.api.nvim_buf_line_count(buffer))
+
+      M.open_window(buffer, width, height)
+    end)
+  end)
+end
+
+function M.execute_stream_query(query)
+  local buffer = vim.api.nvim_create_buf(false, true)
+  local current_line_index = 0
+
+  local width = math.floor(vim.o.columns * 0.8)
+  local height = math.floor(vim.o.lines * 0.8)
+
+  M.open_window(buffer, width, height)
 
   local stdout = vim.uv.new_pipe(false)
   local stderr = vim.uv.new_pipe(false)
 
-  if not stdout or not stderr then
-    if stdout then stdout:close() end
-    if stderr then stderr:close() end
-    vim.notify('Failed to create pipes', vim.log.levels.ERROR)
-    return
-  end
-
-  ---@diagnostic disable-next-line: missing-fields
-  vim.uv.spawn(cmd[1], {
-    args = vim.list_slice(cmd, 2),
+  vim.uv.spawn(query[1], {
+    args = vim.list_slice(query, 2),
     stdio = { nil, stdout, stderr },
   }, function(code, _)
     stdout:close()
@@ -127,7 +179,7 @@ function M.execute(request, buffer, provider, opts)
     vim.schedule(function()
       for chunk in data:gmatch('[^\r\n]+') do
         if chunk ~= '' and chunk ~= 'data: [DONE]' then
-          local content = provider.parse_chunk(chunk)
+          local content = M.parse_chunk(chunk)
           if content and content ~= '' then
             full_response = full_response .. content
 
@@ -399,9 +451,25 @@ vim.api.nvim_create_user_command('Vibr', function(input)
     prompt = prefix .. ':\n' .. table.concat(lines, '\n')
   end
 
-  local api_key = provider.load_credentials()
+  local api_key = M.load_credentials()
   if not api_key then
     return
+  end
+
+  local query = M.build_request({
+    api_key = api_key,
+    host = 'api.openai.com',
+    port = '443',
+    model = 'gpt-4.1',
+    role = 'user',
+    store = 'true',
+    stream = tostring(stream),
+  }, prompt)
+
+  if stream then
+    M.execute_stream_query(query)
+  else
+    M.execute_query(query)
   end
 
   local messages = {
@@ -423,19 +491,6 @@ end, {
   range = true,
   nargs = '?',
   complete = function() end,
-})
-
-vim.api.nvim_create_user_command('VibrProvider', function(input)
-  if input.args == '' then
-    vim.notify('Vibr: current provider is ' .. providers.current, vim.log.levels.INFO)
-  else
-    providers.set(input.args)
-  end
-end, {
-  nargs = '?',
-  complete = function()
-    return providers.list()
-  end,
 })
 
 return M
