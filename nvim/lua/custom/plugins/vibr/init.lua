@@ -12,6 +12,17 @@ local providers = require('custom.plugins.vibr.providers')
 ---@field headers table<string, string>
 ---@field body string
 
+-- Chat state
+M.chat = {
+  messages = {},      -- conversation history
+  buffer = nil,       -- chat display buffer
+  input_buffer = nil, -- input buffer
+  window = nil,       -- chat window
+  input_window = nil, -- input window
+  provider = nil,     -- current provider
+  api_key = nil,      -- cached credentials
+}
+
 ---@param request VibrRequest
 ---@return string[]
 function M.to_curl(request)
@@ -66,9 +77,12 @@ end
 ---@param request VibrRequest
 ---@param buffer integer
 ---@param provider VibrProvider
-function M.execute(request, buffer, provider)
+---@param opts? { start_line?: integer, on_complete?: fun(response: string), on_chunk?: fun(content: string) }
+function M.execute(request, buffer, provider, opts)
+  opts = opts or {}
   local cmd = M.to_curl(request)
-  local current_line_index = 0
+  local current_line_index = opts.start_line or 0
+  local full_response = ''
 
   local stdout = vim.uv.new_pipe(false)
   local stderr = vim.uv.new_pipe(false)
