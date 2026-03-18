@@ -7,18 +7,20 @@ source "${ZINIT_HOME}/zinit.zsh"
 ### End of Zinit's installer chunk
 
 zinit light "mafredri/zsh-async"
-zinit light zsh-users/zsh-completions
-zinit light zsh-users/zsh-autosuggestions
-zinit light zdharma-continuum//fast-syntax-highlighting
 zinit ice pick"async.zsh" src"pure.zsh"
 zinit light sindresorhus/pure
+
+zinit wait lucid light-mode for \
+  zsh-users/zsh-completions \
+  zsh-users/zsh-autosuggestions \
+  zdharma-continuum/fast-syntax-highlighting
 
 zinit ice depth"1" from"gitlab"
 
 zstyle :prompt:pure:git:stash show yes                          # turn on git stash status
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'       # Case insensitive tab completion
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"         # Colored completion (different colors for dirs/files/etc)
-zstyle ':completion:*' rehash true                              # automatically find new executables in path 
+zstyle ':completion:*' rehash false                             # avoid rescanning $PATH on every completion
 
 # Speed up completions
 zstyle ':completion:*' accept-exact '*(N)'
@@ -32,7 +34,7 @@ fi
 
 # bigger history
 HISTFILE=~/.zhistory
-HISTSIZE=500000000
+HISTSIZE=100000
 SAVEHIST=$HISTSIZE
 HISTDUP=erase
 setopt appendhistory
@@ -42,6 +44,9 @@ setopt hist_ignore_all_dups
 setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
+
+# only save successful commands to history
+zshaddhistory() { [[ $? -eq 0 ]] }
 
 # enable editing commands in EDITOR
 autoload -z edit-command-line
@@ -67,17 +72,17 @@ fpath=($HOME/.config/zsh/completions $fpath)
 
 export PATH=$HOME/.pyenv/bin:$HOME/bin:$PATH
 export NOTES=$HOME/documents/shared/notes
-export EDITOR=`which nvim`
+export EDITOR=nvim
 export LUA_PATH=/usr/share/awesome/lib
 
 precmd() {
-  if [[ -n $PYENV_SHELL ]]; then
-    local version
-    version=$(pyenv version-name)
-    if [[ $version == system ]]; then
+  if [[ -n $PYENV_SHELL && "$PWD" != "$_PRECMD_LAST_PWD" ]]; then
+    _PRECMD_LAST_PWD="$PWD"
+    _PYENV_CURRENT_VERSION=$(pyenv version-name)
+    if [[ $_PYENV_CURRENT_VERSION == system ]]; then
       unset VIRTUAL_ENV
     else
-      VIRTUAL_ENV=$(pyenv virtualenv-prefix)/envs/$(pyenv version-name)
+      VIRTUAL_ENV=$(pyenv virtualenv-prefix)/envs/$_PYENV_CURRENT_VERSION
     fi
   fi
 }
@@ -85,24 +90,45 @@ precmd() {
 # breaks `poetry` env resolution if run lazily
 [ -z "$VIRTUAL_ENV" ] && eval "$(pyenv virtualenv-init -)"
 
+# pyenv virtualenv-init registers _pyenv_virtualenv_hook in precmd_functions,
+# which calls `pyenv sh-activate` (~300ms) on every prompt. Override it to only
+# fire when the resolved pyenv version changes (not on every cd).
+_pyenv_virtualenv_hook() {
+  local ret=$?
+  if [[ "$PWD" != "$_PYENV_VENV_LAST_PWD" ]]; then
+    _PYENV_VENV_LAST_PWD="$PWD"
+    # reuse version already resolved by precmd in this same prompt cycle
+    local version="${_PYENV_CURRENT_VERSION:-$(pyenv version-name 2>/dev/null)}"
+    if [[ "$version" != "$_PYENV_VENV_LAST_VERSION" ]]; then
+      _PYENV_VENV_LAST_VERSION="$version"
+      if [ -n "${VIRTUAL_ENV-}" ]; then
+        eval "$(pyenv sh-activate --quiet || pyenv sh-deactivate --quiet || true)" || true
+      else
+        eval "$(pyenv sh-activate --quiet || true)" || true
+      fi
+    fi
+  fi
+  return $ret
+}
+
 __init_fzf() {
   [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 }
 
 __init_pyenv() {
-  [ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
-  [ -z "$VIRTUAL_ENV" ] && eval "$(pyenv virtualenv-init -)"
+  # static shims PATH instead of slow eval "$(pyenv init -)"
+  [ -d "$HOME/.pyenv/shims" ] && export PATH="$HOME/.pyenv/shims:$PATH"
 
   # ptpython
   [ -x "$(command -v ptpython)" ] && export PTPYTHON_CONFIG_HOME=$HOME/.config/ptpython
 }
 
 __init_goenv() {
-  [ -x "$(command -v goenv)" ] && eval "$(goenv init -)"
+  [ -d "$HOME/.goenv/shims" ] && export PATH="$HOME/.goenv/shims:$HOME/.goenv/bin:$PATH"
 }
 
 __init_rbenv() {
-  [ -x "$(command -v rbenv)" ] && eval "$(rbenv init -)"
+  [ -d "$HOME/.rbenv/shims" ] && export PATH="$HOME/.rbenv/shims:$PATH"
 }
 
 __init_nvm() {
@@ -112,7 +138,7 @@ __init_nvm() {
 }
 
 __init_hub() {
-  [ -x "$(command -v hub)" ] && eval "$(hub alias -s)"
+  [ -x "$(command -v hub)" ] && alias git=hub
 }
 
 __init_bat() {
@@ -129,7 +155,12 @@ __init_pipx() {
 }
 
 __init_docker() {
-  [ -x "$(command -v colima)" ] && export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+  if [ -x "$(command -v colima)" ]; then
+    export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+    export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE="/var/run/docker.sock"
+    export TESTCONTAINERS_HOST_OVERRIDE=$DOCKER_HOST
+    export TESTCONTAINERS_RYUK_DISABLED="true"
+  fi
 }
 
 __init_funcs=(__init_fzf __init_pyenv __init_bat __init_rbenv __init_nvm __init_hub __init_pipx __init_sdk __init_goenv __init_docker)
@@ -145,7 +176,7 @@ __run() {
 }
 
 async_init
-async_start_worker zsh -n
+async_start_worker zsh
 
 init_callback() {
   if [[ "$1" == "__run" ]]
