@@ -41,11 +41,15 @@ local function live_grep_git_root()
   end
 end
 
-vim.api.nvim_create_user_command('LiveGrepGitRoot', live_grep_git_root, {})
-
 return {
   'nvim-telescope/telescope.nvim',
   version = '0.2.*',
+  cmd = 'Telescope',
+  keys = {
+    '<leader>?', '<leader><space>', '<leader>/', '<leader>s/', '<leader>ss',
+    '<leader>gf', '<leader>sf', '<leader>sh', '<leader>sw', '<leader>sg',
+    '<leader>sG', '<leader>sd', '<leader>sr', '<leader>st', '<leader>sn', '<leader>sN',
+  },
   dependencies = {
     'nvim-telescope/telescope-ui-select.nvim',
     'nvim-lua/plenary.nvim',
@@ -61,6 +65,8 @@ return {
     },
   },
   config = function()
+    vim.api.nvim_create_user_command('LiveGrepGitRoot', live_grep_git_root, {})
+
     require('telescope').setup({
       defaults = {
         mappings = {

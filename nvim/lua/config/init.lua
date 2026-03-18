@@ -13,7 +13,7 @@ vim.opt.rtp:prepend(lazypath)
 
 local lazyconf = {
   defaults = {
-    lazy = false,
+    lazy = true,
   },
   install = {
     colorscheme = { 'solarized' },

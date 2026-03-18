@@ -1,5 +1,6 @@
 return {
   'lambdalisue/fern.vim',
+  cmd = 'Fern',
   dependencies = {
     'lambdalisue/fern-git-status.vim',
     'lambdalisue/fern-hijack.vim',

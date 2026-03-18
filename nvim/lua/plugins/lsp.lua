@@ -17,8 +17,9 @@ end
 
 local tools = { 'stylua', 'black', 'flake8' }
 
--- Server-specific configurations
-local server_configs = {
+-- Server-specific configurations (built lazily inside config to avoid startup I/O)
+local function build_server_configs()
+ return {
   efm = {
     init_options = { documentFormatting = true },
     settings = {
@@ -61,7 +62,7 @@ local server_configs = {
     settings = {
       ltex = {
         dictionary = {
-          ['en-US'] = custom_dictionary(vim.fn.stdpath('config') .. '/spell/en.utf-8.add'),
+          ['en-US'] = custom_dictionary(vim.fn.stdpath('config') .. '/spell/en.utf-8.add'), -- called lazily inside config
         },
       },
     },
@@ -80,11 +81,12 @@ local server_configs = {
       },
     },
   },
-}
+ }
+end
 
 return {
   'neovim/nvim-lspconfig',
-  lazy = false,
+  event = 'BufReadPre',
   dependencies = {
     -- Automatically install LSPs to stdpath for neovim
     {
@@ -102,7 +104,7 @@ return {
     {
       'williamboman/mason-lspconfig.nvim',
       opts = {
-        ensure_installed = vim.tbl_keys(server_configs),
+        ensure_installed = vim.tbl_keys(build_server_configs()),
       },
     },
     {
@@ -124,6 +126,8 @@ return {
     { 'j-hui/fidget.nvim', opts = {} },
   },
   config = function()
+    local server_configs = build_server_configs()
+
     -- Get capabilities from nvim-cmp
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
 

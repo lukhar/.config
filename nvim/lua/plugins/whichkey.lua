@@ -1,5 +1,6 @@
 return {
   'folke/which-key.nvim',
+  event = 'VeryLazy',
   config = function()
     -- document existing key chains
     local which_key = require('which-key')

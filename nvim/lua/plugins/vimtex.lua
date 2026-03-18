@@ -1,5 +1,6 @@
 return {
   'lervag/vimtex',
+  ft = { 'tex', 'latex' },
   init = function()
     vim.g.tex_flavor = 'latex'
     vim.g.vimtex_format_enalbed = true
