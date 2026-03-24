@@ -45,7 +45,7 @@ return {
   { 'mfussenegger/nvim-jdtls', ft = 'java' },
   {
     'ludovicchabant/vim-gutentags',
-    event = 'BufReadPre',
+    event = 'VeryLazy',
     init = function()
       vim.g.gutentags_cache_dir = vim.fn.expand('~/.cache/nvim/tags')
       vim.g.gutentags_ctags_exclude = { 'target', '.git', '*.class', '*.pyc', '__pycache__', 'docs', 'node_modules' }
