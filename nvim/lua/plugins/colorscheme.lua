@@ -6,11 +6,6 @@ return {
   config = function()
     vim.o.background = 'dark'
     vim.cmd([[colorscheme solarized]])
-    vim.cmd([[
-      nm <silent> <F2> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name")
-          \ . '> trans<' . synIDattr(synID(line("."),col("."),0),"name")
-          \ . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name")
-          \ . ">"<CR>
-    ]])
+    vim.keymap.set('n', '<F2>', '<cmd>Inspect<cr>', { desc = 'Show highlight groups under cursor' })
   end,
 }
