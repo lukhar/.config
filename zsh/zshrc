@@ -88,8 +88,8 @@ precmd() {
   fi
 }
 
-# breaks `poetry` env resolution if run lazily
-[ -z "$VIRTUAL_ENV" ] && eval "$(pyenv virtualenv-init -)"
+# must run eagerly so hooks are always registered, even when VIRTUAL_ENV is inherited
+[ -z "$PYENV_SHELL" ] && eval "$(pyenv virtualenv-init -)"
 
 # pyenv virtualenv-init registers _pyenv_virtualenv_hook in precmd_functions,
 # which calls `pyenv sh-activate` (~300ms) on every prompt. Override it to only
