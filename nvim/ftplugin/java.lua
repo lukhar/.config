@@ -16,7 +16,7 @@ local config = {
     '--add-opens', 'java.base/java.util=ALL-UNNAMED',
     '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
   },
-  root_dir = vim.fs.dirname(vim.fs.find({ 'gradlew', '.git', 'mvnw' }, { upward = true })[1]),
+  root_dir = vim.fs.dirname((vim.fs.find({ 'gradlew', '.git', 'mvnw' }, { upward = true }) or {})[1] or vim.fn.getcwd()),
 }
 local ok, jdtls = pcall(require, 'jdtls')
 if ok then

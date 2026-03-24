@@ -9,9 +9,14 @@ end
 
 local function custom_dictionary(path)
   local spell = {}
-  for word in io.open(path, 'r'):lines() do
+  local file = io.open(path, 'r')
+  if not file then
+    return spell
+  end
+  for word in file:lines() do
     table.insert(spell, word)
   end
+  file:close()
   return spell
 end
 
@@ -19,69 +24,69 @@ local tools = { 'stylua', 'black', 'flake8' }
 
 -- Server-specific configurations (built lazily inside config to avoid startup I/O)
 local function build_server_configs()
- return {
-  efm = {
-    init_options = { documentFormatting = true },
-    settings = {
-      rootMarkers = { '.git/' },
-      languages = {
-        lua = {
-          { formatCommand = 'stylua -', formatStdin = true, rootMarkers = { 'stylua.toml', '.stylua.toml' } },
+  return {
+    efm = {
+      init_options = { documentFormatting = true },
+      settings = {
+        rootMarkers = { '.git/' },
+        languages = {
+          lua = {
+            { formatCommand = 'stylua -', formatStdin = true, rootMarkers = { 'stylua.toml', '.stylua.toml' } },
+          },
+          python = {
+            { formatCommand = 'isort --profile=black --quiet -', formatStdin = true },
+            { formatCommand = 'black --quiet -',                 formatStdin = true },
+            {
+              lintCommand = 'flake8 --stdin-display-name ${INPUT} -',
+              lintStdin = true,
+              lintIgnoreExitCode = true,
+              lintFormats = { '%f:%l:%c: %m' },
+            },
+          },
         },
+      },
+    },
+    gopls = {},
+    pyright = {
+      on_init = function(client)
+        client.config.settings.python.pythonPath = python_path()
+      end,
+      settings = {
         python = {
-          { formatCommand = 'isort --profile=black --quiet -', formatStdin = true },
-          { formatCommand = 'black --quiet -',                 formatStdin = true },
-          {
-            lintCommand = 'flake8 --stdin-display-name ${INPUT} -',
-            lintStdin = true,
-            lintIgnoreExitCode = true,
-            lintFormats = { '%f:%l:%c: %m' },
+          analysis = {
+            -- Disable strict type checking
+            typeCheckingMode = 'off',
           },
         },
       },
     },
-  },
-  gopls = {},
-  pyright = {
-    on_init = function(client)
-      client.config.settings.python.pythonPath = python_path()
-    end,
-    settings = {
-      python = {
-        analysis = {
-          -- Disable strict type checking
-          typeCheckingMode = 'off',
-        },
-      },
-    },
-  },
-  ts_ls = {},
-  vimls = {},
-  terraformls = {},
-  ltex = {
-    settings = {
-      ltex = {
-        dictionary = {
-          ['en-US'] = custom_dictionary(vim.fn.stdpath('config') .. '/spell/en.utf-8.add'), -- called lazily inside config
-        },
-      },
-    },
-  },
-  lua_ls = {
-    settings = {
-      Lua = {
-        runtime = { version = 'LuaJIT' },
-        workspace = {
-          checkThirdParty = false,
-          library = {
-            vim.env.VIMRUNTIME,
+    ts_ls = {},
+    vimls = {},
+    terraformls = {},
+    ltex = {
+      settings = {
+        ltex = {
+          dictionary = {
+            ['en-US'] = custom_dictionary(vim.fn.stdpath('config') .. '/spell/en.utf-8.add'), -- called lazily inside config
           },
         },
-        telemetry = { enable = false },
       },
     },
-  },
- }
+    lua_ls = {
+      settings = {
+        Lua = {
+          runtime = { version = 'LuaJIT' },
+          workspace = {
+            checkThirdParty = false,
+            library = {
+              vim.env.VIMRUNTIME,
+            },
+          },
+          telemetry = { enable = false },
+        },
+      },
+    },
+  }
 end
 
 return {

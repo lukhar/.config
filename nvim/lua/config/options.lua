@@ -19,8 +19,6 @@ vim.o.mouse = 'a'
 vim.o.splitright = true
 vim.o.scrolloff = 10
 
--- set completeopt to have a better completion experience
-vim.o.completeopt = 'menuone,longest,preview'
 vim.o.termguicolors = true
 
 -- disable the splash screen
@@ -98,14 +96,14 @@ end
 vim.keymap.set('n', '<leader>R', reload_config, { desc = '[R]eload Configuration' })
 
 -- dim inactive panes
-local window_managment = vim.api.nvim_create_augroup('window_managment', { clear = true })
+local window_management = vim.api.nvim_create_augroup('window_management', { clear = true })
 local solarized_dark_base02 = '#073642'
 
 vim.api.nvim_set_hl(0, 'ActiveWindow', { bg = '' })
 vim.api.nvim_set_hl(0, 'InactiveWindow', { bg = solarized_dark_base02 })
 
 vim.api.nvim_create_autocmd({ 'WinEnter' }, {
-  group = window_managment,
+  group = window_management,
   callback = function()
     vim.opt_local.winhighlight = 'Normal:ActiveWindow,NormalNC:InactiveWindow'
     vim.api.nvim_set_hl(0, 'SignColumn', { bg = '' })
@@ -113,7 +111,7 @@ vim.api.nvim_create_autocmd({ 'WinEnter' }, {
 })
 
 vim.api.nvim_create_autocmd({ 'FocusLost' }, {
-  group = window_managment,
+  group = window_management,
   callback = function()
     vim.opt_local.winhighlight = 'Normal:InactiveWindow,NormalNC:InactiveWindow'
     vim.api.nvim_set_hl(0, 'SignColumn', { bg = solarized_dark_base02 })
@@ -121,7 +119,7 @@ vim.api.nvim_create_autocmd({ 'FocusLost' }, {
 })
 
 vim.api.nvim_create_autocmd({ 'FocusGained' }, {
-  group = window_managment,
+  group = window_management,
   callback = function()
     vim.opt_local.winhighlight = 'Normal:ActiveWindow,NormalNC:InactiveWindow'
     vim.api.nvim_set_hl(0, 'SignColumn', { bg = '' })
@@ -130,7 +128,7 @@ vim.api.nvim_create_autocmd({ 'FocusGained' }, {
 
 -- manage sessions in projects
 vim.api.nvim_create_autocmd({ 'VimEnter' }, {
-  group = vim.api.nvim_create_augroup('session_managment', { clear = true }),
+  group = vim.api.nvim_create_augroup('session_management', { clear = true }),
   callback = function()
     if vim.fn.isdirectory('.git') then
       vim.fn.mkdir('.vim/', 'p')

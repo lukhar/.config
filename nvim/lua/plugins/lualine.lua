@@ -41,7 +41,7 @@ return {
     local function resolve_filepath()
       local filepath = vim.fn.expand('%')
 
-      if vim.startswith(filepath, 'jdt://') then
+      if filepath:sub(1, 6) == 'jdt://' then
         return filepath:gsub('?.*$', '')
       end
 

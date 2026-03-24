@@ -16,7 +16,7 @@ return {
   { 'tpope/vim-eunuch',     cmd = { 'Move', 'Rename', 'Delete', 'SudoWrite', 'Chmod', 'Mkdir' } },
   { 'tpope/vim-obsession',  cmd = 'Obsession' },
   { 'tpope/vim-repeat',     event = 'VeryLazy' },
-  { 'tpope/vim-sleuth',     event = 'BufReadPre' },
+  { 'tpope/vim-sleuth',     event = 'BufReadPost' },
   { 'tpope/vim-surround',   keys = { 'ys', 'cs', 'ds', { 'S', mode = 'v' } } },
   { 'tpope/vim-unimpaired', event = 'VeryLazy' },
   {
