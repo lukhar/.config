@@ -43,4 +43,13 @@ return {
   },
   { 'junegunn/vim-slash', event = 'VeryLazy' }, -- automatically disable `hlsearch`
   { 'mfussenegger/nvim-jdtls', ft = 'java' },
+  {
+    'ludovicchabant/vim-gutentags',
+    event = 'BufReadPre',
+    init = function()
+      vim.g.gutentags_cache_dir = vim.fn.expand('~/.cache/nvim/tags')
+      vim.g.gutentags_ctags_exclude = { 'target', '.git', '*.class', '*.pyc', '__pycache__', 'docs', 'node_modules' }
+      vim.g.gutentags_file_list_command = 'git ls-files'
+    end,
+  },
 }

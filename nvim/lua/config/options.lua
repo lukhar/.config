@@ -63,6 +63,9 @@ vim.o.pumheight = 35
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
+-- ctags
+vim.opt.tags = { './tags', './.git/tags', 'tags', '.vim/tags' }
+
 -- wildmenu
 vim.o.wildmenu = true
 vim.opt.wildignore:append({ '*.a', '*.o', '*.pyc' })
