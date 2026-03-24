@@ -1,4 +1,5 @@
 # zmodload zsh/zprof                                            # uncomment to profile
+typeset -U path                                                 # deduplicate $PATH entries
 ### Added by Zinit's installer
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d $ZINIT_HOME  ] && mkdir -p "$(dirname $ZINIT_HOME)"
@@ -70,7 +71,7 @@ fpath=($HOME/.config/zsh/completions $fpath)
 # load aliases
 [ -f $HOME/.zsh_aliases ] && source $HOME/.zsh_aliases
 
-export PATH=$HOME/.pyenv/bin:$HOME/bin:$PATH
+export PATH=$HOME/bin:$HOME/.pyenv/bin:$PATH
 export NOTES=$HOME/documents/shared/notes
 export EDITOR=nvim
 export LUA_PATH=/usr/share/awesome/lib
@@ -151,7 +152,7 @@ __init_sdk() {
 }
 
 __init_pipx() {
-  [ -x "$(command -v pipx)" ] && export PATH=$HOME/.local/bin:$PATH
+  [ -x "$(command -v pipx)" ] && export PATH=$HOME/bin:$HOME/.local/bin:$PATH
 }
 
 __init_docker() {
