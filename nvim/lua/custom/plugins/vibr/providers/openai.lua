@@ -16,7 +16,7 @@ function M.load_credentials()
     return nil
   end
 
-  local ok2, creds = pcall(vim.fn.json_decode, content)
+  local ok2, creds = pcall(vim.fn.json_decode, table.concat(content, '\n'))
   if not ok2 or not creds or not creds.openai then
     vim.notify('Vibr: invalid credentials format', vim.log.levels.ERROR)
     return nil

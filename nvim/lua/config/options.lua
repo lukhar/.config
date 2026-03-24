@@ -85,8 +85,7 @@ local function reload_config()
   local reload = require('plenary.reload').reload_module
   reload('config.options', false)
   reload('config.keymaps', false)
-  reload('config.plugins', false)
-  reload('config.globals', false)
+  reload('globals', false)
 
   dofile(vim.env.MYVIMRC)
 end
@@ -130,7 +129,7 @@ vim.api.nvim_create_autocmd({ 'VimEnter' }, {
   callback = function()
     if vim.fn.isdirectory('.git') then
       vim.fn.mkdir('.vim/', 'p')
-      vim.fn.execute(':Obsession .vim/session.vim')
+      vim.cmd('Obsession .vim/session.vim')
     end
   end,
 })
