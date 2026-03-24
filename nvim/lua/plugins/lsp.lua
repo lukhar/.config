@@ -137,13 +137,9 @@ return {
     })
 
     -- Configure each server with server-specific settings
+    -- capabilities already set globally via '*' above, no need to repeat per-server
     for server_name, config in pairs(server_configs) do
-      vim.lsp.config(
-        server_name,
-        vim.tbl_extend('force', {
-          capabilities = capabilities,
-        }, config)
-      )
+      vim.lsp.config(server_name, config)
     end
 
     -- Set up LspAttach autocmd for keybindings

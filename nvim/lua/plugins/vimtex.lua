@@ -3,7 +3,7 @@ return {
   ft = { 'tex', 'latex' },
   init = function()
     vim.g.tex_flavor = 'latex'
-    vim.g.vimtex_format_enalbed = true
+    vim.g.vimtex_format_enabled = true
     vim.g.vimtex_fold_enabled = true
     if vim.fn.has('unix') then
       if vim.fn.has('mac') then

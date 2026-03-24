@@ -1,14 +1,12 @@
 vim.o.tabstop = 4
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
-vim.o.background = 'dark'
 vim.o.showmatch = true
 vim.o.expandtab = true
-vim.o.incsearch = true
 vim.o.autoindent = true
 vim.o.smartindent = true
 vim.o.backspace = 'indent,eol,start'
-vim.o.showmode = true
+vim.o.showmode = false
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.incsearch = true
@@ -55,6 +53,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 vim.o.directory = vim.fn.expand('~/.cache/nvim/swp/')
 vim.o.undodir = vim.fn.expand('~/.cache/nvim/undo/')
+vim.fn.mkdir(vim.fn.expand('~/.cache/nvim/swp/'), 'p')
+vim.fn.mkdir(vim.fn.expand('~/.cache/nvim/undo/'), 'p')
 
 -- set pop up menu to have fixed length
 vim.o.pumheight = 35
