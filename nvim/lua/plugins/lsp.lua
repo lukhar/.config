@@ -184,7 +184,7 @@ return {
 
         -- See `:help K` for why this keymap
         nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-        -- colides with vim/tmux integration
+        -- collides with vim/tmux integration
         -- nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
         -- Lesser used LSP functionality

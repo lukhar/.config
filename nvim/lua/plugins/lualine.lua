@@ -71,7 +71,7 @@ return {
     ins_config('c', {
       {
         'branch',
-        icon = { icons.git, color = { fg = palette.magenta } },
+        icon = { icons.git, color = { fg = palette.magenta or '#d33682' } },
         cond = hide_in_width,
       },
       {
@@ -79,9 +79,9 @@ return {
         symbols = icons.diff,
         colored = true,
         diff_color = {
-          added = { fg = palette.green },
-          modified = { fg = palette.orange },
-          removed = { fg = palette.red },
+          added = { fg = palette.green or '#859900' },
+          modified = { fg = palette.orange or '#cb4b16' },
+          removed = { fg = palette.red or '#dc322f' },
         },
         cond = hide_in_width,
       },

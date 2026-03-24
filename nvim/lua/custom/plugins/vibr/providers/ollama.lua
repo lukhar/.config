@@ -27,7 +27,7 @@ function M.build_request(messages, options)
     stream = true,
   })
 
-  local port_suffix = (port == 80) and '' or (':' .. port)
+  local port_suffix = (port == 11434) and '' or (':' .. port)
 
   return {
     url = 'http://' .. host .. port_suffix .. '/api/chat',

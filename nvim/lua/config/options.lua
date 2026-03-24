@@ -72,13 +72,11 @@ vim.opt.wildignore:append({ '*~', '*.swp', '*.tmp' })
 vim.opt.wildmode = 'longest:full,full'
 
 -- use faster grepping tools if available
-if vim.fn.executable('ag') then
-  vim.opt.grepprg = 'ag --nogroup --nocolor'
-  vim.opt.grepformat = '%f:%l:%c:%m,%f:%l:%m'
-end
-
-if vim.fn.executable('rg') then
+if vim.fn.executable('rg') == 1 then
   vim.opt.grepprg = 'rg --vimgrep --no-heading'
+  vim.opt.grepformat = '%f:%l:%c:%m,%f:%l:%m'
+elseif vim.fn.executable('ag') == 1 then
+  vim.opt.grepprg = 'ag --nogroup --nocolor'
   vim.opt.grepformat = '%f:%l:%c:%m,%f:%l:%m'
 end
 
