@@ -28,7 +28,40 @@ alias grep='grep --color=auto'
 alias gs='git status'
 alias gw='git add -p && git commit && git pull && git push'
 
-alias lvim='NVIM_APPNAME=legacy-nvim nvim'
+# gct [url] — git clone worktree
+#   with url: clone remote into <repo>/.bare and create <repo>/<branch>/ worktree
+#   no args:  convert current git repo in-place into the same structure
+gct() {
+  setopt local_options err_return
+  local url=$1 branch
+
+  if [[ -n "$url" ]]; then
+    local repo=$(basename "$url" .git)
+    [[ -d "$repo" ]] && { echo "error: '$repo' already exists"; return 1; }
+    mkdir "$repo" && cd "$repo"
+    git clone --bare "$url" .bare
+  else
+    mv .git .bare
+    git -C .bare config core.bare true
+  fi
+
+  echo "gitdir: ./.bare" > .git
+  branch=$(git -C .bare symbolic-ref --short HEAD)
+  git worktree add "./$branch"
+
+  if [[ -z "$url" ]]; then
+    for item in *(DN); do
+      [[ "$item" == ".bare" || "$item" == ".git" || "$item" == "$branch" ]] && continue
+      if [[ -d "$item" && -d "./$branch/$item" ]]; then
+        cp -r "$item/." "./$branch/$item/" && rm -rf "$item"
+      else
+        mv "$item" "./$branch/"
+      fi
+    done
+  fi
+
+  cd "./$branch"
+}
 
 function fe() {
   IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0))

@@ -89,7 +89,7 @@ precmd() {
 }
 
 # must run eagerly so hooks are always registered, even when VIRTUAL_ENV is inherited
-[ -z "$PYENV_SHELL" ] && eval "$(pyenv virtualenv-init -)"
+eval "$(pyenv virtualenv-init -)"
 
 # pyenv virtualenv-init registers _pyenv_virtualenv_hook in precmd_functions,
 # which calls `pyenv sh-activate` (~300ms) on every prompt. Override it to only
@@ -196,8 +196,8 @@ init_callback() {
 }
 async_register_callback zsh init_callback
 
-# Delay init function triggering for 2s to make the shell starts faster.
-async_job zsh __run 1 2
+# Trigger init functions asynchronously to avoid blocking shell startup.
+async_job zsh __run 1 0
 
 # zprof                                                         # uncomment to profile
 #vim: tabstop=2 shiftwidth=2 expandtab
