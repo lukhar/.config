@@ -112,6 +112,8 @@ function M.execute(request, buffer, provider, opts)
     end)
   end)
 
+  local partial_line = ''
+
   stdout:read_start(function(error, data)
     if error then
       vim.schedule(function()
@@ -125,7 +127,19 @@ function M.execute(request, buffer, provider, opts)
     end
 
     vim.schedule(function()
-      for chunk in data:gmatch('[^\r\n]+') do
+      -- Prepend any incomplete line buffered from the previous callback
+      local buf = partial_line .. data
+      partial_line = ''
+
+      local lines = vim.split(buf, '\n', { plain = true })
+
+      -- If the data doesn't end with a newline, the last element is incomplete
+      if buf:sub(-1) ~= '\n' then
+        partial_line = table.remove(lines)
+      end
+
+      for _, chunk in ipairs(lines) do
+        chunk = chunk:gsub('\r', '')
         if chunk ~= '' and chunk ~= 'data: [DONE]' then
           local content = provider.parse_chunk(chunk)
           if content and content ~= '' then
@@ -135,24 +149,17 @@ function M.execute(request, buffer, provider, opts)
               opts.on_chunk(content)
             end
 
-            local line_part = content:match('[^\n]+')
-            local new_lines = content:match('[\n]+')
-
-            if line_part then
-              local line = vim.api.nvim_buf_get_lines(buffer, current_line_index, current_line_index + 1, false)[1]
-                or ''
-              vim.api.nvim_buf_set_lines(
-                buffer,
-                current_line_index,
-                current_line_index + 1,
-                false,
-                { line .. line_part }
-              )
-            end
-
-            if new_lines then
-              current_line_index = current_line_index + #new_lines
-              vim.api.nvim_buf_set_lines(buffer, current_line_index, current_line_index, false, { '' })
+            local parts = vim.split(content, '\n', { plain = true })
+            for i, part in ipairs(parts) do
+              if part ~= '' then
+                local line = vim.api.nvim_buf_get_lines(buffer, current_line_index, current_line_index + 1, false)[1]
+                  or ''
+                vim.api.nvim_buf_set_lines(buffer, current_line_index, current_line_index + 1, false, { line .. part })
+              end
+              if i < #parts then
+                current_line_index = current_line_index + 1
+                vim.api.nvim_buf_set_lines(buffer, current_line_index, current_line_index, false, { '' })
+              end
             end
           end
         end
