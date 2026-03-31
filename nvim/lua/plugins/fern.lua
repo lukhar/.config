@@ -2,10 +2,10 @@ return {
   'lambdalisue/fern.vim',
   cmd = 'Fern',
   dependencies = {
-    'lambdalisue/fern-git-status.vim',
-    'lambdalisue/fern-hijack.vim',
+    'lambdalisue/vim-fern-git-status',
+    'lambdalisue/vim-fern-hijack',
     'TheLeoP/fern-renderer-web-devicons.nvim',
-    'lambdalisue/glyph-palette.vim',
+    'lambdalisue/vim-glyph-palette',
   },
   init = function()
     vim.g['fern#hide_cursor'] = 1
