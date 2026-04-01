@@ -157,9 +157,8 @@ __init_pipx() {
 
 __init_docker() {
   if [ -x "$(command -v colima)" ]; then
-    export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
     export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE="/var/run/docker.sock"
-    export TESTCONTAINERS_HOST_OVERRIDE=$DOCKER_HOST
+    export TESTCONTAINERS_HOST_OVERRIDE="localhost"
     export TESTCONTAINERS_RYUK_DISABLED="true"
   fi
 }
