@@ -134,6 +134,51 @@ vim.api.nvim_create_autocmd({ 'VimEnter' }, {
   end,
 })
 
+---@param remote string git remote URL (SSH or HTTPS)
+---@param file_dir string directory of the current buffer
+---@return string|nil url GitHub permalink or nil if remote can't be parsed
+local function github_url(remote, file_dir)
+  local host, path = remote:match('^git@([^:]+):(.+)$')
+
+  if not host then
+    host, path = remote:match('^https?://([^/]+)/(.+)$')
+  end
+
+  if not host or not path then
+    return
+  end
+
+  path = path:gsub('%.git$', '')
+  local root = vim.system({ 'git', 'rev-parse', '--show-toplevel' }, { cwd = file_dir }):wait().stdout:gsub('%s+$', '')
+  local ref = vim.system({ 'git', 'rev-parse', 'HEAD' }, { cwd = file_dir }):wait().stdout:gsub('%s+$', '')
+  local file = vim.api.nvim_buf_get_name(0):sub(#root + 2)
+  local line, _ = unpack(vim.api.nvim_win_get_cursor(0))
+
+  return ('https://%s/%s/blob/%s/%s#L%d'):format(host, path, ref, file, line)
+end
+
+vim.keymap.set('n', '<leader>gl', function()
+  local file_dir = vim.fs.dirname(vim.api.nvim_buf_get_name(0))
+  local result = vim.system({ 'git', 'remote', 'get-url', 'origin' }, { cwd = file_dir }):wait()
+
+  if result.code ~= 0 then
+    vim.notify('Not a git repository', vim.log.levels.WARN)
+    return
+  end
+
+  local remote = result.stdout:gsub('%s+$', '')
+
+  local url = github_url(remote, file_dir)
+
+  if not url then
+    vim.notify('Could not parse remote: ' .. remote, vim.log.levels.WARN)
+    return
+  end
+
+  vim.fn.setreg('+', url)
+  vim.notify("Copied " .. url:sub(0, vim.api.nvim_win_get_width(0) - 5))
+end, { desc = 'Get [G]ithub [L]ink to this line' })
+
 -- fancy diagnostics symbols
 vim.diagnostic.config({
   signs = {
