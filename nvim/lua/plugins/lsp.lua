@@ -26,6 +26,11 @@ local tools = { 'stylua', 'black', 'flake8' }
 local function build_server_configs()
   return {
     efm = {
+      root_dir = function(bufnr)
+        local bufname = vim.api.nvim_buf_get_name(bufnr)
+        if not bufname:match('^/') then return nil end
+        return vim.fs.root(bufnr, '.git')
+      end,
       init_options = { documentFormatting = true },
       settings = {
         rootMarkers = { '.git/' },
@@ -64,6 +69,7 @@ local function build_server_configs()
     vimls = {},
     terraformls = {},
     ltex = {
+      cmd_env = { JAVA_OPTS = '-Djdk.xml.totalEntitySizeLimit=0' },
       settings = {
         ltex = {
           dictionary = {
@@ -133,8 +139,8 @@ return {
   config = function()
     local server_configs = build_server_configs()
 
-    -- Get capabilities from nvim-cmp
-    local capabilities = require('cmp_nvim_lsp').default_capabilities()
+    -- Get capabilities from blink.cmp
+    local capabilities = require('blink.cmp').get_lsp_capabilities()
 
     -- Global LSP configuration for all servers
     vim.lsp.config('*', {
