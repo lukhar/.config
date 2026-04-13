@@ -12,7 +12,16 @@ return {
         return 'make install_jsregexp'
       end)(),
       config = function()
-        require('luasnip.loaders.from_vscode').lazy_load()
+        local loader = require('luasnip.loaders.from_vscode')
+        loader.lazy_load()
+
+        vim.api.nvim_create_autocmd('FileType', {
+          pattern = 'gitcommit',
+          once = true,
+          callback = function()
+            loader.load({ include = { 'gitcommit' } })
+          end,
+        })
       end,
     },
     'rafamadriz/friendly-snippets',
@@ -25,6 +34,8 @@ return {
 
     keymap = {
       preset = 'enter',
+      ['<Tab>'] = { 'select_next', 'snippet_forward', 'fallback' },
+      ['<S-Tab>'] = { 'select_prev', 'snippet_backward', 'fallback' },
       ['<Space>'] = { 'accept', 'fallback' },
     },
 
