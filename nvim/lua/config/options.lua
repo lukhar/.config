@@ -176,7 +176,7 @@ vim.keymap.set('n', '<leader>gl', function()
   end
 
   vim.fn.setreg('+', url)
-  vim.notify("Copied " .. url:sub(0, vim.api.nvim_win_get_width(0) - 5))
+  vim.notify('Copied ' .. url:sub(0, vim.api.nvim_win_get_width(0) - 5))
 end, { desc = 'Get [G]ithub [L]ink to this line' })
 
 -- fancy diagnostics symbols

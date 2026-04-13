@@ -14,13 +14,13 @@ local providers = require('custom.plugins.vibr.providers')
 
 -- Chat state
 M.chat = {
-  messages = {},      -- conversation history
-  buffer = nil,       -- chat display buffer
+  messages = {}, -- conversation history
+  buffer = nil, -- chat display buffer
   input_buffer = nil, -- input buffer
-  window = nil,       -- chat window
+  window = nil, -- chat window
   input_window = nil, -- input window
-  provider = nil,     -- current provider
-  api_key = nil,      -- cached credentials
+  provider = nil, -- current provider
+  api_key = nil, -- cached credentials
 }
 
 ---@param request VibrRequest
@@ -88,8 +88,12 @@ function M.execute(request, buffer, provider, opts)
   local stderr = vim.uv.new_pipe(false)
 
   if not stdout or not stderr then
-    if stdout then stdout:close() end
-    if stderr then stderr:close() end
+    if stdout then
+      stdout:close()
+    end
+    if stderr then
+      stderr:close()
+    end
     vim.notify('Failed to create pipes', vim.log.levels.ERROR)
     return
   end
@@ -102,7 +106,7 @@ function M.execute(request, buffer, provider, opts)
     stdout:close()
     stderr:close()
     vim.schedule(function()
-      vim.api.nvim_set_option_value('filetype', 'markdown', {buf = buffer})
+      vim.api.nvim_set_option_value('filetype', 'markdown', { buf = buffer })
       if code ~= 0 then
         vim.notify('Stream process exited with code: ' .. code, vim.log.levels.WARN)
       end

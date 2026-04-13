@@ -21,7 +21,6 @@ local function sdk()
   return {}
 end
 
-
 ---@param root string
 ---@return string
 local function workspace(root)

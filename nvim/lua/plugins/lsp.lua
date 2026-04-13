@@ -28,7 +28,9 @@ local function build_server_configs()
     efm = {
       root_dir = function(bufnr)
         local bufname = vim.api.nvim_buf_get_name(bufnr)
-        if not bufname:match('^/') then return nil end
+        if not bufname:match('^/') then
+          return nil
+        end
         return vim.fs.root(bufnr, '.git')
       end,
       init_options = { documentFormatting = true },
@@ -40,7 +42,7 @@ local function build_server_configs()
           },
           python = {
             { formatCommand = 'isort --profile=black --quiet -', formatStdin = true },
-            { formatCommand = 'black --quiet -',                 formatStdin = true },
+            { formatCommand = 'black --quiet -', formatStdin = true },
             {
               lintCommand = 'flake8 --stdin-display-name ${INPUT} -',
               lintStdin = true,
