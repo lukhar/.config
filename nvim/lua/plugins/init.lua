@@ -41,7 +41,7 @@ return {
     'christoomey/vim-tmux-navigator',
     keys = { '<C-h>', '<C-j>', '<C-k>', '<C-l>' },
   },
-  { 'junegunn/vim-slash', event = 'VeryLazy' }, -- automatically disable `hlsearch`
+
   { 'mfussenegger/nvim-jdtls', ft = 'java' },
   {
     'ludovicchabant/vim-gutentags',
