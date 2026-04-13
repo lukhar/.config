@@ -1,5 +1,5 @@
-# zmodload zsh/zprof                                            # uncomment to profile
-typeset -U path                                                 # deduplicate $PATH entries
+# zmodload zsh/zprof                                              # uncomment to profile 
+typeset -U path                                                   # deduplicate $PATH entries
 ### Added by Zinit's installer
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d $ZINIT_HOME  ] && mkdir -p "$(dirname $ZINIT_HOME)"
@@ -7,7 +7,6 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 source "${ZINIT_HOME}/zinit.zsh"
 ### End of Zinit's installer chunk
 
-zinit light "mafredri/zsh-async"
 zinit ice pick"async.zsh" src"pure.zsh"
 zinit light sindresorhus/pure
 
@@ -18,10 +17,10 @@ zinit wait lucid light-mode for \
 
 zinit ice depth"1" from"gitlab"
 
-zstyle :prompt:pure:git:stash show yes                          # turn on git stash status
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'       # Case insensitive tab completion
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"         # Colored completion (different colors for dirs/files/etc)
-zstyle ':completion:*' rehash false                             # avoid rescanning $PATH on every completion
+zstyle :prompt:pure:git:stash show yes                            # turn on git stash status
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'         # Case insensitive tab completion
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"           # Colored completion (different colors for dirs/files/etc)
+zstyle ':completion:*' rehash false                               # avoid rescanning $PATH on every completion
 
 # Speed up completions
 zstyle ':completion:*' accept-exact '*(N)'
@@ -112,91 +111,36 @@ _pyenv_virtualenv_hook() {
   return $ret
 }
 
-__init_fzf() {
-  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-}
+# fast init — PATH and env vars (instant)
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -d "$HOME/.pyenv/shims" ] && path=("$HOME/.pyenv/shims" $path)
+[ -d "$HOME/.goenv/shims" ] && path=("$HOME/.goenv/shims" "$HOME/.goenv/bin" $path)
+[ -d "$HOME/.rbenv/shims" ] && path=("$HOME/.rbenv/shims" $path)
+[ -x "$(command -v pipx)" ] && path=("$HOME/.local/bin" $path)
+[ -x "$(command -v bat)" ] && export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+[ -x "$(command -v hub)" ] && alias git=hub
+[ -x "$(command -v ptpython)" ] && export PTPYTHON_CONFIG_HOME=$HOME/.config/ptpython
 
-__init_pyenv() {
-  # static shims PATH instead of slow eval "$(pyenv init -)"
-  [ -d "$HOME/.pyenv/shims" ] && export PATH="$HOME/.pyenv/shims:$PATH"
+if [ -x "$(command -v colima)" ]; then
+  export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE="/var/run/docker.sock"
+  export TESTCONTAINERS_HOST_OVERRIDE="localhost"
+  export TESTCONTAINERS_RYUK_DISABLED="true"
+fi
 
-  # ptpython
-  [ -x "$(command -v ptpython)" ] && export PTPYTHON_CONFIG_HOME=$HOME/.config/ptpython
-}
-
-__init_goenv() {
-  [ -d "$HOME/.goenv/shims" ] && export PATH="$HOME/.goenv/shims:$HOME/.goenv/bin:$PATH"
-}
-
-__init_rbenv() {
-  [ -d "$HOME/.rbenv/shims" ] && export PATH="$HOME/.rbenv/shims:$PATH"
-}
-
-__init_nvm() {
+# lazy init — only sourced on first use
+nvm() {
+  unfunction nvm
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
   [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+  nvm "$@"
 }
 
-__init_hub() {
-  [ -x "$(command -v hub)" ] && alias git=hub
+sdk() {
+  unfunction sdk
+  [ -d "$HOME/.sdkman" ] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+  sdk "$@"
 }
 
-__init_bat() {
-  # use bat as manpager
-  [ -x "$(command -v bat)" ] && export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-}
-
-__init_sdk() {
-  [ -d $HOME/.sdkman ] && source $HOME/.sdkman/bin/sdkman-init.sh
-}
-
-__init_pipx() {
-  [ -x "$(command -v pipx)" ] && export PATH=$HOME/bin:$HOME/.local/bin:$PATH
-}
-
-__init_docker() {
-  if [ -x "$(command -v colima)" ]; then
-    export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE="/var/run/docker.sock"
-    export TESTCONTAINERS_HOST_OVERRIDE="localhost"
-    export TESTCONTAINERS_RYUK_DISABLED="true"
-  fi
-}
-
-__init_funcs=(__init_fzf __init_pyenv __init_bat __init_rbenv __init_nvm __init_hub __init_pipx __init_sdk __init_goenv __init_docker)
-__init_total=${#__init_funcs[*]}
-__init_index=1
-
-# Triggers an init function
-# $1: the init function index to trigger
-# $2: the number of seconds to wait before triggering
-__run() {
-  sleep ${2:0}
-  echo $1
-}
-
-async_init
-async_start_worker zsh
-
-init_callback() {
-  if [[ "$1" == "__run" ]]
-  then
-    # Run the current init function
-    eval "$__init_funcs[$3]"
-
-    # Trigger the next init function. This ensures the init
-    # functions runs in serial.
-    if (( __init_index < __init_total ))
-    then
-      __init_index=$(( __init_index + 1 ))
-      async_job zsh __run $__init_index 0
-    fi
-  fi
-}
-async_register_callback zsh init_callback
-
-# Trigger init functions asynchronously to avoid blocking shell startup.
-async_job zsh __run 1 0
-
-# zprof                                                         # uncomment to profile
+# zprof                                                           # uncomment to profile
 #vim: tabstop=2 shiftwidth=2 expandtab
