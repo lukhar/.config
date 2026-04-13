@@ -11,7 +11,7 @@ ln -sf ~/.config/.dmrc ~/.dmrc
 ln -sf ~/.config/zsh/zshrc ~/.zshrc
 ln -sf ~/.config/zsh/zshenv ~/.zshenv
 ln -sf ~/.config/zsh/zsh_aliases ~/.zsh_aliases
-ln -sf ~/.config/.bash_profile ~/.bash_profile
+Ln -sf ~/.config/.bash_profile ~/.bash_profile
 ln -sf ~/.config/.bash_aliases ~/.bash_aliases
 ln -sf ~/.config/confupdate.sh ~/bin/confupdate
 ln -sf ~/.config/.dircolors ~/.dircolors
@@ -25,8 +25,12 @@ ln -sf ~/.config/.Xclients ~/.Xclients
 ln -sf ~/.config/.xinitrc ~/.xinitrc
 ln -sf ~/.vim/gvimrc ~/.gvimrc
 ln -sf ~/.vim/vimrc ~/.vimrc
-ln -sf ~/.config/ctags ~/.ctags.d 
+ln -sf ~/.config/ctags ~/.ctags.d
 ln -sf ~/.config/.gtkrc-2.0 ~/.gtkrc-2.0
+ln -sf ~/.config/aiassist/claude/rules ~/.claude/rules
+ln -sf ~/.config/aiassist/claude/skills ~/.claude/skills
+ln -sf ~/.config/aiassist/claude/agents ~/.claude/agents
+ln -sf ~/.config/aiassist/claude/hooks ~/.claude/hooks
 
 if [ "$HOSTNAME" = grapebox ]; then
   ln -sf ~/Dropbox/Shared ~/Documents/shared
