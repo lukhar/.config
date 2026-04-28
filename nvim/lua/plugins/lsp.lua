@@ -1,12 +1,4 @@
 -- [[ Configure LSP ]]
-local function python_path()
-  if vim.env.VIRTUAL_ENV then
-    return vim.env.VIRTUAL_ENV .. '/bin/python'
-  end
-
-  return vim.fn.exepath('python3') or vim.fn.exepath('python') or 'python'
-end
-
 local function custom_dictionary(path)
   local spell = {}
   local file = io.open(path, 'r')
@@ -54,19 +46,14 @@ local function build_server_configs()
       },
     },
     gopls = {},
-    pyright = {
-      on_init = function(client)
-        client.config.settings.python.pythonPath = python_path()
-      end,
-      settings = {
-        python = {
-          analysis = {
-            -- Disable strict type checking
-            typeCheckingMode = 'off',
-          },
+    ruff = {
+      init_options = {
+        settings = {
+          lineLength = 120,
         },
       },
     },
+    ty = {},
     ts_ls = {},
     vimls = {},
     terraformls = {},
