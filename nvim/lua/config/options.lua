@@ -92,12 +92,27 @@ end
 
 vim.keymap.set('n', '<leader>R', reload_config, { desc = '[R]eload Configuration' })
 
--- dim inactive panes
+-- dim inactive panes (emphasis bg follows vim.o.background)
 local window_management = vim.api.nvim_create_augroup('window_management', { clear = true })
-local solarized_dark_base02 = '#073642'
+local solarized_emph_bg = { dark = '#073642', light = '#eee8d5' } -- base02 / base2
 
-vim.api.nvim_set_hl(0, 'ActiveWindow', { bg = '' })
-vim.api.nvim_set_hl(0, 'InactiveWindow', { bg = solarized_dark_base02 })
+local function refresh_window_highlights()
+  vim.api.nvim_set_hl(0, 'ActiveWindow', { bg = '' })
+  vim.api.nvim_set_hl(0, 'InactiveWindow', { bg = solarized_emph_bg[vim.o.background] })
+end
+
+refresh_window_highlights()
+
+vim.api.nvim_create_autocmd('ColorScheme', {
+  group = window_management,
+  callback = refresh_window_highlights,
+})
+
+vim.api.nvim_create_autocmd('OptionSet', {
+  group = window_management,
+  pattern = 'background',
+  callback = refresh_window_highlights,
+})
 
 vim.api.nvim_create_autocmd({ 'WinEnter' }, {
   group = window_management,
@@ -111,7 +126,7 @@ vim.api.nvim_create_autocmd({ 'FocusLost' }, {
   group = window_management,
   callback = function()
     vim.opt_local.winhighlight = 'Normal:InactiveWindow,NormalNC:InactiveWindow'
-    vim.api.nvim_set_hl(0, 'SignColumn', { bg = solarized_dark_base02 })
+    vim.api.nvim_set_hl(0, 'SignColumn', { bg = solarized_emph_bg[vim.o.background] })
   end,
 })
 
