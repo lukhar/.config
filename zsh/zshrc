@@ -13,9 +13,8 @@ zinit light sindresorhus/pure
 zinit wait lucid light-mode for \
   zsh-users/zsh-completions \
   zsh-users/zsh-autosuggestions \
+  atload"zicompinit; zicdreplay" \
   zdharma-continuum/fast-syntax-highlighting
-
-zinit ice depth"1" from"gitlab"
 
 zstyle :prompt:pure:git:stash show yes                            # turn on git stash status
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'         # Case insensitive tab completion
@@ -75,7 +74,7 @@ export NOTES=$HOME/documents/shared/notes
 export EDITOR=nvim
 export LUA_PATH=/usr/share/awesome/lib
 
-precmd() {
+_pyenv_precmd() {
   if [[ -n $PYENV_SHELL && "$PWD" != "$_PRECMD_LAST_PWD" ]]; then
     _PRECMD_LAST_PWD="$PWD"
     _PYENV_CURRENT_VERSION=$(pyenv version-name)
@@ -87,12 +86,9 @@ precmd() {
   fi
 }
 
-# must run eagerly so hooks are always registered, even when VIRTUAL_ENV is inherited
-eval "$(pyenv virtualenv-init -)"
-
-# pyenv virtualenv-init registers _pyenv_virtualenv_hook in precmd_functions,
-# which calls `pyenv sh-activate` (~300ms) on every prompt. Override it to only
-# fire when the resolved pyenv version changes (not on every cd).
+# `pyenv sh-activate` works against the binary, so virtualenv-init isn't needed
+# for auto-activation. Run this hook on every prompt; only `pyenv shell` requires
+# the shell-function form, and that's lazy-loaded by the wrapper below.
 _pyenv_virtualenv_hook() {
   local ret=$?
   if [[ "$PWD" != "$_PYENV_VENV_LAST_PWD" ]]; then
@@ -109,6 +105,18 @@ _pyenv_virtualenv_hook() {
     fi
   fi
   return $ret
+}
+precmd_functions=(_pyenv_precmd _pyenv_virtualenv_hook $precmd_functions)
+
+# lazy: only `pyenv shell <ver>` needs the shell-function wrapper from `pyenv init -`
+# (which defines `pyenv()` with a `shell` case and exports PYENV_SHELL)
+pyenv() {
+  if [[ $1 == shell ]]; then
+    eval "$(command pyenv init - zsh)"
+    pyenv "$@"
+  else
+    command pyenv "$@"
+  fi
 }
 
 # fast init — PATH and env vars (instant)
