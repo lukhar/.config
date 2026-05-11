@@ -86,6 +86,16 @@ _pyenv_precmd() {
   fi
 }
 
+# pure-shell ancestor walk; avoids spawning pyenv subprocesses when no project is in scope
+_pyenv_has_version_file() {
+  local dir=$PWD
+  while [[ -n $dir && $dir != / ]]; do
+    [[ -f $dir/.python-version ]] && return 0
+    dir=${dir%/*}
+  done
+  return 1
+}
+
 # `pyenv sh-activate` works against the binary, so virtualenv-init isn't needed
 # for auto-activation. Run this hook on every prompt; only `pyenv shell` requires
 # the shell-function form, and that's lazy-loaded by the wrapper below.
@@ -93,6 +103,11 @@ _pyenv_virtualenv_hook() {
   local ret=$?
   if [[ "$PWD" != "$_PYENV_VENV_LAST_PWD" ]]; then
     _PYENV_VENV_LAST_PWD="$PWD"
+    if ! _pyenv_has_version_file; then
+      [[ -n ${VIRTUAL_ENV-} ]] && eval "$(command pyenv sh-deactivate --quiet || true)"
+      _PYENV_VENV_LAST_VERSION=
+      return $ret
+    fi
     # reuse version already resolved by precmd in this same prompt cycle
     local version="${_PYENV_CURRENT_VERSION:-$(pyenv version-name 2>/dev/null)}"
     if [[ "$version" != "$_PYENV_VENV_LAST_VERSION" ]]; then
