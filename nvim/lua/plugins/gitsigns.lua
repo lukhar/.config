@@ -4,6 +4,11 @@ return {
   event = 'BufReadPost',
   opts = {
     -- See `:help gitsigns.txt`
+    -- external .git churn (e.g. prompt/git-fetch in other shells) was making the
+    -- watcher respawn git constantly; signs still refresh on save/read
+    watch_gitdir = {
+      enable = false,
+    },
     signs = {
       add = { text = '+' },
       change = { text = '~' },

@@ -32,6 +32,7 @@ local lazyconf = {
     },
   },
   change_detection = {
+    enabled = false,
     notify = false,
   },
 }
