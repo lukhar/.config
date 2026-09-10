@@ -1,18 +1,31 @@
 -- [[ Configure LSP ]]
-local function custom_dictionary(path)
-  local spell = {}
-  local file = io.open(path, 'r')
-  if not file then
-    return spell
-  end
-  for word in file:lines() do
-    table.insert(spell, word)
-  end
-  file:close()
-  return spell
-end
-
 local tools = { 'stylua', 'black', 'flake8' }
+
+-- Harper re-lints the whole document on every codeAction request, ~1.25 ms per
+-- rule, so all 857 rules on a 110 KB note cost ~1.1 s a press. :HarperToggle
+-- drops to spell check only when that wait gets annoying on a big note.
+local harper_grammar = { SentenceCapitalization = false }
+
+-- The clients hold the mode, so there is nothing else to keep in sync: only the
+-- spell-check-only table carries a SpellCheck key. Comparing table identity
+-- instead would miss, because a client copies the settings it starts with.
+-- Settings live on the client rather than the buffer, so this covers every prose
+-- buffer harper serves, and the table is swapped rather than merged into -- a
+-- merge would leave the disabled rules behind.
+local function harper_toggle()
+  local clients = vim.lsp.get_clients({ name = 'harper_ls' })
+  if vim.tbl_isempty(clients) then
+    return vim.notify('harper: no client attached', vim.log.levels.WARN)
+  end
+
+  local grammar = clients[1].settings['harper-ls'].linters.SpellCheck ~= nil
+  for _, client in ipairs(clients) do
+    client.settings['harper-ls'].linters = grammar and harper_grammar or require('plugins.harper.linters')
+    client:notify('workspace/didChangeConfiguration', { settings = client.settings })
+  end
+
+  vim.notify('harper: ' .. (grammar and 'full rules' or 'spell check only'))
+end
 
 -- Server-specific configurations (built lazily inside config to avoid startup I/O)
 local function build_server_configs()
@@ -57,13 +70,31 @@ local function build_server_configs()
     ts_ls = {},
     vimls = {},
     terraformls = {},
-    ltex = {
-      cmd_env = { JAVA_OPTS = '-Djdk.xml.totalEntitySizeLimit=0' },
+    harper_ls = {
+      -- Prose only: harper's default filetypes would lint comments in source files.
+      filetypes = {
+        'asciidoc',
+        'gitcommit',
+        'html',
+        'mail',
+        'markdown',
+        'org',
+        'plaintex',
+        'quarto',
+        'tex',
+        'text',
+        'typst',
+      },
       settings = {
-        ltex = {
-          dictionary = {
-            ['en-US'] = custom_dictionary(vim.fn.stdpath('config') .. '/spell/en.utf-8.add'), -- called lazily inside config
-          },
+        ['harper-ls'] = {
+          -- "Add to dictionary" is a real server command, so harper writes this
+          -- file itself; no client-side command handler is needed.
+          userDictPath = vim.fn.stdpath('config') .. '/spell/en.utf-8.add',
+          -- Harper silently stops linting past 120000 bytes by default, and the
+          -- largest note is already at 110 KB. The rule list is what keeps big
+          -- files fast, not the size cap.
+          maxFileLength = 1000000,
+          linters = harper_grammar,
         },
       },
     },
@@ -142,6 +173,10 @@ return {
       vim.lsp.config(server_name, config)
     end
 
+    vim.api.nvim_create_user_command('HarperToggle', harper_toggle, {
+      desc = 'Toggle harper between spell check only and the full rule set',
+    })
+
     -- Set up LspAttach autocmd for keybindings
     -- This is the modern way to handle LSP keybindings in Neovim 0.11+
     vim.api.nvim_create_autocmd('LspAttach', {
@@ -155,12 +190,7 @@ return {
         end
 
         nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-        nmap('gA', function()
-          local current_buffer_diagnostics = vim.diagnostic.get(bufnr)
-          vim.lsp.buf.code_action({
-            context = { only = { 'quickfix', 'refactor', 'source' }, diagnostics = current_buffer_diagnostics },
-          })
-        end, '[G]oto Code [A]ction')
+        nmap('gA', vim.lsp.buf.code_action, '[G]oto Code [A]ction')
 
         nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
         nmap('gR', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
