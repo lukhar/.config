@@ -142,10 +142,23 @@ vim.api.nvim_create_autocmd({ 'FocusGained' }, {
 vim.api.nvim_create_autocmd({ 'VimEnter' }, {
   group = vim.api.nvim_create_augroup('session_management', { clear = true }),
   callback = function()
-    if vim.fn.isdirectory('.git') then
-      vim.fn.mkdir('.vim/', 'p')
-      vim.cmd('Obsession .vim/session.vim')
+    -- isdirectory() returns 0 or 1, and 0 is truthy in Lua, so this has to be
+    -- compared rather than tested.
+    if vim.fn.isdirectory('.git') ~= 1 then
+      return
     end
+
+    local session = '.vim/session.vim'
+    vim.fn.mkdir('.vim/', 'p')
+
+    -- vim-obsession probes the file with readfile() and only catches
+    -- Vim(readfile):E484, but Nvim raises it as Vim(let):E484. A missing file
+    -- therefore aborts :Obsession before it starts tracking, so create it.
+    if vim.fn.filereadable(session) == 0 then
+      vim.fn.writefile({}, session)
+    end
+
+    vim.cmd('Obsession ' .. session)
   end,
 })
 
