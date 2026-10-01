@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source $HOME/.config/gradle-completion.bash
-
 if [ "$(uname -s)" = Darwin ]; then
   [ -d $HOME/.qcshext ] && source $HOME/.qcshext/qcrc
 
@@ -14,8 +12,6 @@ fi
 
 if [ "${HOSTNAME%%.*}" = piecyk ]; then
   source $HOME/.config/.profile
-  source $HOME/.config/git-prompt.sh
-  source $HOME/.config/git-completion.bash
   export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
   # solarized highligthing for ls

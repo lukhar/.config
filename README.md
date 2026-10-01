@@ -51,7 +51,7 @@ Safe to re-run. What remains falls into three groups:
 
 - **bash and readline** — `.bashrc`, `.bash_profile`, `.profile`, `.inputrc`
 - **zsh** — `~/.zshenv`, which has to exist before `ZDOTDIR` can be set
-- **`piecyk` X11** — `.xinitrc`, `.Xclients`, `.dmrc`
+- **`piecyk` X11** — `.Xresources`, merged by the display manager
 - **Claude Code** — `~/.claude/*`, which does not honour `XDG_CONFIG_HOME`
 
 ## confupdate
