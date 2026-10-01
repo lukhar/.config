@@ -1,8 +1,7 @@
-if [ $HOSTNAME = piecyk ]; then
-  alias ls='ls --color=auto'
-fi
-if [ $HOSTNAME = fruitbox ]; then
-  alias ls='ls -G'
+if [ "$(uname -s)" = Darwin ]; then
+  alias ls='ls -G'            # BSD ls
+else
+  alias ls='ls --color=auto'  # GNU ls
 fi
 
 alias ll='ls -lh'

@@ -26,7 +26,7 @@ zstyle ':completion:*' accept-exact '*(N)'
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh"
 
-if [ "$HOST" = "piecyk" ]; then
+if [ "${HOST%%.*}" = "piecyk" ]; then
   PURE_PROMPT_SYMBOL=">"
   PURE_PROMPT_VICMD_SYMBOL="<"
 fi
@@ -64,13 +64,17 @@ fpath=($ZDOTDIR/completions $fpath)
 
 
 # fix colors on linux
-[ "$HOST" = "piecyk" ] && eval `dircolors "$XDG_CONFIG_HOME/.dircolors"`
+[ "${HOST%%.*}" = "piecyk" ] && eval `dircolors "$XDG_CONFIG_HOME/.dircolors"`
 
 # load aliases
 [ -f $ZDOTDIR/zsh_aliases ] && source $ZDOTDIR/zsh_aliases
 
 export PATH=$XDG_CONFIG_HOME/bin:$HOME/bin:$HOME/.pyenv/bin:$PATH
-export NOTES=$HOME/documents/shared/notes
+if [ "$(uname -s)" = Darwin ]; then
+  export NOTES=$HOME/Documents/shared/notes
+else
+  export NOTES=$HOME/documents/shared/notes
+fi
 export EDITOR=nvim
 [ -d /usr/share/awesome/lib ] && export LUA_PATH=/usr/share/awesome/lib
 

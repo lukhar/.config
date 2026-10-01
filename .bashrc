@@ -34,7 +34,14 @@ fi
 
 # vim like mode
 set -o vi
-export EDITOR=`which vim`
+export EDITOR="$(command -v nvim || command -v vim)"  # nvim where present
+
+# set here, not in .bash_profile, so non-login shells get it too
+if [ "$(uname -s)" = Darwin ]; then
+  export NOTES=$HOME/Documents/shared/notes  # capitalised on macOS
+else
+  export NOTES=$HOME/documents/shared/notes
+fi
 
 # command line copy paste for tmux
 if [ ! $(uname -s) = "Darwin"  ]; then
@@ -43,16 +50,13 @@ if [ ! $(uname -s) = "Darwin"  ]; then
 fi
 
 # platform specific stuff
-if [ "$HOSTNAME" = piecyk ]; then
-  export NOTES=$HOME/documents/shared/notes
-  export EDITOR=`which nvim`
-
+if [ "${HOSTNAME%%.*}" = piecyk ]; then
   # ugly fix for bold fonts in tmux
   alias tmux='TERM=xterm-256color /usr/bin/tmux'
 fi
 
 source $HOME/.config/.bash_aliases
-[ "$HOSTNAME" = fruitbox ] &&  source $HOME/.config/.fruitbox_aliases
+[ "$(uname -s)" = Darwin ] && source $HOME/.config/.darwin_aliases
 [ -f $HOME/.scratch_aliases ] && source $HOME/.scratch_aliases
 
 # Less Colors for Man Pages

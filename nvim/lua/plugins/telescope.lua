@@ -1,12 +1,17 @@
 local function resolve_notes_location()
-  local notes = vim.fn.getenv('NOTES')
-  if notes then
+  -- os.getenv, not vim.fn.getenv: the latter returns vim.NIL when unset, which is
+  -- truthy in Lua, so the fallbacks below could never be reached.
+  local notes = os.getenv('NOTES')
+  if notes and notes ~= '' then
     return notes
   end
 
-  if vim.fn.has('mac') then
-    return '/Users/lharatym/documents/shared/notes'
+  -- has() returns 0 or 1, and 0 is truthy here too, so it has to be compared.
+  if vim.fn.has('mac') == 1 then
+    return vim.fn.expand('~/Documents/shared/notes') -- capitalised on macOS
   end
+
+  return vim.fn.expand('~/documents/shared/notes')
 end
 
 local function find_git_root()

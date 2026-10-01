@@ -20,6 +20,6 @@ ln -sf ~/.config/aiassist/claude/rules ~/.claude/rules
 ln -sf ~/.config/aiassist/claude/skills ~/.claude/skills
 ln -sf ~/.config/aiassist/claude/agents ~/.claude/agents
 
-if [ "$HOSTNAME" = grapebox ]; then
+if [ "$(uname -s)" = Darwin ] && [ -d ~/Dropbox/Shared ]; then
   ln -sf ~/Dropbox/Shared ~/Documents/shared
 fi

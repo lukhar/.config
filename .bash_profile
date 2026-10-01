@@ -2,22 +2,20 @@
 
 source $HOME/.config/gradle-completion.bash
 
-if [ $HOSTNAME = fruitbox ]; then
+if [ "$(uname -s)" = Darwin ]; then
   [ -d $HOME/.qcshext ] && source $HOME/.qcshext/qcrc
 
-  export PATH=/usr/local/sbin:$PATH
+  # bash does not get zsh/.zprofile, so homebrew has to be set up here too
+  [ -x /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
   export PATH=$HOME/.cargo/bin:$PATH
-  export NOTES=$HOME/Documents/shared/notes
-  export EDITOR=/usr/local/bin/nvim
 
   export GOPATH=$HOME/sdk/go
 fi
 
-if [ "$HOSTNAME" = piecyk ]; then
+if [ "${HOSTNAME%%.*}" = piecyk ]; then
   source $HOME/.config/.profile
   source $HOME/.config/git-prompt.sh
   source $HOME/.config/git-completion.bash
-  export NOTES=$HOME/documents/shared/notes
   export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
   # solarized highligthing for ls
