@@ -18,8 +18,8 @@ dconf/
 # python releated
 .ptpython/history
 
-# plugin bundle dir of tpm
-tmux/plugins/bundle/
+# tmux-resurrect, cloned by tmux.conf on first run
+tmux/plugins/resurrect/
 
 # tags
 
