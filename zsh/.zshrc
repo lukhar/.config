@@ -13,7 +13,7 @@ zinit light sindresorhus/pure
 zinit wait lucid light-mode for \
   zsh-users/zsh-completions \
   zsh-users/zsh-autosuggestions \
-  atload"zicompinit; zicdreplay" \
+  atload'autoload -Uz compinit && compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$HOST"; zicdreplay' \
   zdharma-continuum/fast-syntax-highlighting
 
 zstyle :prompt:pure:git:stash show yes                            # turn on git stash status
@@ -24,7 +24,7 @@ zstyle ':completion:*' rehash false                               # avoid rescan
 # Speed up completions
 zstyle ':completion:*' accept-exact '*(N)'
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ~/.cache/zsh
+zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh"
 
 if [ "$HOST" = "piecyk" ]; then
   PURE_PROMPT_SYMBOL=">"
@@ -32,7 +32,7 @@ if [ "$HOST" = "piecyk" ]; then
 fi
 
 # bigger history
-HISTFILE=~/.zhistory
+HISTFILE="$XDG_STATE_HOME/zsh/history"
 HISTSIZE=100000
 SAVEHIST=$HISTSIZE
 HISTDUP=erase
@@ -60,19 +60,19 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=10"
 ZSH_AUTOSUGGEST_USE_ASYNC=true
 
 # custom completion files
-fpath=($HOME/.config/zsh/completions $fpath)
+fpath=($ZDOTDIR/completions $fpath)
 
 
 # fix colors on linux
-[ "$HOST" = "piecyk" ] && eval `dircolors ~/.config/.dircolors`
+[ "$HOST" = "piecyk" ] && eval `dircolors "$XDG_CONFIG_HOME/.dircolors"`
 
 # load aliases
-[ -f $HOME/.zsh_aliases ] && source $HOME/.zsh_aliases
+[ -f $ZDOTDIR/zsh_aliases ] && source $ZDOTDIR/zsh_aliases
 
-export PATH=$HOME/bin:$HOME/.pyenv/bin:$PATH
+export PATH=$XDG_CONFIG_HOME/bin:$HOME/bin:$HOME/.pyenv/bin:$PATH
 export NOTES=$HOME/documents/shared/notes
 export EDITOR=nvim
-export LUA_PATH=/usr/share/awesome/lib
+[ -d /usr/share/awesome/lib ] && export LUA_PATH=/usr/share/awesome/lib
 
 _pyenv_precmd() {
   if [[ -n $PYENV_SHELL && "$PWD" != "$_PRECMD_LAST_PWD" ]]; then
@@ -135,14 +135,14 @@ pyenv() {
 }
 
 # fast init — PATH and env vars (instant)
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -x "$(command -v fzf)" ] && eval "$(fzf --zsh)"
 [ -d "$HOME/.pyenv/shims" ] && path=("$HOME/.pyenv/shims" $path)
 [ -d "$HOME/.goenv/shims" ] && path=("$HOME/.goenv/shims" "$HOME/.goenv/bin" $path)
 [ -d "$HOME/.rbenv/shims" ] && path=("$HOME/.rbenv/shims" $path)
 [ -x "$(command -v pipx)" ] && path=("$HOME/.local/bin" $path)
 [ -x "$(command -v bat)" ] && export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 [ -x "$(command -v hub)" ] && alias git=hub
-[ -x "$(command -v ptpython)" ] && export PTPYTHON_CONFIG_HOME=$HOME/.config/ptpython
+[ -x "$(command -v ptpython)" ] && export PTPYTHON_CONFIG_HOME=$XDG_CONFIG_HOME/ptpython
 
 if [ -x "$(command -v colima)" ]; then
   export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE="/var/run/docker.sock"

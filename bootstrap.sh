@@ -4,38 +4,22 @@ mkdir -p ~/bin
 mkdir -p ~/.cache/vim/swp
 mkdir -p ~/.cache/vim/undo
 mkdir -p ~/sdk
+mkdir -p ~/.claude          # the aiassist links below land inside it
 
-ln -sf ~/.config/.agignore ~/.agignore
 ln -sf ~/.config/.bashrc ~/.bashrc
 ln -sf ~/.config/.dmrc ~/.dmrc
-ln -sf ~/.config/zsh/zshrc ~/.zshrc
-ln -sf ~/.config/zsh/zshenv ~/.zshenv
-ln -sf ~/.config/zsh/zsh_aliases ~/.zsh_aliases
-Ln -sf ~/.config/.bash_profile ~/.bash_profile
-ln -sf ~/.config/.bash_aliases ~/.bash_aliases
-ln -sf ~/.config/confupdate.sh ~/bin/confupdate
-ln -sf ~/.config/.dircolors ~/.dircolors
-ln -sf ~/.config/.gitignore ~/.gitignore
+# The only zsh file $HOME needs: it sets ZDOTDIR, and zsh finds .zshrc,
+# .zprofile and the aliases under $XDG_CONFIG_HOME/zsh from there.
+ln -sf ~/.config/zsh/.zshenv ~/.zshenv
+ln -sf ~/.config/.bash_profile ~/.bash_profile
 ln -sf ~/.config/.inputrc ~/.inputrc
 ln -sf ~/.config/.profile ~/.profile
-ln -sf ~/.config/tmux/.tmux.conf ~/.tmux.conf
-ln -sf ~/.config/tmux/tools/safe-reattach-to-user-namespace ~/bin/safe-reattach-to-user-namespace
-ln -sf ~/.config/.Xresources ~/.Xresources
 ln -sf ~/.config/.Xclients ~/.Xclients
 ln -sf ~/.config/.xinitrc ~/.xinitrc
-ln -sf ~/.vim/gvimrc ~/.gvimrc
-ln -sf ~/.vim/vimrc ~/.vimrc
-ln -sf ~/.config/ctags ~/.ctags.d
-ln -sf ~/.config/.gtkrc-2.0 ~/.gtkrc-2.0
 ln -sf ~/.config/aiassist/claude/rules ~/.claude/rules
 ln -sf ~/.config/aiassist/claude/skills ~/.claude/skills
 ln -sf ~/.config/aiassist/claude/agents ~/.claude/agents
-ln -sf ~/.config/aiassist/claude/hooks ~/.claude/hooks
 
 if [ "$HOSTNAME" = grapebox ]; then
   ln -sf ~/Dropbox/Shared ~/Documents/shared
-fi
-
-if [ "$HOSTNAME" = piecyk ]; then
-  rm ~/.config/ctags/ctags
 fi

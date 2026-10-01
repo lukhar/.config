@@ -11,7 +11,6 @@ if [ $HOSTNAME = fruitbox ]; then
   export EDITOR=/usr/local/bin/nvim
 
   export GOPATH=$HOME/sdk/go
-  export HOMEBREW_GITHUB_API_TOKEN=2b3edc249b2df92c2e49f267f4d685d4a9c74b7c
 fi
 
 if [ "$HOSTNAME" = piecyk ]; then
@@ -22,7 +21,7 @@ if [ "$HOSTNAME" = piecyk ]; then
   export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
   # solarized highligthing for ls
-  eval `dircolors $HOME/.dircolors`
+  eval `dircolors $HOME/.config/.dircolors`
 
   # ugly fix for bold fonts in tmux
   alias tmux='TERM=xterm-256color /usr/bin/tmux'
@@ -78,7 +77,7 @@ function sr {
 
 [ -x "$(command -v kubectl)" ] && source <(kubectl completion bash)
 
-export PATH=$HOME/bin:$PATH
+export PATH=$HOME/.config/bin:$HOME/bin:$PATH
 
 source $HOME/.config/.bashrc
 

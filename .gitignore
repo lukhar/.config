@@ -3,7 +3,6 @@ Slack
 JetBrains
 Popcorn-Time
 jgit
-*.secret
 
 # dictionaries binaries
 *.spl
@@ -18,13 +17,11 @@ dconf/
 
 # python releated
 .ptpython/history
-__pycache__/
 
 # plugin bundle dir of tpm
 tmux/plugins/bundle/
 
 # tags
-tags
 
 # ignore automatically generated files
 qutebrowser/autoconfig.yml
@@ -48,7 +45,6 @@ beekeeper-studio
 autostart/
 
 # OSX [work]
-.DS_Store
 .pypirc
 .metals/
 .ptpython/history
@@ -84,3 +80,6 @@ pavucontrol.ini
 
 # llms
 .claude/
+
+# claude syncs these as UUID-named buckets; generated, not config
+aiassist/claude/skills/synced/

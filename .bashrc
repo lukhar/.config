@@ -3,9 +3,13 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+# bash has no XDG support, so it needs the same shared definitions handed to it
+[ -f "$HOME/.config/shell/xdg.sh" ] && . "$HOME/.config/shell/xdg.sh"
+
 export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
 export HISTSIZE=8192
 export HISTFILESIZE=500000000
+export HISTFILE="$XDG_STATE_HOME/bash/history"  # HISTFILE is honoured; the path is not
 shopt -s histappend                      # append to history, don't overwrite it
 
 

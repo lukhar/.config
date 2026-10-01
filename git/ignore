@@ -1,0 +1,21 @@
+# Global ignores, read natively from $XDG_CONFIG_HOME/git/ignore.
+# Repo-specific rules belong in that repo's .gitignore, not here.
+
+# macOS
+.DS_Store
+._*
+
+# editors
+*.swp
+*.swo
+*~
+
+# tooling
+tags
+.direnv/
+
+# python
+__pycache__/
+
+# never commit these anywhere, in any repo
+*.secret

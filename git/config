@@ -1,0 +1,11 @@
+[user]
+	email = lharatym@quantcast.com
+	name = Lukasz Haratym
+
+[rebase]
+	instructionFormat = (%an %aD) %s
+
+# Kept from ~/.gitconfig: silences a dubious-ownership warning. Narrow this to
+# the specific paths that need it when you get the chance -- "." is very broad.
+[safe]
+	directory = .
