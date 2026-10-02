@@ -19,6 +19,16 @@ export PYTHON_HISTORY="$XDG_STATE_HOME/python/history" # python 3.13+
 export PSQL_HISTORY="$XDG_STATE_HOME/psql/history"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 
+export EDITOR=nvim
+
+# ~/Documents is capitalised on macOS and lowercase on Linux, and APFS being
+# case-insensitive hides getting it wrong until the config reaches piecyk.
+if [ "$(uname -s)" = Darwin ]; then
+  export NOTES="$HOME/Documents/shared/notes"
+else
+  export NOTES="$HOME/documents/shared/notes"
+fi
+
 # None of the above create their parent directory. The -d test keeps this to zero
 # forks once they exist.
 for _xdg_dir in "$XDG_STATE_HOME/zsh" "$XDG_STATE_HOME/bash" "$XDG_STATE_HOME/less" \

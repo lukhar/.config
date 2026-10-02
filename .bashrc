@@ -44,14 +44,6 @@ fi
 
 # vim like mode
 set -o vi
-export EDITOR="$(command -v nvim || command -v vim)"  # nvim where present
-
-# set here, not in .bash_profile, so non-login shells get it too
-if [ "$(uname -s)" = Darwin ]; then
-  export NOTES=$HOME/Documents/shared/notes  # capitalised on macOS
-else
-  export NOTES=$HOME/documents/shared/notes
-fi
 
 # command line copy paste for tmux
 if [ ! $(uname -s) = "Darwin"  ]; then

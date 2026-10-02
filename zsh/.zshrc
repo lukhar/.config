@@ -70,12 +70,6 @@ fpath=($ZDOTDIR/completions $fpath)
 [ -f $ZDOTDIR/zsh_aliases ] && source $ZDOTDIR/zsh_aliases
 
 export PATH=$XDG_CONFIG_HOME/bin:$HOME/bin:$HOME/.pyenv/bin:$PATH
-if [ "$(uname -s)" = Darwin ]; then
-  export NOTES=$HOME/Documents/shared/notes
-else
-  export NOTES=$HOME/documents/shared/notes
-fi
-export EDITOR=nvim
 [ -d /usr/share/awesome/lib ] && export LUA_PATH=/usr/share/awesome/lib
 
 _pyenv_precmd() {
