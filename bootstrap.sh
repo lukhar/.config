@@ -14,7 +14,6 @@ ln -sf ~/.config/.bash_profile ~/.bash_profile
 ln -sf ~/.config/.inputrc ~/.inputrc
 ln -sf ~/.config/.Xresources ~/.Xresources   # merged by the display manager
 ln -sf ~/.config/.profile ~/.profile
-ln -sf ~/.config/.xinitrc ~/.xinitrc
 ln -sf ~/.config/aiassist/claude/rules ~/.claude/rules
 ln -sf ~/.config/aiassist/claude/skills ~/.claude/skills
 ln -sf ~/.config/aiassist/claude/agents ~/.claude/agents
