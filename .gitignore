@@ -20,6 +20,7 @@ dconf/
 
 # tmux-resurrect, cloned by tmux.conf on first run
 tmux/plugins/resurrect/
+tmux/plugins/jump/
 
 # tags
 
