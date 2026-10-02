@@ -1,0 +1,13 @@
+#!/bin/sh
+# Clipboard writer for tmux's copy-command, reading the selection on stdin.
+# A script rather than a per-platform branch in tmux.conf, which also lets the
+# bindings that need an explicit clipboard call it by name instead of each one
+# looking copy-command back up through `tmux show-options`.
+
+if command -v pbcopy >/dev/null 2>&1; then
+  exec pbcopy
+elif command -v wl-copy >/dev/null 2>&1; then
+  exec wl-copy
+else
+  exec xclip -selection clipboard
+fi
