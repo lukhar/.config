@@ -1,0 +1,15 @@
+#!/bin/sh
+# Open a URL or path selected in tmux copy mode, called from tmux.conf's `o`
+# binding. This exists as a script rather than inline in tmux.conf because the
+# inline version needed three levels of quoting -- and getting it wrong silently
+# broke every URL with a `&` in it, since the shell split the command there.
+#
+# $1 is the selection, $2 the pane's directory so relative paths resolve.
+
+[ -n "$1" ] || exit 0
+[ -n "$2" ] && cd "$2" 2>/dev/null
+
+case "$(uname -s)" in
+  Darwin) exec open "$1" ;;
+  *) exec xdg-open "$1" ;;
+esac
