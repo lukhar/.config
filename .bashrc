@@ -25,7 +25,17 @@ shopt -s checkwinsize
 # should be on the output of commands, not on the prompt
 force_color_prompt=yes
 
-PS1='${TERRAFORM_WORKSPACE}${PYTHON_VIRTUALENV}\[\e[32m\]\u@\h\[\e[m\]:\w$(__git_ps1)\n\$ '
+# __git_ps1 comes from git's own git-prompt.sh; the vendored copy is gone, so
+# source whichever the platform ships. The declare -f guard keeps the prompt
+# from printing "command not found" everywhere if neither is present.
+for _gp in /opt/homebrew/etc/bash_completion.d/git-prompt.sh \
+  /usr/share/git/completion/git-prompt.sh \
+  /usr/share/git-core/contrib/completion/git-prompt.sh; do
+  [ -f "$_gp" ] && . "$_gp" && break
+done
+unset _gp
+
+PS1='${TERRAFORM_WORKSPACE}${PYTHON_VIRTUALENV}\[\e[32m\]\u@\h\[\e[m\]:\w$(declare -f __git_ps1 >/dev/null && __git_ps1)\n\$ '
 
 
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then

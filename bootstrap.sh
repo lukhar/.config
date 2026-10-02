@@ -6,6 +6,9 @@ mkdir -p ~/.cache/vim/undo
 mkdir -p ~/sdk
 mkdir -p ~/.claude          # the aiassist links below land inside it
 
+# poetry's completion embeds an absolute path, so generate it per machine
+command -v poetry >/dev/null && poetry completions zsh > ~/.config/zsh/completions/_poetry
+
 ln -sf ~/.config/.bashrc ~/.bashrc
 # The only zsh file $HOME needs: it sets ZDOTDIR, and zsh finds .zshrc,
 # .zprofile and the aliases under $XDG_CONFIG_HOME/zsh from there.
