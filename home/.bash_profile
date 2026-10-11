@@ -15,7 +15,7 @@ if [ "${HOSTNAME%%.*}" = piecyk ]; then
   export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
   # solarized highligthing for ls
-  eval `dircolors $HOME/.config/.dircolors`
+  eval `dircolors "$XDG_CONFIG_HOME/dircolors"`
 
   # ugly fix for bold fonts in tmux
   alias tmux='TERM=xterm-256color /usr/bin/tmux'
@@ -73,6 +73,6 @@ function sr {
 
 export PATH=$HOME/.config/bin:$HOME/bin:$PATH
 
-source $HOME/.config/.bashrc
+source "$HOME/.bashrc"
 
 # vim: tabstop=2 shiftwidth=2 expandtab

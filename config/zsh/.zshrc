@@ -64,7 +64,7 @@ fpath=($ZDOTDIR/completions $fpath)
 
 
 # fix colors on linux
-[ "${HOST%%.*}" = "piecyk" ] && eval `dircolors "$XDG_CONFIG_HOME/.dircolors"`
+[ "${HOST%%.*}" = "piecyk" ] && eval `dircolors "$XDG_CONFIG_HOME/dircolors"`
 
 # load aliases
 [ -f $ZDOTDIR/zsh_aliases ] && source $ZDOTDIR/zsh_aliases

@@ -57,8 +57,8 @@ if [ "${HOSTNAME%%.*}" = piecyk ]; then
   alias tmux='TERM=xterm-256color /usr/bin/tmux'
 fi
 
-source $HOME/.config/.bash_aliases
-[ "$(uname -s)" = Darwin ] && source $HOME/.config/.darwin_aliases
+source "$XDG_CONFIG_HOME/bash/aliases"
+[ "$(uname -s)" = Darwin ] && source "$XDG_CONFIG_HOME/bash/darwin-aliases"
 [ -f $HOME/.scratch_aliases ] && source $HOME/.scratch_aliases
 
 # Less Colors for Man Pages
