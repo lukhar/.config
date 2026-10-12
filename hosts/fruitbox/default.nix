@@ -1,4 +1,6 @@
 {
+  imports = [ ../../modules/darwin/homebrew.nix ];
+
   # The work Mac. Apple Silicon, Jamf-managed -- which is why the hostname is an
   # asset tag and this host is selected by flake attribute instead.
   nixpkgs.hostPlatform = "aarch64-darwin";
