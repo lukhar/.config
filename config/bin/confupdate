@@ -1,11 +1,20 @@
-#/!bin/sh
+#!/bin/sh
+# Pull this repository and ~/.vim, then update the runtime managers.
+#
+# The repository root is derived from this script's own location rather than
+# hardcoded: it is reached as ~/.config/bin/confupdate, which is a symlink into
+# the checkout, so -P resolves through it. $HOME/.config is no longer a
+# repository -- it is a directory of symlinks created by bootstrap.sh.
 
-for repository in "$HOME/.config" "$HOME/.vim"; do
-	cd "${repository}" &&
+REPO="$(cd -P "$(dirname "$0")" && cd ../.. && pwd)"
 
-	echo "Stashing changes in: $repository"
-	git stash &&
-	git pull origin master
+for repository in "$REPO" "$HOME/.vim"; do
+  [ -d "$repository/.git" ] || continue
+  cd "$repository" || continue
+
+  echo "Stashing changes in: $repository"
+  git stash
+  git pull origin master
 done
 
 [ -x "$(command -v pyenv)" ] && pyenv update
