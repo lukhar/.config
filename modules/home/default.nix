@@ -16,8 +16,33 @@ in
   # move on its own still come from config/shell/xdg.sh, sourced by the shells.
   xdg.enable = true;
 
-  # Start with one directory, to prove the pipeline end to end before moving the
-  # other 34 over. nvim is the useful first case: it is the one that must stay
-  # writable, so if mkOutOfStoreSymlink is wrong here it shows up immediately.
-  xdg.configFile."nvim".source = link "config/nvim";
+  # Directories home-manager has taken over from bootstrap.sh. Everything uses
+  # link (mkOutOfStoreSymlink) rather than a store copy, so the files stay
+  # editable in the checkout -- several of these are written at runtime.
+  #
+  # bootstrap.sh still links the full set, because piecyk has no home-manager
+  # and needs them; the two mechanisms coexist, and home-manager simply takes
+  # ownership of a link on activation.
+  #
+  # Linux-only directories (awesome, rofi, dunst, gtk-*, Kvantum, qt5ct, Thunar,
+  # systemd) are left to bootstrap.sh until there is a modules/home/linux.
+  xdg.configFile = builtins.listToAttrs (
+    map (name: {
+      inherit name;
+      value.source = link "config/${name}";
+    }) [
+      "nvim"
+
+      "alacritty"
+      "bat"
+      "ctags"
+      "fontconfig"
+      "ghostty"
+      "mc"
+      "mpv"
+      "ptpython"
+      "qutebrowser"
+      "zathura"
+    ]
+  );
 }
