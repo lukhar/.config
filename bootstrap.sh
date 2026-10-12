@@ -20,9 +20,21 @@ mkdir -p ~/.claude # the aiassist links below land inside it
 # rather than replaced: on a machine that predates this layout every
 # ~/.config/<app> exists for real, and `ln -sfn` would quietly nest the new link
 # *inside* it. Move or delete the original, then re-run.
+# X11, GTK/Qt theming and the Arch/XFCE bits: linking these on macOS creates
+# fourteen symlinks nothing will ever read. They move to a home-manager module
+# the Linux hosts import once the NixOS laptop exists.
+linux_only="awesome rofi dunst gtk-2.0 gtk-3.0 Kvantum qt5ct Thunar systemd
+            compton.conf i3-scrot.conf mimeapps.list pikaur.conf user-dirs.dirs"
+
 skipped=""
 for src in "$REPO"/config/*; do
-  dest="$XDG_CONFIG_HOME/$(basename "$src")"
+  name="$(basename "$src")"
+  dest="$XDG_CONFIG_HOME/$name"
+
+  if [ "$(uname -s)" = Darwin ]; then
+    case " $(echo $linux_only) " in *" $name "*) continue ;; esac
+  fi
+
   if [ -e "$dest" ] && [ ! -L "$dest" ]; then
     skipped="$skipped  $dest\n"
     continue
