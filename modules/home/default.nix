@@ -43,6 +43,16 @@ in
       "ptpython"
       "qutebrowser"
       "zathura"
+
+      # batch 2. shell/ and bin/ are load-bearing: $XDG_CONFIG_HOME/shell/xdg.sh
+      # is sourced by every shell and bin/ is on PATH, so they resolve through
+      # home-manager from here on.
+      "ag"
+      "aiassist"
+      "bin"
+      "git"
+      "shell"
+      "tmux"
     ]
   );
 }
