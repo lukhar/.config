@@ -36,7 +36,6 @@ in
       "alacritty"
       "bat"
       "ctags"
-      "fontconfig"
       "ghostty"
       "mc"
       "mpv"
@@ -60,7 +59,16 @@ in
       # home-manager's programs.zsh: it would fight the ZDOTDIR arrangement.
       "zsh"
     ]
-  );
+  )
+  // {
+    # fontconfig is the one directory home-manager writes into as well: on linux
+    # fonts.fontconfig.enable (on by default) generates conf.d/10-hm-fonts.conf,
+    # which is what makes fonts from nix packages visible to everything else.
+    # Linking the directory does not merely shadow that file, it fails the
+    # generation outright -- nothing can be created inside an out-of-store
+    # symlink. Only fonts.conf is ours, so only fonts.conf is linked.
+    "fontconfig/fonts.conf".source = link "config/fontconfig/fonts.conf";
+  };
 
   # The $HOME holdouts: tools with no XDG support at all. bootstrap.sh links the
   # same five, because piecyk needs them; here they matter because a fresh
