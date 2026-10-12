@@ -53,6 +53,12 @@ in
       "git"
       "shell"
       "tmux"
+
+      # batch 3, on its own. ~/.zshenv points at $XDG_CONFIG_HOME/zsh/.zshenv
+      # and that file sets ZDOTDIR, so if this link breaks zsh starts with no
+      # configuration at all -- no ZDOTDIR, no .zshrc. Nothing here enables
+      # home-manager's programs.zsh: it would fight the ZDOTDIR arrangement.
+      "zsh"
     ]
   );
 }
