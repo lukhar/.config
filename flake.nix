@@ -16,7 +16,7 @@
   };
 
   outputs =
-    { nix-darwin, home-manager, ... }:
+    { nixpkgs, nix-darwin, home-manager, ... }:
     {
       # The attribute name, not the hostname: Jamf reverts this Mac's name to its
       # asset tag, so selection is explicit -- darwin-rebuild switch --flake .#fruitbox
@@ -28,6 +28,22 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.lharatym = import ./modules/home;
+          }
+        ];
+      };
+
+      # The Framework laptop. hosts/framework/default.nix is the working
+      # configuration.nix from the install, unchanged -- it is already a valid
+      # module -- and it imports its own hardware-configuration.nix, which has to
+      # be generated on the machine and committed from there.
+      nixosConfigurations.framework = nixpkgs.lib.nixosSystem {
+        modules = [
+          ./hosts/framework
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.lukhar = import ./modules/home;
           }
         ];
       };

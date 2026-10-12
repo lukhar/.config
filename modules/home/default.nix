@@ -8,8 +8,8 @@ let
   link = path: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${path}";
 in
 {
-  home.username = "lharatym";
-  home.homeDirectory = "/Users/lharatym";
+  # username and homeDirectory are inferred from the home-manager.users.<name>
+  # key and the platform, so this module serves both hosts unchanged.
   home.stateVersion = "25.05";
 
   # Sets XDG_CONFIG_HOME and friends. The per-tool variables that XDG_* does not
