@@ -61,4 +61,23 @@ in
       "zsh"
     ]
   );
+
+  # The $HOME holdouts: tools with no XDG support at all. bootstrap.sh links the
+  # same five, because piecyk needs them; here they matter because a fresh
+  # machine has no bootstrap run behind it -- and .zshenv especially, since it is
+  # the one file that sets ZDOTDIR. Without it zsh never finds config/zsh at all.
+  home.file = builtins.listToAttrs (
+    map (name: {
+      inherit name;
+      value.source = link "home/${name}";
+    }) [
+      ".bashrc"
+      ".bash_profile"
+      ".profile"
+      ".inputrc"
+      ".Xresources" # inert on darwin; merged by the display manager on linux
+    ]
+  ) // {
+    ".zshenv".source = link "config/zsh/.zshenv";
+  };
 }
