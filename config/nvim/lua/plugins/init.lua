@@ -39,7 +39,18 @@ return {
   },
   {
     'christoomey/vim-tmux-navigator',
-    keys = { '<C-h>', '<C-j>', '<C-k>', '<C-l>' },
+    -- Mapping the keys straight to the commands, rather than listing bare key
+    -- strings, removes lazy's replay step: with `keys = { '<C-h>', ... }` lazy
+    -- installs a stub, loads the plugin on press and then feeds the key again,
+    -- hoping the plugin's own mapping is in place by then. This is unambiguous
+    -- whether the plugin has loaded or not.
+    cmd = { 'TmuxNavigateLeft', 'TmuxNavigateDown', 'TmuxNavigateUp', 'TmuxNavigateRight' },
+    keys = {
+      { '<C-h>', '<cmd>TmuxNavigateLeft<cr>' },
+      { '<C-j>', '<cmd>TmuxNavigateDown<cr>' },
+      { '<C-k>', '<cmd>TmuxNavigateUp<cr>' },
+      { '<C-l>', '<cmd>TmuxNavigateRight<cr>' },
+    },
   },
 
   { 'mfussenegger/nvim-jdtls', ft = 'java' },
