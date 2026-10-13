@@ -59,12 +59,13 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.lukhar = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "audio" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "video" "audio" "input"];
     shell = pkgs.zsh;
-    initialPassword = "changeme";
   };
   programs.zsh.enable = true;
-  
+  programs.zsh.enableCompletion = false;
+  programs.zsh.enableBashCompletion = false;
+
   programs.hyprland.enable = true;
   xdg.portal = {
     enable = true;
@@ -73,7 +74,20 @@
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
-  environment.systemPackages = with pkgs; [ git neovim tmux fzf ripgrep fd bat alacritty wget kitty ];
+  environment.systemPackages = with pkgs; [ 
+    git
+    neovim
+    tmux
+    fzf
+    ripgrep
+    fd
+    bat
+    alacritty
+    wget
+    kitty
+    pyenv
+    fnm
+  ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
