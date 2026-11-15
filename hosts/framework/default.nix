@@ -100,6 +100,12 @@
     # it needs the tree-sitter CLI and a C compiler
     tree-sitter
     gcc
+    # mason installs ts_ls and vimls with npm, and ruff, ty, black and flake8
+    # into python venvs; fnm and pyenv provide neither until a version is set up
+    nodejs
+    python3
+    # ...and unpacks zip releases (terraform-ls, stylua) with unzip
+    unzip
     # configs already linked by modules/home
     qutebrowser
     zathura
@@ -111,6 +117,10 @@
     liberation_ttf
     nerd-fonts.dejavu-sans-mono
   ];
+
+  # mason downloads prebuilt linux binaries (lua_ls, harper_ls, stylua, ...)
+  # that expect /lib64/ld-linux-x86-64.so.2; nix-ld provides it on NixOS.
+  programs.nix-ld.enable = true;
 
   # config/systemd/user/ssh-agent.service hardcodes /usr/bin/ssh-agent (Arch);
   # NixOS runs its own user agent instead.
