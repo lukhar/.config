@@ -27,6 +27,8 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            # rename whatever is in the way of a link to *.hm-bak instead of failing
+            home-manager.backupFileExtension = "hm-bak";
             home-manager.users.lharatym = import ./modules/home;
           }
         ];
@@ -43,6 +45,9 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            # rename whatever is in the way of a link to *.hm-bak instead of failing
+            # (e.g. the ~/.config/hypr hyprland generates on its first start)
+            home-manager.backupFileExtension = "hm-bak";
             home-manager.users.lukhar = import ./modules/home;
           }
         ];
