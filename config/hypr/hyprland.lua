@@ -42,7 +42,7 @@ hl.monitor({
 ---------------------
 
 -- Set programs that you use
-local terminal    = "kitty"
+local terminal    = "alacritty"
 local fileManager = "thunar"
 local menu        = "hyprlauncher"
 
