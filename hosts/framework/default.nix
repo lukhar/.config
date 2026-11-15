@@ -96,6 +96,10 @@
     playerctl
     # config/bin/tmux-copy falls back to wl-copy on wayland
     wl-clipboard
+    # nvim-treesitter (main branch) compiles every parser locally:
+    # it needs the tree-sitter CLI and a C compiler
+    tree-sitter
+    gcc
     # configs already linked by modules/home
     qutebrowser
     zathura
