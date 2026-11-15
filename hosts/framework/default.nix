@@ -85,7 +85,6 @@
     bat
     alacritty
     wget
-    kitty
     pyenv
     fnm
 
