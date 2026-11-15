@@ -13,10 +13,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # per-model quirks: kernel params, firmware, audio, the framework EC module
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
   };
 
   outputs =
-    { nixpkgs, nix-darwin, home-manager, ... }:
+    { nixpkgs, nix-darwin, home-manager, nixos-hardware, ... }:
     {
       # The attribute name, not the hostname: Jamf reverts this Mac's name to its
       # asset tag, so selection is explicit -- darwin-rebuild switch --flake .#fruitbox
@@ -34,13 +37,15 @@
         ];
       };
 
-      # The Framework laptop. hosts/framework/default.nix is the working
-      # configuration.nix from the install, unchanged -- it is already a valid
-      # module -- and it imports its own hardware-configuration.nix, which has to
-      # be generated on the machine and committed from there.
+      # The Framework laptop. hosts/framework/default.nix started as the
+      # configuration.nix from the install -- it is already a valid module -- and
+      # it imports its own hardware-configuration.nix, which has to be generated
+      # on the machine and committed from there.
       nixosConfigurations.framework = nixpkgs.lib.nixosSystem {
         modules = [
           ./hosts/framework
+          # Framework 13, Core Ultra X7 358H (Panther Lake)
+          nixos-hardware.nixosModules.framework-intel-core-ultra-series3
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

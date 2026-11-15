@@ -114,6 +114,16 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # Laptop hardware. nixos-hardware's framework module (flake.nix) already
+  # covers fwupd, fprintd, the light sensor, the EC kernel module and a new
+  # enough kernel; these are what it leaves out.
+  #
+  # power-profiles-daemon is what Framework recommends; enabling it also keeps
+  # nixos-hardware from falling back to TLP.
+  services.power-profiles-daemon.enable = true;
+  services.thermald.enable = true;
+  hardware.bluetooth.enable = true;
+
   # Keep the boot menu short; older generations stay rollback-able until gc'd.
   boot.loader.systemd-boot.configurationLimit = 10;
 
