@@ -21,6 +21,14 @@
 ------------------
 
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
+-- Framework 13 panel, 2880x1920
+hl.monitor({
+    output   = "eDP-1",
+    mode     = "preferred",
+    position = "auto",
+    scale    = 2,
+})
+
 hl.monitor({
     output   = "",
     mode     = "preferred",
@@ -213,6 +221,13 @@ hl.config({
     misc = {
         force_default_wallpaper = -1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
         disable_hyprland_logo   = false, -- If true disables the random hyprland logo / anime girl background. :(
+    },
+})
+
+-- Let XWayland apps render at native resolution instead of being upscaled (blurry) at scale 2
+hl.config({
+    xwayland = {
+        force_zero_scaling = true,
     },
 })
 
