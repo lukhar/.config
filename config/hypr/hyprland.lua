@@ -35,7 +35,7 @@ hl.monitor({
 
 -- Set programs that you use
 local terminal    = "kitty"
-local fileManager = "dolphin"
+local fileManager = "thunar"
 local menu        = "hyprlauncher"
 
 
@@ -223,10 +223,10 @@ hl.config({
 
 hl.config({
     input = {
-        kb_layout  = "us",
+        kb_layout  = "pl",
         kb_variant = "",
         kb_model   = "",
-        kb_options = "",
+        kb_options = "caps:escape",
         kb_rules   = "",
 
         follow_mouse = 1,

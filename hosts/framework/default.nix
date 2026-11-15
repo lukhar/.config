@@ -45,13 +45,14 @@
   # Enable CUPS to print documents.
   # services.printing.enable = true;
 
-  # Enable sound.
-  # services.pulseaudio.enable = true;
-  # OR
-  # services.pipewire = {
-  #   enable = true;
-  #   pulse.enable = true;
-  # };
+  # Sound. hyprland.lua's volume keys call wpctl, which comes with wireplumber.
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    pulse.enable = true;
+    wireplumber.enable = true;
+  };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
@@ -87,7 +88,29 @@
     kitty
     pyenv
     fnm
+
+    # called by hyprland.lua: launcher, file manager, media/brightness keys
+    hyprlauncher
+    thunar
+    brightnessctl
+    playerctl
+    # config/bin/tmux-copy falls back to wl-copy on wayland
+    wl-clipboard
+    # configs already linked by modules/home
+    qutebrowser
+    zathura
   ];
+
+  # config/fontconfig/fonts.conf and qutebrowser ask for Liberation;
+  # alacritty and ghostty ask for "DejaVuSansM Nerd Font Mono".
+  fonts.packages = with pkgs; [
+    liberation_ttf
+    nerd-fonts.dejavu-sans-mono
+  ];
+
+  # config/systemd/user/ssh-agent.service hardcodes /usr/bin/ssh-agent (Arch);
+  # NixOS runs its own user agent instead.
+  programs.ssh.startAgent = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
