@@ -114,6 +114,17 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # Keep the boot menu short; older generations stay rollback-able until gc'd.
+  boot.loader.systemd-boot.configurationLimit = 10;
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
+  # hard-link identical files in the store to save disk
+  nix.settings.auto-optimise-store = true;
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
