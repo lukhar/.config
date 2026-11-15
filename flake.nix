@@ -16,10 +16,17 @@
 
     # per-model quirks: kernel params, firmware, audio, the framework EC module
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+
+    # zen browser is not in nixpkgs; this is the community-maintained flake
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
   outputs =
-    { nixpkgs, nix-darwin, home-manager, nixos-hardware, ... }:
+    { nixpkgs, nix-darwin, home-manager, nixos-hardware, zen-browser, ... }:
     {
       # The attribute name, not the hostname: Jamf reverts this Mac's name to its
       # asset tag, so selection is explicit -- darwin-rebuild switch --flake .#fruitbox
@@ -46,6 +53,7 @@
           ./hosts/framework
           # Framework 13, Core Ultra X7 358H (Panther Lake)
           nixos-hardware.nixosModules.framework-intel-core-ultra-series3
+          { environment.systemPackages = [ zen-browser.packages.x86_64-linux.default ]; }
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
