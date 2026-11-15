@@ -152,6 +152,8 @@
   };
   # hard-link identical files in the store to save disk
   nix.settings.auto-optimise-store = true;
+  # keep nix's user profile/channels under ~/.local/state, not ~/.nix-profile
+  nix.settings.use-xdg-base-directories = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
