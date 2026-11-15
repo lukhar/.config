@@ -99,5 +99,13 @@ in
     ]
     // {
       ".zshenv".source = link "config/zsh/.zshenv";
-    };
+    }
+    # Claude Code does not honour XDG_CONFIG_HOME either; the same three links
+    # bootstrap.sh makes, so a fresh machine has the agents, skills and rules.
+    // builtins.listToAttrs (
+      map (d: {
+        name = ".claude/${d}";
+        value.source = link "config/aiassist/claude/${d}";
+      }) [ "rules" "skills" "agents" ]
+    );
 }

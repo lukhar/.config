@@ -106,6 +106,7 @@
     python3
     # ...and unpacks zip releases (terraform-ls, stylua) with unzip
     unzip
+    claude-code
     # configs already linked by modules/home
     qutebrowser
     zathura
@@ -117,6 +118,10 @@
     liberation_ttf
     nerd-fonts.dejavu-sans-mono
   ];
+
+  # Unfree packages are allowed by name, not wholesale.
+  nixpkgs.config.allowUnfreePredicate =
+    pkg: builtins.elem (lib.getName pkg) [ "claude-code" ];
 
   # mason downloads prebuilt linux binaries (lua_ls, harper_ls, stylua, ...)
   # that expect /lib64/ld-linux-x86-64.so.2; nix-ld provides it on NixOS.
