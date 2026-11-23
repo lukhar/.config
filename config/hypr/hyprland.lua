@@ -281,6 +281,8 @@ local closeWindowBind = hl.bind(mainMod .. " + C", hl.dsp.window.close())
 -- under uwsm, stop the whole session (services included) rather than just hyprland
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("uwsm check is-active >/dev/null 2>&1 && uwsm stop || { command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'; }"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
+-- lock through logind, so it goes through hypridle's lock_cmd like idle and sleep do
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("loginctl lock-session"))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 -- Wi-Fi: NetworkManager's TUI in a terminal; no bar or tray needed

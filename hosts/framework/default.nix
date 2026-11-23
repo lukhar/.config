@@ -58,6 +58,10 @@
   # so idle, the bar, notifications and the polkit agent start as services.
   # config/zsh/.zprofile starts it on tty1.
   programs.hyprland.withUWSM = true;
+  # Lock and idle; configs in config/hypr/hyprlock.conf and hypridle.conf.
+  # The hyprlock module also adds the PAM service it authenticates against.
+  programs.hyprlock.enable = true;
+  services.hypridle.enable = true;
 
   # The desktop itself and what root needs. Everything else is per-user, in
   # modules/home (home.packages).
