@@ -46,9 +46,11 @@ in
   gtk = {
     enable = true;
     colorScheme = "dark";
-    # same face and size as waybar (13px)
+    # proportional for file names and dialogs: DejaVu Sans, the same family and
+    # size (10pt, ~13px) as the mono font in waybar, alacritty and rofi
     font = {
-      name = "DejaVuSansM Nerd Font Mono";
+      name = "DejaVu Sans";
+      package = pkgs.dejavu_fonts;
       size = 10;
     };
     theme.name = "Adwaita-dark";
