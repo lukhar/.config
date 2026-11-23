@@ -62,6 +62,11 @@
   # The hyprlock module also adds the PAM service it authenticates against.
   programs.hyprlock.enable = true;
   services.hypridle.enable = true;
+  # Polkit agent: the password prompt when a GUI app asks for privileges
+  # (mounting in thunar, ...). The package ships the user unit; NixOS ignores
+  # [Install], so it is hooked to the session here.
+  systemd.packages = [ pkgs.hyprpolkitagent ];
+  systemd.user.services.hyprpolkitagent.wantedBy = [ "graphical-session.target" ];
 
   # The desktop itself and what root needs. Everything else is per-user, in
   # modules/home (home.packages).
