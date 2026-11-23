@@ -54,6 +54,10 @@
 
   # Also enables xdg portals, with the hyprland and gtk ones.
   programs.hyprland.enable = true;
+  # Run hyprland as a systemd user session (uwsm): graphical-session.target,
+  # so idle, the bar, notifications and the polkit agent start as services.
+  # config/zsh/.zprofile starts it on tty1.
+  programs.hyprland.withUWSM = true;
 
   # The desktop itself and what root needs. Everything else is per-user, in
   # modules/home (home.packages).
