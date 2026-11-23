@@ -222,8 +222,8 @@ hl.bind("Print", hl.dsp.exec_cmd("~/.config/bin/screenshot region"))
 hl.bind("SHIFT + Print", hl.dsp.exec_cmd("~/.config/bin/screenshot full"))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
--- Wi-Fi: NetworkManager's TUI in a terminal; no bar or tray needed
-hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(terminal .. " -e nmtui"))
+-- Wi-Fi: networkmanager_dmenu, a rofi menu (config/networkmanager-dmenu)
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("networkmanager_dmenu"))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
 

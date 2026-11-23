@@ -37,8 +37,8 @@
         "format-ethernet": "󰈀 wired",
         "format-disconnected": "󰤭 offline",
         "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
-        // same as Super+W
-        "on-click": "alacritty -e nmtui"
+        // same as Super+W: the rofi Wi-Fi menu
+        "on-click": "networkmanager_dmenu"
     },
 
     "wireplumber": {

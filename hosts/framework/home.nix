@@ -80,6 +80,7 @@ in
       "waybar"
       "mako"
       "rofi"
+      "networkmanager-dmenu"
     ]
     // {
       # one file, not gtk-3.0/: the gtk module writes settings.ini there

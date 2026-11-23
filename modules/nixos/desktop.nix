@@ -126,6 +126,10 @@
     # thunar-archive-plugin's backend
     xarchiver
     playerctl
+    # Wi-Fi menu in rofi (Super+W, waybar's network module); its "edit
+    # connections" entry opens nm-connection-editor from networkmanagerapplet
+    networkmanager_dmenu
+    networkmanagerapplet
     # config/bin/tmux-copy falls back to wl-copy on wayland
     wl-clipboard
     # config/bin/screenshot: capture, region select, notification

@@ -22,7 +22,7 @@
   boot.loader.systemd-boot.configurationLimit = 10;
 
   networking.hostName = "framework";
-  # Wi-Fi: nmtui (Super+W) or nmcli.
+  # Wi-Fi: the rofi menu on Super+W (networkmanager_dmenu, desktop.nix).
   networking.networkmanager.enable = true;
 
   time.timeZone = "Europe/Warsaw";
