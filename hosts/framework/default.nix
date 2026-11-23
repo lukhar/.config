@@ -1,49 +1,25 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
 { config, lib, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [ ./hardware-configuration.nix ];
 
-  # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  # Keep the boot menu short; older generations stay rollback-able until gc'd.
+  boot.loader.systemd-boot.configurationLimit = 10;
 
-  networking.hostName = "framework"; # Define your hostname.
-
-  # Configure network connections interactively with nmcli or nmtui.
+  networking.hostName = "framework";
+  # Wi-Fi: nmtui (Super+W) or nmcli.
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
   time.timeZone = "Europe/Warsaw";
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
-  console.keyMap = "pl";
-  # console = {
-  #   font = "Lat2-Terminus16";
-  #   keyMap = "us";
-  #   useXkbConfig = true; # use xkb.options in tty.
-  # };
 
-  # Enable the X11 windowing system.
-  # services.xserver.enable = true;
-
-  # Configure keymap in X11
+  # The text console takes its layout from xkb: pl, caps lock as escape.
+  # Hyprland has its own kb_layout/kb_options in hyprland.lua.
   services.xserver.xkb.layout = "pl";
   services.xserver.xkb.options = "caps:escape";
-
-  # Enable CUPS to print documents.
-  # services.printing.enable = true;
+  console.useXkbConfig = true;
 
   # Sound. hyprland.lua's volume keys call wpctl, which comes with wireplumber.
   security.rtkit.enable = true;
@@ -51,31 +27,22 @@
     enable = true;
     alsa.enable = true;
     pulse.enable = true;
-    wireplumber.enable = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.libinput.enable = true;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.lukhar = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "audio" "input"];
+    extraGroups = [ "wheel" "networkmanager" "video" ];
     shell = pkgs.zsh;
   };
   programs.zsh.enable = true;
+  # config/zsh/.zshrc runs compinit itself, via zinit.
   programs.zsh.enableCompletion = false;
   programs.zsh.enableBashCompletion = false;
 
+  # Also enables xdg portals, with the hyprland and gtk ones.
   programs.hyprland.enable = true;
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  };
 
-  # List packages installed in system profile.
-  # You can use https://search.nixos.org/ to find more packages (and options).
-  environment.systemPackages = with pkgs; [ 
+  environment.systemPackages = with pkgs; [
     git
     neovim
     tmux
@@ -130,8 +97,6 @@
   # NixOS runs its own user agent instead.
   programs.ssh.startAgent = true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
   # Laptop hardware. nixos-hardware's framework module (flake.nix) already
   # covers fwupd, fprintd, the light sensor, the EC kernel module and a new
   # enough kernel; these are what it leaves out.
@@ -142,60 +107,21 @@
   services.thermald.enable = true;
   hardware.bluetooth.enable = true;
 
-  # Keep the boot menu short; older generations stay rollback-able until gc'd.
-  boot.loader.systemd-boot.configurationLimit = 10;
-
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  # Flakes only. NIX_PATH and the registry still point nixpkgs at this flake's
+  # nixpkgs, so nix-shell -p and nix run nixpkgs#... keep working.
+  nix.channel.enable = false;
+  # keep nix's user profile/channels under ~/.local/state, not ~/.nix-profile
+  nix.settings.use-xdg-base-directories = true;
+  # hard-link identical files in the store to save disk
+  nix.settings.auto-optimise-store = true;
   nix.gc = {
     automatic = true;
     dates = "weekly";
     options = "--delete-older-than 14d";
   };
-  # hard-link identical files in the store to save disk
-  nix.settings.auto-optimise-store = true;
-  # keep nix's user profile/channels under ~/.local/state, not ~/.nix-profile
-  nix.settings.use-xdg-base-directories = true;
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
-
-  # This option defines the first version of NixOS you have installed on this particular machine, # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
-  #
-  # Most users should NEVER change this value after the initial install, for any reason,
-  # even if you've upgraded your system to a new NixOS release.
-  #
-  # This value does NOT affect the Nixpkgs version your packages and OS are pulled from,
-  # so changing it will NOT upgrade your system - see https://nixos.org/manual/nixos/stable/#sec-upgrading for how
-  # to actually do that.
-  #
-  # This value being lower than the current NixOS release does NOT mean your system is
-  # out of date, out of support, or vulnerable.
-  #
-  # Do NOT change this value unless you have manually inspected all the changes it would make to your configuration,
-  # and migrated your data accordingly.
-  #
-  # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "26.05"; # Did you read the comment?
-
+  # The NixOS release this machine was installed with. Never change it:
+  # it is not the nixpkgs version, it pins defaults for stateful data.
+  system.stateVersion = "26.05";
 }
-
