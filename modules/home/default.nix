@@ -67,6 +67,33 @@ in
     ]
   );
 
+  # Linux-only look for GTK apps (thunar, zen's dialogs, ...). nixpkgs has no
+  # solarized GTK theme any more (they needed the removed GTK2 murrine engine),
+  # so: dark Adwaita, Papirus icons as on piecyk. colorScheme also sets the
+  # prefer-dark that libadwaita/GTK4 apps read, since they ignore gtk themes.
+  # piecyk's config/gtk-3.0 is left to bootstrap.sh, not linked here.
+  gtk = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+    enable = true;
+    colorScheme = "dark";
+    theme.name = "Adwaita-dark";
+    # GTK4/libadwaita: the dark colorScheme only; a forced theme breaks them
+    gtk4.theme = null;
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
+    };
+  };
+
+  # Cursor for everything: also writes ~/.icons/default, which is where X/
+  # Wayland clients and hyprland look when no theme is named.
+  home.pointerCursor = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+    enable = true;
+    name = "Adwaita";
+    package = pkgs.adwaita-icon-theme;
+    size = 24;
+    gtk.enable = true;
+  };
+
   # Directories home-manager has taken over from bootstrap.sh.
   #
   # bootstrap.sh still links the full set, because piecyk has no home-manager
