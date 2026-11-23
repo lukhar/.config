@@ -1,5 +1,6 @@
--- Hyprland on the Framework laptop (NixOS, uwsm session). Started from tty1 by
--- config/zsh/.zprofile; reload with `hyprctl reload`.
+-- Hyprland on the Framework laptop (NixOS, uwsm session). Started by greetd's
+-- autologin, already locked (modules/nixos/desktop.nix); reload with
+-- `hyprctl reload`.
 -- Reference: https://wiki.hypr.land/Configuring/Start/
 
 ------------------

@@ -39,7 +39,7 @@ Inside `config/`:
 | `nvim/`, `tmux/`, `ghostty/`, `bat/`, … | per-tool config, found by XDG |
 | `alacritty/` | shared; font size per host via imports (`font-size.toml`, `framework.toml`) |
 | `rofi/` | shared; `framework` adds `solarized.rasi` as its theme |
-| `hypr/`, `waybar/`, `mako/`, `gtk/`, `zen/`, `regreet/` | `framework` only (Wayland, solarized dark) |
+| `hypr/`, `waybar/`, `mako/`, `gtk/`, `zen/`, `networkmanager-dmenu/` | `framework` only (Wayland, solarized dark) |
 | `awesome/`, `dunst/` | `piecyk` only (X11) |
 
 ## How the shell loads
@@ -108,12 +108,13 @@ Older generations are also in the systemd-boot menu; garbage collection keeps
 |------|------------|
 | `hosts/framework/default.nix` | the machine: boot, network, user, hardware, power, Nix settings |
 | `hosts/framework/home.nix` | its home-manager: CLI tools, GTK look, the Wayland config links |
-| `modules/nixos/desktop.nix` | the desktop: Hyprland (uwsm), lock/idle, waybar, mako, thunar, the login screen |
+| `modules/nixos/desktop.nix` | the desktop: Hyprland (uwsm), autologin, lock/idle, waybar, mako, thunar |
 
-Logging in: greetd shows ReGreet, run inside a minimal Hyprland (cage can't
-scale the 2880x1920 panel). It starts "Hyprland (uwsm-managed)", so the
-session's services (waybar, mako, hypridle, the polkit agent) start with it.
-A text login is on Ctrl+Alt+F2.
+Logging in: greetd logs straight into the uwsm-managed Hyprland, which starts
+locked (`--locked-cmd hyprlock`): the password goes into the lock screen, and
+the session's services (waybar, mako, hypridle, the polkit agent) are already
+up behind it. After logging out (Super+M) greetd shows a text login that starts
+the same session; another one is on Ctrl+Alt+F2.
 
 Sleep: closing the lid on battery suspends, then hibernates after 2 hours into
 the swap partition; on AC it only suspends; with an external monitor it does

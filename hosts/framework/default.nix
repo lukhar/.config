@@ -43,11 +43,10 @@
   services.xserver.xkb.options = "caps:escape";
   console.useXkbConfig = true;
 
-  # The login screen shares VT1 with the text console, which shows for a moment
-  # while boot hands over to greetd and greetd to the desktop. Keep it empty
-  # (quiet boot, errors only, no cursor) and solarized: background base03 like
-  # the greeter and hyprland, so the hand-over doesn't flash. journalctl -b
-  # still has every message.
+  # Hyprland starts on VT1, the text console, which shows for a moment while
+  # boot hands over to it. Keep it empty (quiet boot, errors only, no cursor)
+  # and solarized: background base03 like the lock screen and hyprland, so the
+  # hand-over doesn't flash. journalctl -b still has every message.
   boot.consoleLogLevel = 3;
   boot.kernelParams = [
     "quiet"
