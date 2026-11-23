@@ -44,7 +44,10 @@ hl.monitor({
 -- Set programs that you use
 local terminal    = "alacritty"
 local fileManager = "thunar"
-local menu        = "hyprlauncher"
+-- config.rasi is shared with piecyk: -modes drops its :rofind script mode (no
+-- such script here; rofi would try to run it), solarized.rasi replaces its theme.
+-- combi-modi (window, drun, run) still comes from config.rasi.
+local menu        = "rofi -modes combi -show combi -theme ~/.config/rofi/solarized.rasi"
 
 
 -------------------

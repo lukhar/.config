@@ -112,6 +112,7 @@ in
         "hypr"
         "waybar"
         "mako"
+        "rofi"
       ]
     )
 

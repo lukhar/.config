@@ -85,7 +85,7 @@
 
     # called by hyprland.lua: launcher, file manager, media/brightness keys,
     # makoctl for the notification keys
-    hyprlauncher
+    rofi
     mako
     thunar
     brightnessctl
