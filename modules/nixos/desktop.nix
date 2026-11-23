@@ -82,6 +82,11 @@
     ""
     "${pkgs.coreutils}/bin/kill -SIGUSR2 $MAINPID"
   ];
+  # Defining the unit here gives it NixOS's minimal default PATH (coreutils,
+  # grep, sed, systemd), so on-click commands (networkmanager_dmenu, wpctl)
+  # weren't found. Give it the session's PATH instead; %u is the user.
+  systemd.user.services.waybar.environment.PATH =
+    lib.mkForce "/run/wrappers/bin:/etc/profiles/per-user/%u/bin:/run/current-system/sw/bin";
   # File manager (Super+E). gvfs: trash, mounting from the sidebar, network
   # places; tumbler: thumbnails; udisks2 (already on) does the mounting.
   # The archive plugin hands extract/compress to xarchiver.
