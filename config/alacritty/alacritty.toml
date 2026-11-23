@@ -48,7 +48,7 @@ render_timer = false
 TERM = "xterm-256color"
 
 [font]
-size = 12.0
+# size: in font-size.toml, overridden per host (see [general] import)
 
 [font.bold]
 family = "DejaVuSansM Nerd Font Mono"
@@ -625,5 +625,10 @@ x = 3
 y = 3
 
 [general]
+# Imports load first and this file last, so font size lives in the imports:
+# font-size.toml is the default (fruitbox, piecyk); ~/.config/alacritty-host.toml
+# exists only where home-manager links it (the Framework laptop, which renders
+# at scale 2) and wins. Missing imports are skipped.
+import = ["font-size.toml", "~/.config/alacritty-host.toml"]
 live_config_reload = true
 working_directory = "None"

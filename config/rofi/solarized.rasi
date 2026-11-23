@@ -13,7 +13,7 @@
     blue:       #268bd2;
     red:        #dc322f;
 
-    font:             "DejaVuSansM Nerd Font Mono 12";
+    font:             "DejaVuSansM Nerd Font Mono 10";
     background-color: transparent;
     text-color:       @base0;
 }

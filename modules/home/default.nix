@@ -76,6 +76,11 @@ in
   gtk = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     enable = true;
     colorScheme = "dark";
+    # same face and size as waybar (13px)
+    font = {
+      name = "DejaVuSansM Nerd Font Mono";
+      size = 10;
+    };
     theme.name = "Adwaita-dark";
     # GTK4/libadwaita: the dark colorScheme only; a forced theme breaks them
     gtk4.theme = null;
@@ -146,6 +151,8 @@ in
       // {
         # one file, not gtk-3.0/: the gtk module writes settings.ini there
         "gtk-3.0/gtk.css".source = link "config/gtk/solarized.css";
+        # alacritty.toml imports this after its default font-size.toml
+        "alacritty-host.toml".source = link "config/alacritty/framework.toml";
       }
     )
 

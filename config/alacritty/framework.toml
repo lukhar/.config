@@ -1,0 +1,4 @@
+# Framework laptop only: linked as ~/.config/alacritty-host.toml by
+# modules/home on Linux. 10pt (~13px) matches waybar's 13px.
+[font]
+size = 10.0
