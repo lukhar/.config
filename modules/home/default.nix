@@ -69,7 +69,8 @@ in
 
   # Linux-only look for GTK apps (thunar, zen's dialogs, ...). nixpkgs has no
   # solarized GTK theme any more (they needed the removed GTK2 murrine engine),
-  # so: dark Adwaita, Papirus icons as on piecyk. colorScheme also sets the
+  # so: dark Adwaita, Papirus icons as on piecyk, and config/gtk/solarized.css
+  # on top for GTK3 (linked below as gtk-3.0/gtk.css). colorScheme also sets the
   # prefer-dark that libadwaita/GTK4 apps read, since they ignore gtk themes.
   # piecyk's config/gtk-3.0 is left to bootstrap.sh, not linked here.
   gtk = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
@@ -80,7 +81,8 @@ in
     gtk4.theme = null;
     iconTheme = {
       name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
+      # folders recoloured near solarized cyan (#2aa198) instead of Papirus' bright blue
+      package = pkgs.papirus-icon-theme.override { color = "darkcyan"; };
     };
   };
 
@@ -130,9 +132,9 @@ in
       "zsh"
     ]
 
-    # Linux-only. The X11/awesome set (awesome, rofi, dunst, gtk-*, Kvantum,
-    # qt5ct, Thunar, systemd) is still left to bootstrap.sh, for piecyk; this is
-    # where the wayland replacements go as they arrive.
+    # Linux-only. The X11/awesome set (awesome, dunst, gtk-*, Kvantum, qt5ct,
+    # Thunar, systemd) is still left to bootstrap.sh, for piecyk; this is where
+    # the wayland replacements go as they arrive.
     // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux (
       links "config" [
         # hyprland reads hyprland.lua in preference to hyprland.conf as of 0.55
@@ -141,6 +143,10 @@ in
         "mako"
         "rofi"
       ]
+      // {
+        # one file, not gtk-3.0/: the gtk module writes settings.ini there
+        "gtk-3.0/gtk.css".source = link "config/gtk/solarized.css";
+      }
     )
 
     // {
