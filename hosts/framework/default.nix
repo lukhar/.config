@@ -34,6 +34,37 @@
   services.xserver.xkb.options = "caps:escape";
   console.useXkbConfig = true;
 
+  # The login screen shares VT1 with the text console, which shows for a moment
+  # while boot hands over to greetd and greetd to the desktop. Keep it empty
+  # (quiet boot, errors only, no cursor) and solarized: background base03 like
+  # the greeter and hyprland, so the hand-over doesn't flash. journalctl -b
+  # still has every message.
+  boot.consoleLogLevel = 3;
+  boot.kernelParams = [
+    "quiet"
+    "udev.log_level=3"
+    "vt.global_cursor_default=0"
+  ];
+  # solarized, with base03 as colour 0 (the console background) and base02 as 8
+  console.colors = [
+    "002b36"
+    "dc322f"
+    "859900"
+    "b58900"
+    "268bd2"
+    "d33682"
+    "2aa198"
+    "eee8d5"
+    "073642"
+    "cb4b16"
+    "586e75"
+    "657b83"
+    "839496"
+    "6c71c4"
+    "93a1a1"
+    "fdf6e3"
+  ];
+
   users.users.lukhar = {
     isNormalUser = true;
     extraGroups = [
