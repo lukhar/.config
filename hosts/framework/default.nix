@@ -76,6 +76,24 @@
   # batteries, and `upower -i` reads it
   services.upower.enable = true;
 
+  # Sleep. The firmware only offers s2idle, which keeps draining the battery,
+  # so a long sleep on battery ends in hibernate: into the 8 GiB swap
+  # partition (fits ~12-16 GiB of in-use RAM compressed; past that systemd
+  # refuses to hibernate and the laptop stays suspended).
+  boot.resumeDevice = "/dev/disk/by-uuid/82c46c5f-0cb5-49e3-83f1-dbb242e3592c";
+  services.logind.settings.Login = {
+    HandleLidSwitch = "suspend-then-hibernate";
+    HandleLidSwitchExternalPower = "suspend";
+    # external monitor attached: keep working on it
+    HandleLidSwitchDocked = "ignore";
+  };
+  # suspend-then-hibernate (lid, hypridle's idle timeout): hibernate after 2h
+  # on battery; on AC the countdown waits until it's unplugged
+  systemd.sleep.settings.Sleep = {
+    HibernateDelaySec = "2h";
+    HibernateOnACPower = false;
+  };
+
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
