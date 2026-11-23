@@ -1,7 +1,16 @@
-{ config, lib, pkgs, ... }:
+{
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ./hardware-configuration.nix
+    # Framework 13, Core Ultra X7 358H (Panther Lake)
+    inputs.nixos-hardware.nixosModules.framework-intel-core-ultra-series3
+  ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -31,7 +40,11 @@
 
   users.users.lukhar = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" ];
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+      "video"
+    ];
     shell = pkgs.zsh;
   };
   programs.zsh.enable = true;
@@ -76,6 +89,8 @@
     # configs already linked by modules/home
     qutebrowser
     zathura
+    # not in nixpkgs; from the zen-browser flake input (command: zen-beta)
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   # config/fontconfig/fonts.conf and qutebrowser ask for Liberation;
@@ -86,8 +101,7 @@
   ];
 
   # Unfree packages are allowed by name, not wholesale.
-  nixpkgs.config.allowUnfreePredicate =
-    pkg: builtins.elem (lib.getName pkg) [ "claude-code" ];
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "claude-code" ];
 
   # mason downloads prebuilt linux binaries (lua_ls, harper_ls, stylua, ...)
   # that expect /lib64/ld-linux-x86-64.so.2; nix-ld provides it on NixOS.
@@ -97,7 +111,7 @@
   # NixOS runs its own user agent instead.
   programs.ssh.startAgent = true;
 
-  # Laptop hardware. nixos-hardware's framework module (flake.nix) already
+  # Laptop hardware. nixos-hardware's framework module (imported above) already
   # covers fwupd, fprintd, the light sensor, the EC kernel module and a new
   # enough kernel; these are what it leaves out.
   #
@@ -107,7 +121,10 @@
   services.thermald.enable = true;
   hardware.bluetooth.enable = true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
   # Flakes only. NIX_PATH and the registry still point nixpkgs at this flake's
   # nixpkgs, so nix-shell -p and nix run nixpkgs#... keep working.
   nix.channel.enable = false;

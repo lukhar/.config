@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   # The checkout, not the store. Everything below links *out* of the store with
   # mkOutOfStoreSymlink so these stay editable in place and git-tracked -- which
@@ -68,11 +73,12 @@ in
     # Linux-only. The X11/awesome set (awesome, rofi, dunst, gtk-*, Kvantum,
     # qt5ct, Thunar, systemd) is still left to bootstrap.sh, for piecyk; this is
     # where the wayland replacements go as they arrive.
-    //
-      lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux (links "config" [
+    // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux (
+      links "config" [
         # hyprland reads hyprland.lua in preference to hyprland.conf as of 0.55
         "hypr"
-      ])
+      ]
+    )
 
     // {
       # fontconfig is the one directory home-manager writes into as well: on
@@ -103,9 +109,15 @@ in
     # Claude Code does not honour XDG_CONFIG_HOME either; the same three links
     # bootstrap.sh makes, so a fresh machine has the agents, skills and rules.
     // builtins.listToAttrs (
-      map (d: {
-        name = ".claude/${d}";
-        value.source = link "config/aiassist/claude/${d}";
-      }) [ "rules" "skills" "agents" ]
+      map
+        (d: {
+          name = ".claude/${d}";
+          value.source = link "config/aiassist/claude/${d}";
+        })
+        [
+          "rules"
+          "skills"
+          "agents"
+        ]
     );
 }

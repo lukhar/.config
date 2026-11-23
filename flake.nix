@@ -1,5 +1,5 @@
 {
-  description = "lukhar's machines: a work Mac, piecyk (Arch), and a NixOS laptop to come";
+  description = "lukhar's machines: a work Mac (fruitbox), a NixOS Framework laptop, and piecyk (Arch, no nix)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -26,7 +26,23 @@
   };
 
   outputs =
-    { nixpkgs, nix-darwin, home-manager, nixos-hardware, zen-browser, ... }:
+    inputs@{
+      nixpkgs,
+      nix-darwin,
+      home-manager,
+      ...
+    }:
+    let
+      # The same home-manager setup on every nix host; only the user differs.
+      homeFor = user: {
+        home-manager.useGlobalPkgs = true;
+        home-manager.useUserPackages = true;
+        # rename whatever is in the way of a link to *.hm-bak instead of failing
+        # (e.g. the ~/.config/hypr hyprland generates on its first start)
+        home-manager.backupFileExtension = "hm-bak";
+        home-manager.users.${user} = import ./modules/home;
+      };
+    in
     {
       # The attribute name, not the hostname: Jamf reverts this Mac's name to its
       # asset tag, so selection is explicit -- darwin-rebuild switch --flake .#fruitbox
@@ -34,36 +50,24 @@
         modules = [
           ./hosts/fruitbox
           home-manager.darwinModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            # rename whatever is in the way of a link to *.hm-bak instead of failing
-            home-manager.backupFileExtension = "hm-bak";
-            home-manager.users.lharatym = import ./modules/home;
-          }
+          (homeFor "lharatym")
         ];
       };
 
-      # The Framework laptop. hosts/framework/default.nix started as the
-      # configuration.nix from the install -- it is already a valid module -- and
-      # it imports its own hardware-configuration.nix, which has to be generated
-      # on the machine and committed from there.
+      # The Framework laptop. Its own inputs (nixos-hardware, zen) are imported
+      # by hosts/framework, which gets them through specialArgs.
       nixosConfigurations.framework = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs; };
         modules = [
           ./hosts/framework
-          # Framework 13, Core Ultra X7 358H (Panther Lake)
-          nixos-hardware.nixosModules.framework-intel-core-ultra-series3
-          { environment.systemPackages = [ zen-browser.packages.x86_64-linux.default ]; }
           home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            # rename whatever is in the way of a link to *.hm-bak instead of failing
-            # (e.g. the ~/.config/hypr hyprland generates on its first start)
-            home-manager.backupFileExtension = "hm-bak";
-            home-manager.users.lukhar = import ./modules/home;
-          }
+          (homeFor "lukhar")
         ];
       };
+
+      # nix fmt: formats every .nix file in the repo
+      formatter = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
+        system: nixpkgs.legacyPackages.${system}.nixfmt-tree
+      );
     };
 }
