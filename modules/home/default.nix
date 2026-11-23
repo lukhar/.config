@@ -34,6 +34,39 @@ in
   # move on its own still come from config/shell/xdg.sh, sourced by the shells.
   xdg.enable = true;
 
+  # Linux-only: on the Mac these come from Homebrew (modules/darwin/homebrew.nix).
+  home.packages = lib.optionals pkgs.stdenv.hostPlatform.isLinux (
+    with pkgs;
+    [
+      neovim
+      tmux
+      fzf
+      ripgrep
+      fd
+      bat
+      wget
+      pyenv
+      fnm
+      claude-code
+
+      # nvim-treesitter (main branch) compiles every parser locally:
+      # it needs the tree-sitter CLI and a C compiler
+      tree-sitter
+      gcc
+      # mason installs ts_ls and vimls with npm, and ruff, ty, black and flake8
+      # into python venvs; fnm and pyenv provide neither until a version is set up
+      nodejs
+      python3
+      # ...and unpacks zip releases (terraform-ls, stylua) with unzip
+      unzip
+
+      # configs linked below
+      alacritty
+      qutebrowser
+      zathura
+    ]
+  );
+
   # Directories home-manager has taken over from bootstrap.sh.
   #
   # bootstrap.sh still links the full set, because piecyk has no home-manager

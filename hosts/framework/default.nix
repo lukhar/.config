@@ -55,18 +55,10 @@
   # Also enables xdg portals, with the hyprland and gtk ones.
   programs.hyprland.enable = true;
 
+  # The desktop itself and what root needs. Everything else is per-user, in
+  # modules/home (home.packages).
   environment.systemPackages = with pkgs; [
     git
-    neovim
-    tmux
-    fzf
-    ripgrep
-    fd
-    bat
-    alacritty
-    wget
-    pyenv
-    fnm
 
     # called by hyprland.lua: launcher, file manager, media/brightness keys
     hyprlauncher
@@ -75,20 +67,6 @@
     playerctl
     # config/bin/tmux-copy falls back to wl-copy on wayland
     wl-clipboard
-    # nvim-treesitter (main branch) compiles every parser locally:
-    # it needs the tree-sitter CLI and a C compiler
-    tree-sitter
-    gcc
-    # mason installs ts_ls and vimls with npm, and ruff, ty, black and flake8
-    # into python venvs; fnm and pyenv provide neither until a version is set up
-    nodejs
-    python3
-    # ...and unpacks zip releases (terraform-ls, stylua) with unzip
-    unzip
-    claude-code
-    # configs already linked by modules/home
-    qutebrowser
-    zathura
     # not in nixpkgs; from the zen-browser flake input (command: zen-beta)
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
