@@ -64,6 +64,18 @@
   services.hypridle.enable = true;
   # Bar, as a user service with the session; config in config/waybar.
   programs.waybar.enable = true;
+  # File manager (Super+E). gvfs: trash, mounting from the sidebar, network
+  # places; tumbler: thumbnails; udisks2 (already on) does the mounting.
+  # The archive plugin hands extract/compress to xarchiver.
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs; [
+      thunar-archive-plugin
+      thunar-volman
+    ];
+  };
+  services.gvfs.enable = true;
+  services.tumbler.enable = true;
   # No NixOS module for these two; their packages ship user units, and NixOS
   # ignores [Install], so they are hooked to the session here.
   # - hyprpolkitagent: the password prompt when a GUI app asks for privileges
@@ -83,12 +95,13 @@
   environment.systemPackages = with pkgs; [
     git
 
-    # called by hyprland.lua: launcher, file manager, media/brightness keys,
+    # called by hyprland.lua: launcher, media/brightness keys,
     # makoctl for the notification keys
     rofi
     mako
-    thunar
     brightnessctl
+    # thunar-archive-plugin's backend
+    xarchiver
     playerctl
     # config/bin/tmux-copy falls back to wl-copy on wayland
     wl-clipboard
