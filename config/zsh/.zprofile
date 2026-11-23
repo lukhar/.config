@@ -21,11 +21,3 @@
 
 # OrbStack command-line tools
 [ -f "$HOME/.orbstack/shell/init.zsh" ] && . "$HOME/.orbstack/shell/init.zsh" 2>/dev/null
-
-# Hyprland on tty1, as a uwsm-managed systemd session (the NixOS laptop; uwsm
-# exists nowhere else). $TTY first: zsh sets it for free, while uwsm is python
-# and every tmux pane is a login shell too. may-start also refuses when a
-# graphical session is already running.
-if [[ $TTY == /dev/tty1 ]] && command -v uwsm >/dev/null && uwsm check may-start -q; then
-  exec uwsm start hyprland-uwsm.desktop
-fi
