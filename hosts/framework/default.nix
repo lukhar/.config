@@ -64,6 +64,12 @@
   services.hypridle.enable = true;
   # Bar, as a user service with the session; config in config/waybar.
   programs.waybar.enable = true;
+  # waybar's unit reloads with a bare `kill`, which user units can't find on
+  # NixOS; "" clears it before the full path replaces it (SIGUSR2 = reload)
+  systemd.user.services.waybar.serviceConfig.ExecReload = [
+    ""
+    "${pkgs.coreutils}/bin/kill -SIGUSR2 $MAINPID"
+  ];
   # File manager (Super+E). gvfs: trash, mounting from the sidebar, network
   # places; tumbler: thumbnails; udisks2 (already on) does the mounting.
   # The archive plugin hands extract/compress to xarchiver.

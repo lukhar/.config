@@ -7,7 +7,7 @@
     "height": 28,
     "spacing": 8,
 
-    "modules-left": ["hyprland/workspaces"],
+    "modules-left": ["ext/workspaces"],
     "modules-center": ["clock"],
     "modules-right": [
         "network",
@@ -18,8 +18,13 @@
         "tray"
     ],
 
-    "hyprland/workspaces": {
-        "format": "{id}"
+    // ext/workspaces (the standard wayland protocol), not hyprland/workspaces:
+    // waybar 0.15 switches with `hyprctl dispatch workspace N`, which
+    // hyprland.lua's dispatcher rejects, so clicks did nothing.
+    // Default name sort; sort-by-id gets no ids from hyprland (2 3 1).
+    "ext/workspaces": {
+        "format": "{name}",
+        "on-click": "activate"
     },
 
     "clock": {
