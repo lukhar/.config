@@ -153,6 +153,10 @@ in
         "gtk-3.0/gtk.css".source = link "config/gtk/solarized.css";
         # alacritty.toml imports this after its default font-size.toml
         "alacritty-host.toml".source = link "config/alacritty/framework.toml";
+        # zen: solarized browser UI. Into the profile zen created on first run
+        # (profiles.ini); a new profile means a new name here.
+        "zen/i2nvrf4n.Default Profile/chrome/userChrome.css".source = link "config/zen/userChrome.css";
+        "zen/i2nvrf4n.Default Profile/user.js".source = link "config/zen/user.js";
       }
     )
 

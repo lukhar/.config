@@ -1,0 +1,87 @@
+/*
+ * Solarized dark for Zen's own UI (sidebar, tabs, url bar, panels) on the
+ * Framework laptop. Linked into the profile's chrome/ by modules/home; needs
+ * toolkit.legacyUserProfileCustomizations.stylesheets (config/zen/user.js).
+ * Restart Zen to see edits. Colours as in config/waybar/style.css.
+ * Web pages keep their own colours; this styles the browser, not sites.
+ */
+
+:root {
+    --sol-base03: #002b36;
+    --sol-base02: #073642;
+    --sol-base01: #586e75;
+    --sol-base0:  #839496;
+    --sol-base1:  #93a1a1;
+    --sol-blue:   #268bd2;
+
+    /* zen's frame: the area around the page, the sidebar, the gradient */
+    --zen-main-browser-background: var(--sol-base03) !important;
+    --zen-main-browser-background-toolbar: var(--sol-base03) !important;
+    --zen-themed-toolbar-bg: var(--sol-base03) !important;
+    --zen-themed-toolbar-bg-transparent: var(--sol-base03) !important;
+    --zen-colors-primary: var(--sol-base02) !important;
+    --zen-colors-secondary: var(--sol-base02) !important;
+    --zen-colors-tertiary: var(--sol-base03) !important;
+    --zen-colors-border: var(--sol-base01) !important;
+    --zen-primary-color: var(--sol-blue) !important;
+
+    /* firefox's toolbar and fields, which zen builds on */
+    --toolbar-bgcolor: var(--sol-base03) !important;
+    --toolbar-color: var(--sol-base1) !important;
+    --toolbox-textcolor: var(--sol-base1) !important;
+    --toolbar-field-background-color: var(--sol-base02) !important;
+    --toolbar-field-color: var(--sol-base1) !important;
+    --toolbar-field-focus-background-color: var(--sol-base02) !important;
+    --toolbar-field-focus-color: var(--sol-base1) !important;
+    --toolbar-field-focus-border-color: var(--sol-blue) !important;
+
+    /* tabs */
+    --tab-selected-bgcolor: var(--sol-base02) !important;
+    --tab-selected-textcolor: var(--sol-base1) !important;
+    --tab-hover-background-color: var(--sol-base02) !important;
+
+    /* menus, popups, the url bar dropdown */
+    --arrowpanel-background: var(--sol-base02) !important;
+    --arrowpanel-color: var(--sol-base1) !important;
+    --arrowpanel-border-color: var(--sol-base01) !important;
+    --urlbarView-highlight-background: var(--sol-blue) !important;
+    --urlbarView-highlight-color: var(--sol-base03) !important;
+    --zen-urlbar-background: var(--sol-base02) !important;
+    --zen-dialog-background: var(--sol-base02) !important;
+}
+
+/* the selected tab gets the blue accent edge, like waybar's active workspace */
+.tabbrowser-tab[selected] .tab-background {
+    box-shadow: inset 2px 0 0 var(--sol-blue) !important;
+}
+
+/*
+ * zen paints the frame on .zen-browser-generic-background: two crossfading
+ * layers (::after, ::before) fed by variables its theme script sets at
+ * runtime, plus a grain texture. Overriding the variables alone loses to
+ * that, so the layers get the colour directly.
+ */
+.zen-browser-generic-background {
+    background: var(--sol-base03) !important;
+}
+
+.zen-browser-generic-background::after,
+.zen-browser-generic-background::before {
+    background: var(--sol-base03) !important;
+}
+
+.zen-browser-grain {
+    display: none !important;
+}
+
+.tabbrowser-tab[selected] .tab-background {
+    background-color: var(--sol-base02) !important;
+}
+
+.tabbrowser-tab:not([selected]):hover .tab-background {
+    background-color: color-mix(in srgb, var(--sol-base02) 60%, transparent) !important;
+}
+
+#urlbar-background {
+    background-color: var(--sol-base02) !important;
+}
