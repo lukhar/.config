@@ -1,8 +1,16 @@
 # dotfiles
 
-Configuration for macOS and Arch (`piecyk`), with a NixOS laptop to come. The
-checkout can live anywhere; `bootstrap.sh` resolves its own location and links
-everything into place.
+Configuration for three machines:
+
+| host | system | how it is applied |
+|------|--------|-------------------|
+| `fruitbox` | work Mac, nix-darwin + home-manager | `darwin-rebuild switch --flake ~/.dotfiles#fruitbox` |
+| `framework` | Framework 13 laptop, NixOS + home-manager, Hyprland | `sudo nixos-rebuild switch --flake ~/.dotfiles#framework` |
+| `piecyk` | Arch, no Nix | `bootstrap.sh` |
+
+On the Nix hosts the checkout must be `~/.dotfiles`: home-manager links into
+it by that path (see [Nix](#nix-fruitbox-framework)). On `piecyk` it can live
+anywhere; `bootstrap.sh` resolves its own location.
 
 This repository used to *be* `$XDG_CONFIG_HOME`, which meant every application
 that writes into `~/.config` showed up as untracked noise. It is now a plain
@@ -14,7 +22,10 @@ repository, and the split below is what replaced that.
 |------|------------|
 | `config/` | everything that belongs in `$XDG_CONFIG_HOME`; each entry is linked to `~/.config/<name>` |
 | `home/` | the handful of files that must sit in `$HOME`: bash's three, `.inputrc`, `.Xresources` |
-| `bootstrap.sh` | creates those links; safe to re-run, and refuses to replace anything real |
+| `flake.nix`, `flake.lock` | the Nix hosts and their pinned inputs (nixpkgs, nix-darwin, home-manager, nixos-hardware, zen) |
+| `hosts/<name>/` | one machine each: `fruitbox/`, and `framework/` with its `hardware-configuration.nix` and `home.nix` |
+| `modules/` | shared Nix modules: `home/` (home-manager, both hosts), `nixos/desktop.nix`, `darwin/homebrew.nix` |
+| `bootstrap.sh` | creates the links on `piecyk`; safe to re-run, and refuses to replace anything real |
 
 Inside `config/`:
 
@@ -26,7 +37,10 @@ Inside `config/`:
 | `bin/` | scripts on `PATH`, including the tmux copy/open helpers |
 | `bash/` | aliases sourced by `home/.bashrc`; bash has no XDG support of its own |
 | `nvim/`, `tmux/`, `ghostty/`, `bat/`, … | per-tool config, found by XDG |
-| `awesome/`, `rofi/`, `dunst/` | `piecyk` only (X11) |
+| `alacritty/` | shared; font size per host via imports (`font-size.toml`, `framework.toml`) |
+| `rofi/` | shared; `framework` adds `solarized.rasi` as its theme |
+| `hypr/`, `waybar/`, `mako/`, `gtk/`, `zen/`, `regreet/` | `framework` only (Wayland, solarized dark) |
+| `awesome/`, `dunst/` | `piecyk` only (X11) |
 
 ## How the shell loads
 
@@ -57,11 +71,60 @@ Some tools find their config without help and need no symlink: tmux
 `XDG_CONFIG_HOME` is unset), ctags (`ctags/*.ctags`), git, and vim
 (`~/.vim/vimrc`).
 
+## Nix (fruitbox, framework)
+
+`flake.nix` defines both hosts. Each imports `modules/home` for home-manager
+plus whatever the host adds on top (`hosts/framework/home.nix`).
+
+home-manager links `config/*` and `home/*` with `mkOutOfStoreSymlink`, i.e. to
+the files in this checkout rather than copies in the Nix store. So:
+
+- editing anything under `config/` takes effect at once — no rebuild;
+- only `.nix` changes need a rebuild;
+- a **new** file has to be `git add`ed before a rebuild, or the flake can't see it.
+
+On `framework`:
+
+```sh
+nixos-rebuild build --flake ~/.dotfiles#framework            # check only
+sudo nixos-rebuild switch --flake ~/.dotfiles#framework      # apply now
+sudo nixos-rebuild boot --flake ~/.dotfiles#framework        # apply at next boot (kernel, greetd)
+sudo nixos-rebuild switch --rollback                         # back to the previous generation
+nix flake update --flake ~/.dotfiles                         # newer inputs; then rebuild, commit flake.lock
+nix fmt                                                      # format every .nix file
+```
+
+Older generations are also in the systemd-boot menu; garbage collection keeps
+14 days of them.
+
+`fruitbox` uses Determinate Nix, so nix-darwin leaves the daemon and
+`/etc/nix` alone (`nix.enable = false`). Homebrew remains its package manager:
+`modules/darwin/homebrew.nix` declares the formulae and casks, applied by
+`brew bundle` on activation, without cleanup or upgrades.
+
+### framework
+
+| file | what it is |
+|------|------------|
+| `hosts/framework/default.nix` | the machine: boot, network, user, hardware, power, Nix settings |
+| `hosts/framework/home.nix` | its home-manager: CLI tools, GTK look, the Wayland config links |
+| `modules/nixos/desktop.nix` | the desktop: Hyprland (uwsm), lock/idle, waybar, mako, thunar, the login screen |
+
+Logging in: greetd shows ReGreet, run inside a minimal Hyprland (cage can't
+scale the 2880x1920 panel). It starts "Hyprland (uwsm-managed)", so the
+session's services (waybar, mako, hypridle, the polkit agent) start with it.
+A text login is on Ctrl+Alt+F2.
+
+Sleep: closing the lid on battery suspends, then hibernates after 2 hours into
+the swap partition; on AC it only suspends; with an external monitor it does
+nothing. 15 idle minutes do the same; Super+L locks.
+
 ## bootstrap.sh
 
-Links `config/*` into `$XDG_CONFIG_HOME` and `home/*` into `$HOME`. Safe to
-re-run, and it will not replace a real file or directory — on a machine that
-predates this layout it reports what it left alone so you can move it first.
+For `piecyk`, which has no Nix. Links `config/*` into `$XDG_CONFIG_HOME` and
+`home/*` into `$HOME`. Safe to re-run, and it will not replace a real file or
+directory — on a machine that predates this layout it reports what it left
+alone so you can move it first.
 
 The `home/` files exist because these cannot be reached through XDG:
 
