@@ -62,21 +62,31 @@
   # The hyprlock module also adds the PAM service it authenticates against.
   programs.hyprlock.enable = true;
   services.hypridle.enable = true;
-  # Polkit agent: the password prompt when a GUI app asks for privileges
-  # (mounting in thunar, ...). The package ships the user unit; NixOS ignores
-  # [Install], so it is hooked to the session here.
-  systemd.packages = [ pkgs.hyprpolkitagent ];
-  systemd.user.services.hyprpolkitagent.wantedBy = [ "graphical-session.target" ];
   # Bar, as a user service with the session; config in config/waybar.
   programs.waybar.enable = true;
+  # No NixOS module for these two; their packages ship user units, and NixOS
+  # ignores [Install], so they are hooked to the session here.
+  # - hyprpolkitagent: the password prompt when a GUI app asks for privileges
+  #   (mounting in thunar, ...)
+  # - mako: notifications, config in config/mako. Its D-Bus activation file
+  #   too, so a notification starts it if it isn't running.
+  systemd.packages = with pkgs; [
+    hyprpolkitagent
+    mako
+  ];
+  systemd.user.services.hyprpolkitagent.wantedBy = [ "graphical-session.target" ];
+  systemd.user.services.mako.wantedBy = [ "graphical-session.target" ];
+  services.dbus.packages = [ pkgs.mako ];
 
   # The desktop itself and what root needs. Everything else is per-user, in
   # modules/home (home.packages).
   environment.systemPackages = with pkgs; [
     git
 
-    # called by hyprland.lua: launcher, file manager, media/brightness keys
+    # called by hyprland.lua: launcher, file manager, media/brightness keys,
+    # makoctl for the notification keys
     hyprlauncher
+    mako
     thunar
     brightnessctl
     playerctl

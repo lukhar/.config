@@ -111,6 +111,7 @@ in
         # hyprland reads hyprland.lua in preference to hyprland.conf as of 0.55
         "hypr"
         "waybar"
+        "mako"
       ]
     )
 
