@@ -67,6 +67,8 @@
   # [Install], so it is hooked to the session here.
   systemd.packages = [ pkgs.hyprpolkitagent ];
   systemd.user.services.hyprpolkitagent.wantedBy = [ "graphical-session.target" ];
+  # Bar, as a user service with the session; config in config/waybar.
+  programs.waybar.enable = true;
 
   # The desktop itself and what root needs. Everything else is per-user, in
   # modules/home (home.packages).

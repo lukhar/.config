@@ -1,0 +1,73 @@
+// Bar for the Framework laptop. Started by NixOS programs.waybar (a user
+// service on graphical-session.target, i.e. with the uwsm session).
+// Reload after editing: systemctl --user reload waybar
+{
+    "layer": "top",
+    "position": "top",
+    "height": 28,
+    "spacing": 8,
+
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["clock"],
+    "modules-right": [
+        "network",
+        "wireplumber",
+        "backlight",
+        "power-profiles-daemon",
+        "battery",
+        "tray"
+    ],
+
+    "hyprland/workspaces": {
+        "format": "{id}"
+    },
+
+    "clock": {
+        "format": "{:%a %d %b  %H:%M}",
+        "tooltip-format": "<tt>{calendar}</tt>"
+    },
+
+    "network": {
+        "format-wifi": "󰤨 {essid}",
+        "format-ethernet": "󰈀 wired",
+        "format-disconnected": "󰤭 offline",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
+        // same as Super+W
+        "on-click": "alacritty -e nmtui"
+    },
+
+    "wireplumber": {
+        "format": "󰕾 {volume}%",
+        "format-muted": "󰝟 muted",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    },
+
+    "backlight": {
+        "format": "󰃠 {percent}%"
+    },
+
+    // click cycles power-saver / balanced / performance
+    "power-profiles-daemon": {
+        "format": "{icon}",
+        "format-icons": {
+            "power-saver": "󰌪",
+            "balanced": "󰗑",
+            "performance": "󰓅",
+            "default": "󰗑"
+        },
+        "tooltip-format": "power profile: {profile}"
+    },
+
+    "battery": {
+        "bat": "BAT1",
+        "states": { "warning": 25, "critical": 10 },
+        "format": "{icon} {capacity}%",
+        "format-charging": "󰂄 {capacity}%",
+        "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰁹"],
+        "tooltip-format": "{timeTo}"
+    },
+
+    "tray": {
+        "spacing": 8
+    }
+}
