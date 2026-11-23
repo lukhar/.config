@@ -92,6 +92,10 @@
     playerctl
     # config/bin/tmux-copy falls back to wl-copy on wayland
     wl-clipboard
+    # config/bin/screenshot: capture, region select, notification
+    grim
+    slurp
+    libnotify
     # not in nixpkgs; from the zen-browser flake input (command: zen-beta)
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];

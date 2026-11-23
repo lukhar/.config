@@ -289,6 +289,10 @@ hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("loginctl lock-session"))
 -- notifications (mako): dismiss the newest / all
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("makoctl dismiss"))
 hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("makoctl dismiss --all"))
+-- screenshots to ~/Pictures/Screenshots and the clipboard; full path, because
+-- ~/.config/bin is on the shells' PATH but not the session's
+hl.bind("Print", hl.dsp.exec_cmd("~/.config/bin/screenshot region"))
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd("~/.config/bin/screenshot full"))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 -- Wi-Fi: NetworkManager's TUI in a terminal; no bar or tray needed
