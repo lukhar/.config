@@ -1,29 +1,11 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, ... }:
 let
-  # The checkout, not the store. Everything below links *out* of the store with
-  # mkOutOfStoreSymlink so these stay editable in place and git-tracked -- which
-  # is what bootstrap.sh does by hand, and nvim in particular needs: lazy writes
-  # lazy-lock.json and harper writes the dictionary.
-  dotfiles = "${config.home.homeDirectory}/.dotfiles";
-  link = path: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${path}";
-
-  # The common case: the name under the target directory is the name in the
-  # checkout, so the whole directory is linked under its own name.
-  links =
-    dir: names:
-    builtins.listToAttrs (
-      map (name: {
-        inherit name;
-        value.source = link "${dir}/${name}";
-      }) names
-    );
+  inherit (import ./links.nix { inherit config; }) link links;
 in
 {
+  # Shared by every nix host (fruitbox, framework); per-host additions live
+  # next to the host, e.g. hosts/framework/home.nix.
+  #
   # username and homeDirectory are inferred from the home-manager.users.<name>
   # key and the platform, so this module serves both hosts unchanged. On NixOS
   # that inference reads users.users.<name>.home, so the host has to declare the
@@ -33,73 +15,6 @@ in
   # Sets XDG_CONFIG_HOME and friends. The per-tool variables that XDG_* does not
   # move on its own still come from config/shell/xdg.sh, sourced by the shells.
   xdg.enable = true;
-
-  # Linux-only: on the Mac these come from Homebrew (modules/darwin/homebrew.nix).
-  home.packages = lib.optionals pkgs.stdenv.hostPlatform.isLinux (
-    with pkgs;
-    [
-      neovim
-      tmux
-      fzf
-      ripgrep
-      fd
-      bat
-      wget
-      pyenv
-      fnm
-      claude-code
-
-      # nvim-treesitter (main branch) compiles every parser locally:
-      # it needs the tree-sitter CLI and a C compiler
-      tree-sitter
-      gcc
-      # mason installs ts_ls and vimls with npm, and ruff, ty, black and flake8
-      # into python venvs; fnm and pyenv provide neither until a version is set up
-      nodejs
-      python3
-      # ...and unpacks zip releases (terraform-ls, stylua) with unzip
-      unzip
-
-      # configs linked below
-      alacritty
-      qutebrowser
-      zathura
-    ]
-  );
-
-  # Linux-only look for GTK apps (thunar, zen's dialogs, ...). nixpkgs has no
-  # solarized GTK theme any more (they needed the removed GTK2 murrine engine),
-  # so: dark Adwaita, Papirus icons as on piecyk, and config/gtk/solarized.css
-  # on top for GTK3 (linked below as gtk-3.0/gtk.css). colorScheme also sets the
-  # prefer-dark that libadwaita/GTK4 apps read, since they ignore gtk themes.
-  # piecyk's config/gtk-3.0 is left to bootstrap.sh, not linked here.
-  gtk = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
-    enable = true;
-    colorScheme = "dark";
-    # same face and size as waybar (13px)
-    font = {
-      name = "DejaVuSansM Nerd Font Mono";
-      size = 10;
-    };
-    theme.name = "Adwaita-dark";
-    # GTK4/libadwaita: the dark colorScheme only; a forced theme breaks them
-    gtk4.theme = null;
-    iconTheme = {
-      name = "Papirus-Dark";
-      # folders recoloured near solarized cyan (#2aa198) instead of Papirus' bright blue
-      package = pkgs.papirus-icon-theme.override { color = "darkcyan"; };
-    };
-  };
-
-  # Cursor for everything: also writes ~/.icons/default, which is where X/
-  # Wayland clients and hyprland look when no theme is named.
-  home.pointerCursor = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
-    enable = true;
-    name = "Adwaita";
-    package = pkgs.adwaita-icon-theme;
-    size = 24;
-    gtk.enable = true;
-  };
 
   # Directories home-manager has taken over from bootstrap.sh.
   #
@@ -136,29 +51,6 @@ in
       # home-manager's programs.zsh: it would fight the ZDOTDIR arrangement.
       "zsh"
     ]
-
-    # Linux-only. The X11/awesome set (awesome, dunst, gtk-*, Kvantum, qt5ct,
-    # Thunar, systemd) is still left to bootstrap.sh, for piecyk; this is where
-    # the wayland replacements go as they arrive.
-    // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux (
-      links "config" [
-        # hyprland reads hyprland.lua in preference to hyprland.conf as of 0.55
-        "hypr"
-        "waybar"
-        "mako"
-        "rofi"
-      ]
-      // {
-        # one file, not gtk-3.0/: the gtk module writes settings.ini there
-        "gtk-3.0/gtk.css".source = link "config/gtk/solarized.css";
-        # alacritty.toml imports this after its default font-size.toml
-        "alacritty-host.toml".source = link "config/alacritty/framework.toml";
-        # zen: solarized browser UI. Into the profile zen created on first run
-        # (profiles.ini); a new profile means a new name here.
-        "zen/i2nvrf4n.Default Profile/chrome/userChrome.css".source = link "config/zen/userChrome.css";
-        "zen/i2nvrf4n.Default Profile/user.js".source = link "config/zen/user.js";
-      }
-    )
 
     // {
       # fontconfig is the one directory home-manager writes into as well: on

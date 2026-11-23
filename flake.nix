@@ -33,14 +33,15 @@
       ...
     }:
     let
-      # The same home-manager setup on every nix host; only the user differs.
-      homeFor = user: {
+      # The same home-manager setup on every nix host: modules/home for the user,
+      # plus whatever that host adds on top.
+      homeFor = user: extraModules: {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         # rename whatever is in the way of a link to *.hm-bak instead of failing
         # (e.g. the ~/.config/hypr hyprland generates on its first start)
         home-manager.backupFileExtension = "hm-bak";
-        home-manager.users.${user} = import ./modules/home;
+        home-manager.users.${user}.imports = [ ./modules/home ] ++ extraModules;
       };
     in
     {
@@ -50,7 +51,7 @@
         modules = [
           ./hosts/fruitbox
           home-manager.darwinModules.home-manager
-          (homeFor "lharatym")
+          (homeFor "lharatym" [ ])
         ];
       };
 
@@ -61,7 +62,7 @@
         modules = [
           ./hosts/framework
           home-manager.nixosModules.home-manager
-          (homeFor "lukhar")
+          (homeFor "lukhar" [ ./hosts/framework/home.nix ])
         ];
       };
 
