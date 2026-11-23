@@ -123,6 +123,9 @@
   services.power-profiles-daemon.enable = true;
   services.thermald.enable = true;
   hardware.bluetooth.enable = true;
+  # battery service on D-Bus: wireplumber asks it for bluetooth device
+  # batteries, and `upower -i` reads it
+  services.upower.enable = true;
 
   nix.settings.experimental-features = [
     "nix-command"
