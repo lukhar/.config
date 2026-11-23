@@ -2,6 +2,7 @@
 # nix). The desktop is modules/nixos/desktop.nix; home-manager additions are
 # in home.nix beside this file.
 {
+  config,
   lib,
   pkgs,
   inputs,
@@ -20,6 +21,14 @@
   boot.loader.efi.canTouchEfiVariables = true;
   # Keep the boot menu short; older generations stay rollback-able until gc'd.
   boot.loader.systemd-boot.configurationLimit = 10;
+  # Boot menu text size. The firmware's own mode (keep) is the full 2880x1920,
+  # so its fixed font is tiny; mode 8 (picked with `r` in the menu) is the most
+  # readable. consoleMode only accepts 0/1/2/5/auto/max/keep, so set it in
+  # loader.conf directly, after the installer has written it.
+  boot.loader.systemd-boot.extraInstallCommands = ''
+    ${pkgs.gnused}/bin/sed -i 's/^console-mode .*/console-mode 8/' \
+      ${config.boot.loader.efi.efiSysMountPoint}/loader/loader.conf
+  '';
 
   networking.hostName = "framework";
   # Wi-Fi: the rofi menu on Super+W (networkmanager_dmenu, desktop.nix).
