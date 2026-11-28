@@ -19,6 +19,8 @@ in
     pyenv
     fnm
     claude-code
+    # vim-fugitive runs git through hub (config/nvim/lua/plugins/init.lua)
+    hub
 
     # nvim-treesitter (main branch) compiles every parser locally:
     # it needs the tree-sitter CLI and a C compiler
