@@ -99,9 +99,9 @@
     xarchiver
     playerctl
     # Wi-Fi menu in rofi (Super+W, waybar's network module); its "edit
-    # connections" entry opens nm-connection-editor from networkmanagerapplet
+    # connections" entry opens nmtui in alacritty. No networkmanagerapplet:
+    # its tray icon autostarts and duplicates waybar's network module.
     networkmanager_dmenu
-    networkmanagerapplet
     # config/bin/tmux-copy falls back to wl-copy on wayland
     wl-clipboard
     # config/bin/screenshot: capture, region select, notification
