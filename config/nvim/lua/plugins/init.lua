@@ -23,7 +23,7 @@ return {
     'tpope/vim-fugitive',
     cmd = { 'Git', 'G' },
     init = function()
-      if vim.fn.executable('hub') then
+      if vim.fn.executable('hub') == 1 then
         vim.g.fugitive_git_executable = 'hub'
       end
     end,
